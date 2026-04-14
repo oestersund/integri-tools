@@ -641,27 +641,31 @@
         }
 
         // =====================================================
-        // URL-safe Base64 Encoding (keine externe Library)
+        // Briefing-Storage API
         // =====================================================
 
-        function encodeData(jsonString) {
-            const encoded = encodeURIComponent(jsonString);
-            const b64 = btoa(encoded);
-            return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        }
+        const API_URL = 'https://integri.de/briefing-store.php';
 
-        function decodeData(urlSafeB64) {
-            let b64 = urlSafeB64.replace(/-/g, '+').replace(/_/g, '/');
-            while (b64.length % 4) b64 += '=';
-            const decoded = atob(b64);
-            return decodeURIComponent(decoded);
-        }
-
-        function generateShareLink() {
+        async function saveBriefingToServer() {
             const formData = collectFormData();
-            const json = JSON.stringify(formData);
-            const encoded = encodeData(json);
-            return window.location.origin + window.location.pathname + '?d=' + encoded;
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Serverfehler');
+            }
+            return await response.json();
+        }
+
+        async function loadBriefingFromServer(id) {
+            const response = await fetch(API_URL + '?id=' + encodeURIComponent(id));
+            if (!response.ok) {
+                throw new Error('Briefing nicht gefunden');
+            }
+            return await response.json();
         }
 
         // =====================================================
@@ -717,20 +721,23 @@
         // =====================================================
 
         window.addEventListener('DOMContentLoaded', function() {
-            // Zuerst: Share-Link pruefen
+            // Zuerst: Share-Link mit ID pruefen
             const params = new URLSearchParams(window.location.search);
-            const sharedData = params.get('d');
-            if (sharedData) {
-                try {
-                    const json = decodeData(sharedData);
-                    const formData = JSON.parse(json);
-                    populateForm(formData);
-                    saveToLocalStorage();
-                    window.history.replaceState({}, '', window.location.pathname);
-                } catch (e) {
-                    console.error('Share-Link konnte nicht gelesen werden:', e);
-                }
-                startAutoSave();
+            const briefingId = params.get('id');
+            if (briefingId) {
+                loadBriefingFromServer(briefingId)
+                    .then(formData => {
+                        populateForm(formData);
+                        saveToLocalStorage();
+                        window.history.replaceState({}, '', window.location.pathname);
+                    })
+                    .catch(e => {
+                        console.error('Briefing konnte nicht geladen werden:', e);
+                        alert('Briefing konnte nicht geladen werden. Der Link ist moeglicherweise ungueltig.');
+                    })
+                    .finally(() => {
+                        startAutoSave();
+                    });
                 return;
             }
 
@@ -818,21 +825,36 @@
         }
 
         function sendEmail() {
-            const shareLink = generateShareLink();
-            const company = document.getElementById('company')?.value || 'Kunde';
-            const topic = document.getElementById('topic')?.value || '';
-            const date = new Date().toISOString().split('T')[0];
+            const btn = document.querySelector('.button-group button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Wird gespeichert...';
+            btn.disabled = true;
 
-            let emailBody = 'Briefing-Daten fuer: ' + toAscii(company) + '\n';
-            if (topic) emailBody += 'Thema: ' + toAscii(topic) + '\n';
-            emailBody += 'Datum: ' + date + '\n';
-            emailBody += '\nBriefing oeffnen:\n' + shareLink + '\n';
-            emailBody += '\n---\nGesendet ueber tools.integri.de/website-briefing';
+            saveBriefingToServer()
+                .then(result => {
+                    const shareLink = result.url;
+                    const company = document.getElementById('company')?.value || 'Kunde';
+                    const topic = document.getElementById('topic')?.value || '';
+                    const date = new Date().toISOString().split('T')[0];
 
-            const subject = 'Website-Briefing: ' + toAscii(company);
-            const mailtoLink = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(emailBody);
+                    let emailBody = 'Briefing-Daten fuer: ' + toAscii(company) + '\n';
+                    if (topic) emailBody += 'Thema: ' + toAscii(topic) + '\n';
+                    emailBody += 'Datum: ' + date + '\n';
+                    emailBody += '\nBriefing oeffnen:\n' + shareLink + '\n';
+                    emailBody += '\n---\nGesendet ueber tools.integri.de/website-briefing';
 
-            window.location.href = mailtoLink;
+                    const subject = 'Website-Briefing: ' + toAscii(company);
+                    const mailtoLink = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(emailBody);
+
+                    window.location.href = mailtoLink;
+                })
+                .catch(e => {
+                    alert('Fehler beim Speichern: ' + e.message + '\n\nBitte versuchen Sie es erneut.');
+                })
+                .finally(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
         }
     </script>
 </body>
