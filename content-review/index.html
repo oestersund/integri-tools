@@ -2039,9 +2039,11 @@ function generateProblemsPreview() {
     html += '<div class="transformation-grid">';
     
     // Problems column
+    const probKeyMap = { 'problems_p1': 'problem1', 'problems_p2': 'problem2', 'problems_p3': 'problem3', 'problems_s1': 'solution1', 'problems_s2': 'solution2', 'problems_s3': 'solution3' };
+
     let problemsHtml = '<div class="problem-box"><h3>❌ Vorher: Typische Probleme</h3><ul class="problem-list">';
     ['problems_p1', 'problems_p2', 'problems_p3'].forEach(key => {
-        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+        const content = getContent(key, originalContent.problems[probKeyMap[key]]);
         if (!isDeleted(key) && content) {
             const cleanContent = content.replace(/^[❌✓]\s*/, '');
             problemsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
@@ -2049,11 +2051,11 @@ function generateProblemsPreview() {
         }
     });
     problemsHtml += '</ul></div>';
-    
+
     // Solutions column
     let solutionsHtml = '<div class="solution-box"><h3>✓ Nachher: Mit Ihrer Lösung</h3><ul class="solution-list">';
     ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
-        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+        const content = getContent(key, originalContent.problems[probKeyMap[key]]);
         if (!isDeleted(key) && content) {
             const cleanContent = content.replace(/^[❌✓]\s*/, '');
             solutionsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
@@ -2073,7 +2075,7 @@ function generateProblemsPreview() {
         html += '<h3>Messbare Vorteile für Sie:</h3>';
         
         ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
-            const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+            const content = getContent(key, originalContent.problems[probKeyMap[key]]);
             if (!isDeleted(key) && content) {
                 const cleanContent = content.replace(/^[❌✓]\s*/, '');
                 // Extract title and detail from "Title - Detail" format
