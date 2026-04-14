@@ -618,7 +618,7 @@
         }
 
         // Debounced input save
-        let saveDe bounce;
+        let saveDebounce;
         document.addEventListener('input', function(e) {
             const target = e.target;
             if ((target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') && !target.id.startsWith('goal-other-text')) {
@@ -838,7 +838,7 @@
                         emailBody += `Geschaeftsmodell: ${toAscii(b2bChecked.join(', '))}\n`;
                     }
                     if (section.title === 'SUCHVERHALTEN / SEO' && awarenessChecked.length > 0) {
-                        emailBody += `Problembe wusstsein: ${toAscii(awarenessChecked.join(', '))}\n`;
+                        emailBody += `Problembewusstsein: ${toAscii(awarenessChecked.join(', '))}\n`;
                     }
                     if (section.title === 'ZAHLEN UND PREISE' && priceChecked.length > 0) {
                         emailBody += `Preistransparenz: ${toAscii(priceChecked.join(', '))}\n`;
