@@ -80,27 +80,47 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script>
 
     // =====================================================
-    // Hilfsfunktionen (wie in Spec definiert)
+    // URL-safe Base64 (reine Browser-APIs, keine Library)
+    // =====================================================
+
+    function encodeData(jsonString) {
+        // JSON → UTF-8 Bytes → Base64 → URL-safe Base64
+        var encoded = encodeURIComponent(jsonString);
+        var b64 = btoa(encoded);
+        // URL-safe: + → -, / → _, = entfernen
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function decodeData(urlSafeB64) {
+        // URL-safe Base64 → Standard Base64 → decode → URI-decode
+        var b64 = urlSafeB64.replace(/-/g, '+').replace(/_/g, '/');
+        // Padding wiederherstellen
+        while (b64.length % 4) b64 += '=';
+        var decoded = atob(b64);
+        return decodeURIComponent(decoded);
+    }
+
+    // =====================================================
+    // Hilfsfunktionen
     // =====================================================
 
     function collectFormData() {
-        const formData = {};
-        document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+        var formData = {};
+        document.querySelectorAll('input[type="text"], textarea').forEach(function(input) {
             if (input.id) formData[input.id] = input.value;
         });
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
             if (cb.id) formData[cb.id] = cb.checked;
         });
         return formData;
     }
 
     function populateForm(data) {
-        Object.keys(data).forEach(key => {
-            const el = document.getElementById(key);
+        Object.keys(data).forEach(function(key) {
+            var el = document.getElementById(key);
             if (el) {
                 if (el.type === 'checkbox') el.checked = data[key];
                 else el.value = data[key];
@@ -109,10 +129,10 @@
     }
 
     function generateShareLink() {
-        const formData = collectFormData();
-        const json = JSON.stringify(formData);
-        const compressed = LZString.compressToEncodedURIComponent(json);
-        return window.location.origin + window.location.pathname + '?d=' + compressed;
+        var formData = collectFormData();
+        var json = JSON.stringify(formData);
+        var encoded = encodeData(json);
+        return window.location.origin + window.location.pathname + '?d=' + encoded;
     }
 
     // =====================================================
@@ -120,17 +140,18 @@
     // =====================================================
 
     window.addEventListener('DOMContentLoaded', function() {
-        const params = new URLSearchParams(window.location.search);
-        const sharedData = params.get('d');
+        var params = new URLSearchParams(window.location.search);
+        var sharedData = params.get('d');
         if (sharedData) {
             try {
-                const json = LZString.decompressFromEncodedURIComponent(sharedData);
-                const formData = JSON.parse(json);
+                var json = decodeData(sharedData);
+                var formData = JSON.parse(json);
                 populateForm(formData);
                 window.history.replaceState({}, '', window.location.pathname);
                 document.getElementById('importBanner').style.display = 'block';
             } catch (e) {
                 console.error('Share-Link konnte nicht gelesen werden:', e);
+                alert('Share-Link konnte nicht gelesen werden: ' + e.message);
             }
         }
     });
@@ -140,52 +161,50 @@
     // =====================================================
 
     function simulateSendEmail() {
-        const shareLink = generateShareLink();
-        const company = document.getElementById('company').value || 'Kunde';
-        const topic = document.getElementById('topic').value || '(kein Thema)';
-        const date = new Date().toISOString().split('T')[0];
+        var shareLink = generateShareLink();
+        var company = document.getElementById('company').value || 'Kunde';
+        var topic = document.getElementById('topic').value || '(kein Thema)';
+        var date = new Date().toISOString().split('T')[0];
 
-        const jsonRaw = JSON.stringify(collectFormData());
-        const compressed = LZString.compressToEncodedURIComponent(jsonRaw);
+        var jsonRaw = JSON.stringify(collectFormData());
+        var encoded = encodeData(jsonRaw);
 
-        const emailBody = `Briefing-Daten für: ${company}\nThema: ${topic}\nDatum: ${date}\n\nBriefing öffnen:\n${shareLink}\n\n---\nGesendet über tools.integri.de/website-briefing`;
-        const subject = `Website-Briefing: ${company}`;
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+        var emailBody = 'Briefing-Daten fuer: ' + company + '\nThema: ' + topic + '\nDatum: ' + date + '\n\nBriefing oeffnen:\n' + shareLink + '\n\n---\nGesendet ueber tools.integri.de/website-briefing';
+        var subject = 'Website-Briefing: ' + company;
+        var mailtoLink = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(emailBody);
 
-        // Ergebnis anzeigen
-        const resultBox = document.getElementById('resultBox');
-        const resultContent = document.getElementById('resultContent');
+        var resultBox = document.getElementById('resultBox');
+        var resultContent = document.getElementById('resultContent');
         resultBox.style.display = 'block';
-        resultContent.innerHTML = `
-            <p><strong>Share-Link:</strong></p>
-            <div class="url-display">${shareLink}</div>
-            <p><strong>mailto-Vorschau (was der Kunde im E-Mail-Client sieht):</strong></p>
-            <div class="mailto-preview">Betreff: ${subject}\n\n${emailBody}</div>
-            <div class="stats">
-                <strong>Statistik:</strong><br>
-                JSON roh: ${jsonRaw.length.toLocaleString()} Bytes<br>
-                Komprimiert (URL-safe): ${compressed.length.toLocaleString()} Zeichen<br>
-                Share-Link gesamt: ${shareLink.length.toLocaleString()} Zeichen<br>
-                mailto-URL gesamt: ${mailtoLink.length.toLocaleString()} Zeichen
-            </div>
-            <div style="margin-top: 15px; text-align: center;">
-                <button onclick="window.open('${shareLink.replace(/'/g, "\\'")}', '_blank')">Share-Link in neuem Tab öffnen</button>
-                <button onclick="window.location.href='${mailtoLink.replace(/'/g, "\\'")}'" style="background: #555;">mailto: tatsächlich öffnen</button>
-            </div>
-        `;
+        resultContent.innerHTML =
+            '<p><strong>Share-Link:</strong></p>' +
+            '<div class="url-display">' + shareLink + '</div>' +
+            '<p><strong>mailto-Vorschau (was der Kunde im E-Mail-Client sieht):</strong></p>' +
+            '<div class="mailto-preview">Betreff: ' + subject + '\n\n' + emailBody + '</div>' +
+            '<div class="stats">' +
+                '<strong>Statistik:</strong><br>' +
+                'JSON roh: ' + jsonRaw.length.toLocaleString() + ' Bytes<br>' +
+                'Base64 (URL-safe): ' + encoded.length.toLocaleString() + ' Zeichen<br>' +
+                'Share-Link gesamt: ' + shareLink.length.toLocaleString() + ' Zeichen<br>' +
+                'mailto-URL gesamt: ' + mailtoLink.length.toLocaleString() + ' Zeichen' +
+            '</div>' +
+            '<div style="margin-top: 15px; text-align: center;">' +
+                '<button onclick="window.open(\'' + shareLink.replace(/'/g, "\\'") + '\', \'_blank\')">Share-Link in neuem Tab oeffnen</button>' +
+                '<button onclick="window.location.href=\'' + mailtoLink.replace(/'/g, "\\'") + '\'" style="background: #555;">mailto: tatsaechlich oeffnen</button>' +
+            '</div>';
 
         resultBox.scrollIntoView({ behavior: 'smooth' });
     }
 
     function exportJSON() {
-        const formData = collectFormData();
-        const company = document.getElementById('company').value || 'kunde';
-        const date = new Date().toISOString().split('T')[0];
-        const filename = `briefing-${company.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${date}.json`;
+        var formData = collectFormData();
+        var company = document.getElementById('company').value || 'kunde';
+        var date = new Date().toISOString().split('T')[0];
+        var filename = 'briefing-' + company.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-' + date + '.json';
 
-        const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        var blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
         link.href = url;
         link.download = filename;
         link.click();
