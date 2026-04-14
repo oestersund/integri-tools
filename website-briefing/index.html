@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Briefing - INTEGRI Marketing</title>
+    <style>
+        :root {
+            --integri-primary: #00A896;
+            --integri-primary-dark: #008B7D;
+            --integri-text: #333;
+            --integri-bg: #f5f7fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--integri-text);
+            background: var(--integri-bg);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-bottom: 3px solid var(--integri-primary);
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--integri-primary);
+        }
+
+        /* Main content */
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .intro-section h2 {
+            color: var(--integri-primary);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .intro-section p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .intro-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .intro-section li {
+            margin-bottom: 8px;
+        }
+
+        .briefing-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .briefing-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--integri-primary);
+        }
+
+        .briefing-header h1 {
+            color: var(--integri-primary);
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        h2 {
+            color: var(--integri-primary);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .briefing-section {
+            margin: 25px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px 0;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .example-text {
+            display: block;
+            font-size: 13px;
+            color: #6c757d;
+            font-weight: normal;
+            font-style: italic;
+            margin: 3px 0 8px 0;
+            line-height: 1.4;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        textarea.large {
+            min-height: 120px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .checkbox-group {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .checkbox-item {
+            margin: 8px 0;
+        }
+
+        .checkbox-item label {
+            display: inline;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .button-group {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        button {
+            background: var(--integri-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        button:hover {
+            background: var(--integri-primary-dark);
+        }
+
+        .awareness-box {
+            background: #f8f9fa;
+            border-left: 3px solid var(--integri-primary);
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--integri-primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        .restore-banner {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .restore-banner button {
+            margin: 5px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .completion-notice {
+            text-align: center;
+            margin: 50px 0 30px 0;
+            padding: 20px 0;
+        }
+
+        .completion-notice-text {
+            font-size: 20px;
+            color: var(--integri-primary);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            border-top: 1px solid #ddd;
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        @media print {
+            .button-group,
+            .auto-save-indicator,
+            .restore-banner,
+            header,
+            footer {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                margin: 20px auto;
+            }
+
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">INTEGRI</div>
+        </div>
+    </header>
+
+    <main>
+        <div class="intro-section">
+            <h2>Willkommen zum Website Briefing</h2>
+            <p>Dieses Briefing hilft uns, Ihre Inhalte / Kommunikation präzise auf Ihre Zielgruppe auszurichten. Die Fragen folgen einer logischen Kette die unsere Zielgruppen in den Mittelpunkt stellt: Von der Kundenperspektive über konkrete Nutzen unserer Angebote bis zu klaren Handlungsaufforderungen.</p>
+            <p>Als Ergebnis erhalten wir eine strukturierte Basis für zielgerichtete, conversion-optimierte Inhalte.</p>
+
+            <h2 style="font-size: 18px; margin-top: 25px;">Hinweise / So gehen Sie vor:</h2>
+            <ul>
+                <li>Nehmen Sie sich etwas Zeit und beantworten die Fragen in einem Durchgang.</li>
+                <li>Falls Sie doch unterbrechen müssen: Ihre Eingaben werden zwischengespeichert.</li>
+                <li>Einige Felder sind für Sie nicht zutreffend? Füllen Sie nur aus, was für Sie relevant ist.</li>
+                <li><strong>Am Ende können Sie Ihre Eingaben per E-Mail senden oder als PDF speichern.</strong></li>
+                <li><strong>Es wird dann automatisch eine Datei im .json-Format in Ihrem Downloadverzeichnis abgelegt.</strong></li>
+                <li><strong>Bitte fügen Sie diese Datei als Anhang bei, wenn Sie mir Ihre Eingaben per Mail senden.</strong></li>
+            </ul>
+        </div>
+
+        <div class="briefing-container">
+            <div class="auto-save-indicator" id="autosaveIndicator">Gespeichert</div>
+
+            <div class="restore-banner" id="restoreBanner">
+                <strong>Gespeicherte Daten gefunden!</strong><br>
+                Möchten Sie Ihre vorherige Eingabe wiederherstellen?
+                <div style="margin-top: 10px;">
+                    <button onclick="restoreData()">Ja, wiederherstellen</button>
+                    <button onclick="dismissRestore()" style="background: #6c757d;">Nein, neu beginnen</button>
+                </div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 20px;">
+                <button onclick="loadData()" style="background: #165965;">Daten importieren</button>
+            </div>
+
+            <div class="briefing-header">
+                <h1>INTEGRI Fragen / Briefing für Marketing / Online</h1>
+            </div>
+
+            <h2>Angaben zum Anbietenden</h2>
+
+            <div class="briefing-section">
+                <label for="company">Firma / Kunde:</label>
+                <span class="example-text">Name des Unternehmens oder der Organisation</span>
+                <input type="text" id="company">
+
+                <label for="date">Datum / Version:</label>
+                <span class="example-text">Heute oder Versionsnummer (z.B. v1, v2)</span>
+                <input type="text" id="date">
+
+                <label for="contact">Kontakt / Ansprechpartner:</label>
+                <span class="example-text">Name und ggf. Rolle der Kontaktperson</span>
+                <input type="text" id="contact">
+
+                <label for="topic">Thema:</label>
+                <span class="example-text">Service, Leistung, Produkt oder spezifisches Thema</span>
+                <input type="text" id="topic">
+
+                <label for="pagetype">Seitentyp:</label>
+                <span class="example-text">Infoseite, Landingpage, Produktseite, anderes</span>
+                <input type="text" id="pagetype">
+
+                <label>Geschäftsmodell:</label>
+                <span class="example-text">Wichtig für Tonalität und Argumentation</span>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="b2b">
+                        <label for="b2b">B2B (Business-to-Business) – Angebot an Unternehmen/Organisationen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="b2c">
+                        <label for="b2c">B2C (Business-to-Consumer) – Angebot an Privatpersonen</label>
+                    </div>
+                </div>
+
+                <label for="length">Soll-Textlänge:</label>
+                <span class="example-text">Wortanzahl ca. (1 DIN A4 Seite = 300 Wörter)</span>
+                <input type="text" id="length">
+
+                <label for="existing">Vorhandene Inhalte:</label>
+                <span class="example-text">Link zur aktuellen Seite, Verweis auf Dokumente</span>
+                <textarea id="existing"></textarea>
+
+                <div class="info-box">
+                    <strong>Dokumente/Dateien:</strong><br>
+                    Bitte fügen Sie relevante Dokumente (Word, PDF, Bilder etc.) als <strong>Anhang zur E-Mail</strong> hinzu, wenn Sie das Briefing versenden.
+                </div>
+            </div>
+
+            <h2>Zielgruppe</h2>
+
+            <div class="briefing-section">
+                <label for="target-primary">Primäre Zielgruppe (konkrete Rollen):</label>
+                <span class="example-text">Beispiel: Entscheider, Bedarfsträger (z.B. Geschäftsführer, Abteilungsleiter, Privatpersonen)</span>
+                <input type="text" id="target-primary">
+
+                <label for="situation">Typische Ausgangssituation:</label>
+                <span class="example-text">Beispiel: Akuter Bedarf, geplantes Vorhaben, konkretes Problem, Wunsch nach Verbesserung</span>
+                <textarea id="situation"></textarea>
+
+                <label for="wishes">Top 3 Wünsche unserer Zielgruppen/Kunden:</label>
+                <span class="example-text">Beispiel: Preistransparenz, schnelle Umsetzung, verlässlicher Service</span>
+                <textarea id="wishes"></textarea>
+            </div>
+
+            <h2>Suchverhalten der Zielgruppe / SEO</h2>
+
+            <div class="briefing-section">
+                <label>Was ist das Problembewusstsein unserer Zielgruppen, was wird gesucht?</label>
+                <div class="awareness-box">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="aware-unaware">
+                        <label for="aware-unaware">Problem nicht bewusst → wir machen bewusst</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="aware-problem">
+                        <label for="aware-problem">Problem bekannt, Lösungen nicht → wir zeigen Lösungswege</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="aware-solution">
+                        <label for="aware-solution">Lösungen sind bekannt → unsere Lösungsvorteile</label>
+                    </div>
+                </div>
+
+                <label for="search-intent">Suchintention:</label>
+                <span class="example-text">Beispiel: "Leistung + Kosten", "Leistung + Anbieter", "Leistung + Region", "Problem + Lösung", "Vergleich Optionen"</span>
+                <textarea id="search-intent"></textarea>
+
+                <label for="info-sources">Typische Info-Quellen:</label>
+                <span class="example-text">Wo informiert sich die Zielgruppe? (Google, Fachportale, Empfehlungen, Social Media)</span>
+                <textarea id="info-sources"></textarea>
+
+                <label for="keyword-main">Hauptkeyword für SEO:</label>
+                <span class="example-text">Beispiel: [Ihre Leistung] + [Ort/Region] (z.B. "Steuerberatung München", "Online Marketing Agentur Berlin")</span>
+                <input type="text" id="keyword-main">
+
+                <label for="keywords-other">Weitere Keywords (durch Komma getrennt):</label>
+                <span class="example-text">Beispiel: Synonyme, Varianten, verwandte Begriffe (z.B. "Beratung, Consulting, Beratungsleistung" oder "kaufen, bestellen, Shop")</span>
+                <input type="text" id="keywords-other">
+            </div>
+
+            <h2>Wie helfen wir dem Kunden? Vorher/Nachher-Vergleich</h2>
+
+            <div class="briefing-section">
+                <label for="problems">Aktuelle Probleme der Zielgruppe:</label>
+                <span class="example-text">Beispiel: Zeitaufwand zu hoch, Unsicherheit bei Auswahl, fehlendes Fachwissen</span>
+                <textarea id="problems" class="large"></textarea>
+
+                <label for="results">Gewünschter Zielzustand:</label>
+                <span class="example-text">Beispiel: Klare Kostenübersicht, zeitsparende Lösung, langfristige Sicherheit</span>
+                <textarea id="results" class="large"></textarea>
+
+                <label for="metrics">Messbare Vorteile (falls verfügbar):</label>
+                <span class="example-text">Beispiel: 30% Zeitersparnis, 20% Kostenreduktion, ROI nach 12 Monaten</span>
+                <textarea id="metrics"></textarea>
+            </div>
+
+            <h2>Leistungen, USP vs. Wettbewerb</h2>
+
+            <div class="briefing-section">
+                <label for="services">Unsere Leistungen:</label>
+                <span class="example-text">Beispiel: Beratung, Planung, Umsetzung, Service, Support</span>
+                <textarea id="services" class="large"></textarea>
+
+                <label for="advantages">Unsere besonderen Vorteile vs. Wettbewerb:</label>
+                <span class="example-text">Beispiel: Langjährige Erfahrung, zertifizierte Qualität, persönlicher Service, faire Preise</span>
+                <textarea id="advantages"></textarea>
+
+                <label for="trust">Vertrauensbildende Faktoren:</label>
+                <span class="example-text">Zertifizierungen, Garantien, Versicherungen, Mitgliedschaften</span>
+                <textarea id="trust"></textarea>
+            </div>
+
+            <h2>Beauftragungskriterien</h2>
+
+            <div class="briefing-section">
+                <label for="reasons">Hauptfaktoren / Kriterien für Beauftragung (mindestens 3):</label>
+                <span class="example-text">Beispiel: Kompetenz, Preis-Leistung, Verfügbarkeit</span>
+                <textarea id="reasons"></textarea>
+
+                <label for="urgency">Dringlichkeit/Zeitdruck:</label>
+                <span class="example-text">Saisonale Aspekte, Fristen, zeitkritische Faktoren</span>
+                <textarea id="urgency"></textarea>
+            </div>
+
+            <h2>Zahlen und Preise</h2>
+
+            <div class="briefing-section">
+                <label>Preistransparenz:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="price-concrete">
+                        <label for="price-concrete">Ja, konkrete Preise nennen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="price-partial">
+                        <label for="price-partial">Teilweise (ab X Euro, Kalkulationshinweise)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="price-request">
+                        <label for="price-request">Nein, nur auf Anfrage</label>
+                    </div>
+                </div>
+
+                <label for="calculation">Kalkulationsgrundlage:</label>
+                <span class="example-text">Hauptfaktoren (Stunden, Einheiten, Komplexität), typische Projektgrößen, Durchschnittsinvestment</span>
+                <textarea id="calculation"></textarea>
+            </div>
+
+            <h2>Referenzen / Beweise</h2>
+
+            <div class="briefing-section">
+                <label for="references">Konkrete Referenzprojekte:</label>
+                <span class="example-text">Beispiel: Kunde X, Herausforderung, Lösung, messbares Ergebnis</span>
+                <textarea id="references" class="large"></textarea>
+
+                <label for="testimonials">Verfügbare Kundenstimmen:</label>
+                <span class="example-text">Konkrete Zitate mit Namen und Unternehmen/Rolle</span>
+                <textarea id="testimonials"></textarea>
+            </div>
+
+            <h2>Unser Handlungsaufforderung / Call-to-Action</h2>
+
+            <div class="briefing-section">
+                <label>Hauptziel der Seite:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="goal-meeting">
+                        <label for="goal-meeting">Beratungstermin vereinbaren</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="goal-quote">
+                        <label for="goal-quote">Angebot/Kostenvoranschlag anfordern</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="goal-visit">
+                        <label for="goal-visit">Vor-Ort-Besichtigung/Analyse</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="goal-other">
+                        <label for="goal-other">Anderes: </label>
+                        <input type="text" id="goal-other-text" style="display: inline; width: 300px; margin-left: 10px;">
+                    </div>
+                </div>
+
+                <label for="cta-low">Niedrigschwelliger CTA (erster):</label>
+                <span class="example-text">Beispiel: Kostenloses Erstgespräch, unverbindliche Beratung, Probe/Test</span>
+                <textarea id="cta-low"></textarea>
+
+                <label for="cta-main">Direkter CTA (final):</label>
+                <span class="example-text">Beispiel: Termin vereinbaren, Angebot anfordern, direkt buchen</span>
+                <textarea id="cta-main"></textarea>
+            </div>
+
+            <h2>FAQ &amp; Einwände</h2>
+
+            <div class="briefing-section">
+                <label for="faq">5-7 häufigste Kundenfragen mit Antworten:</label>
+                <span class="example-text">Frage + Antwort Format (z.B. "Was kostet...?" / "Wie lange dauert...?" / "Welche Voraussetzungen...?")</span>
+                <textarea id="faq" class="large"></textarea>
+
+                <label for="alternatives">Abgrenzung zu Alternativen:</label>
+                <span class="example-text">Alternative (z.B. Selbermachen, günstigere Anbieter, andere Lösungen) + Ihre Abgrenzung</span>
+                <textarea id="alternatives" class="large"></textarea>
+            </div>
+
+            <h2>Bilder / Medien</h2>
+
+            <div class="briefing-section">
+                <label for="media">Was wollen wir zeigen?</label>
+                <span class="example-text">Vorhandene Medien, zu beschaffende Bilder/Videos, Hero Image</span>
+                <textarea id="media" class="large"></textarea>
+            </div>
+
+            <h2>Ggf. zusätzlich wichtig</h2>
+
+            <div class="briefing-section">
+                <label for="additional">Besonderheiten, Hinweise, zu beachten:</label>
+                <textarea id="additional" class="large"></textarea>
+            </div>
+
+            <div class="completion-notice">
+                <p class="completion-notice-text">Sind alle Eingaben vollständig und stimmen so? Prima.</p>
+            </div>
+
+            <div class="button-group">
+                <button onclick="window.print()">Als PDF speichern</button>
+                <button onclick="sendEmail()">Per E-Mail senden</button>
+                <button onclick="loadData()" style="background: #165965;">Daten importieren</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 INTEGRI Marketing. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = 'integri_briefing_autosave';
+        let autoSaveTimer;
+
+        // Auto-save configuration
+        function startAutoSave() {
+            autoSaveTimer = setInterval(() => {
+                saveToLocalStorage();
+                showAutoSaveIndicator();
+            }, 10000);
+        }
+
+        // Debounced input save
+        let saveDe bounce;
+        document.addEventListener('input', function(e) {
+            const target = e.target;
+            if ((target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') && !target.id.startsWith('goal-other-text')) {
+                clearTimeout(saveDebounce);
+                saveDebounce = setTimeout(() => {
+                    saveToLocalStorage();
+                }, 2000);
+            }
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+                saveToLocalStorage();
+            }
+        });
+
+        function saveToLocalStorage() {
+            const formData = {};
+
+            document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+                if (input.id && !input.id.startsWith('goal-other-text')) {
+                    formData[input.id] = input.value;
+                }
+            });
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.id) {
+                    formData[checkbox.id] = checkbox.checked;
+                }
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const formData = JSON.parse(saved);
+
+                Object.keys(formData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = formData[key];
+                        } else {
+                            element.value = formData[key];
+                        }
+                    }
+                });
+            }
+        }
+
+        function showAutoSaveIndicator() {
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const formData = JSON.parse(saved);
+                const hasData = Object.values(formData).some(value => {
+                    if (typeof value === 'boolean') return value;
+                    if (typeof value === 'string') return value.trim().length > 0;
+                    return false;
+                });
+                if (hasData) {
+                    document.getElementById('restoreBanner').style.display = 'block';
+                }
+            }
+            startAutoSave();
+        });
+
+        function restoreData() {
+            loadFromLocalStorage();
+            document.getElementById('restoreBanner').style.display = 'none';
+        }
+
+        function dismissRestore() {
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('restoreBanner').style.display = 'none';
+        }
+
+        function saveDataAsJSON() {
+            const formData = {};
+
+            document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+                if (input.id && !input.id.startsWith('goal-other-text')) {
+                    formData[input.id] = input.value;
+                }
+            });
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.id) {
+                    formData[checkbox.id] = checkbox.checked;
+                }
+            });
+
+            const companyName = document.getElementById('company')?.value || 'kunde';
+            const date = new Date().toISOString().split('T')[0];
+            const filename = `briefing-${companyName.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${date}.json`;
+
+            const dataStr = JSON.stringify(formData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json;charset=utf-8'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            return filename;
+        }
+
+        function loadData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = event => {
+                    const formData = JSON.parse(event.target.result);
+                    Object.keys(formData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            if (element.type === 'checkbox') {
+                                element.checked = formData[key];
+                            } else {
+                                element.value = formData[key];
+                            }
+                        }
+                    });
+                    saveToLocalStorage();
+                    alert('Daten erfolgreich geladen!');
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function toAscii(str) {
+            return str
+                .replace(/ä/g, 'ae')
+                .replace(/ö/g, 'oe')
+                .replace(/ü/g, 'ue')
+                .replace(/Ä/g, 'Ae')
+                .replace(/Ö/g, 'Oe')
+                .replace(/Ü/g, 'Ue')
+                .replace(/ß/g, 'ss');
+        }
+
+        function sendEmail() {
+            const filename = saveDataAsJSON();
+
+            setTimeout(() => {
+                const sections = [
+                    { title: 'ANGABEN ZUM ANBIETENDEN', ids: ['company', 'date', 'contact', 'topic', 'pagetype', 'length', 'existing'] },
+                    { title: 'ZIELGRUPPE', ids: ['target-primary', 'situation', 'wishes'] },
+                    { title: 'SUCHVERHALTEN / SEO', ids: ['search-intent', 'info-sources', 'keyword-main', 'keywords-other'] },
+                    { title: 'TRANSFORMATION', ids: ['problems', 'results', 'metrics'] },
+                    { title: 'LEISTUNGEN, USP', ids: ['services', 'advantages', 'trust'] },
+                    { title: 'BEAUFTRAGUNGSKRITERIEN', ids: ['reasons', 'urgency'] },
+                    { title: 'ZAHLEN UND PREISE', ids: ['calculation'] },
+                    { title: 'REFERENZEN / BEWEISE', ids: ['references', 'testimonials'] },
+                    { title: 'CALL-TO-ACTIONS', ids: ['cta-low', 'cta-main'] },
+                    { title: 'FAQ & EINWAENDE', ids: ['faq', 'alternatives'] },
+                    { title: 'BILDER / MEDIEN', ids: ['media'] },
+                    { title: 'ZUSAETZLICH WICHTIG', ids: ['additional'] }
+                ];
+
+                let emailBody = 'INTEGRI FRAGEN / BRIEFING FUER MARKETING / ONLINE\n';
+                emailBody += '===========================================\n\n';
+
+                const awarenessChecked = [];
+                if (document.getElementById('aware-unaware')?.checked) awarenessChecked.push('Problem nicht bewusst -> wir machen bewusst');
+                if (document.getElementById('aware-problem')?.checked) awarenessChecked.push('Problem bekannt, Loesungen nicht -> wir zeigen Loesungswege');
+                if (document.getElementById('aware-solution')?.checked) awarenessChecked.push('Loesungen sind bekannt -> unsere Loesungsvorteile');
+
+                const b2bChecked = [];
+                if (document.getElementById('b2b')?.checked) b2bChecked.push('B2B (Business-to-Business)');
+                if (document.getElementById('b2c')?.checked) b2bChecked.push('B2C (Business-to-Consumer)');
+
+                const priceChecked = [];
+                if (document.getElementById('price-concrete')?.checked) priceChecked.push('Ja, konkrete Preise nennen');
+                if (document.getElementById('price-partial')?.checked) priceChecked.push('Teilweise (ab X Euro, Kalkulationshinweise)');
+                if (document.getElementById('price-request')?.checked) priceChecked.push('Nein, nur auf Anfrage');
+
+                const goalChecked = [];
+                if (document.getElementById('goal-meeting')?.checked) goalChecked.push('Beratungstermin vereinbaren');
+                if (document.getElementById('goal-quote')?.checked) goalChecked.push('Angebot/Kostenvoranschlag anfordern');
+                if (document.getElementById('goal-visit')?.checked) goalChecked.push('Vor-Ort-Besichtigung/Analyse');
+                if (document.getElementById('goal-other')?.checked) {
+                    const otherText = document.getElementById('goal-other-text')?.value.trim();
+                    goalChecked.push('Anderes' + (otherText ? ': ' + otherText : ''));
+                }
+
+                sections.forEach(section => {
+                    emailBody += `\n${section.title}\n`;
+                    emailBody += '-------------------------------------------\n';
+
+                    section.ids.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const value = element.value?.trim();
+                            if (value) {
+                                const label = document.querySelector(`label[for="${id}"]`)?.textContent || id;
+                                emailBody += `${label}: ${toAscii(value)}\n`;
+                            }
+                        }
+                    });
+
+                    if (section.title === 'ANGABEN ZUM ANBIETENDEN' && b2bChecked.length > 0) {
+                        emailBody += `Geschaeftsmodell: ${toAscii(b2bChecked.join(', '))}\n`;
+                    }
+                    if (section.title === 'SUCHVERHALTEN / SEO' && awarenessChecked.length > 0) {
+                        emailBody += `Problembe wusstsein: ${toAscii(awarenessChecked.join(', '))}\n`;
+                    }
+                    if (section.title === 'ZAHLEN UND PREISE' && priceChecked.length > 0) {
+                        emailBody += `Preistransparenz: ${toAscii(priceChecked.join(', '))}\n`;
+                    }
+                    if (section.title === 'CALL-TO-ACTIONS' && goalChecked.length > 0) {
+                        emailBody += `Hauptziel: ${toAscii(goalChecked.join(', '))}\n`;
+                    }
+                });
+
+                emailBody += `\n\nDatei: ${filename}\n`;
+                emailBody += 'Bitte diese Datei als JSON-Datei im Downloadverzeichnis speichern und per E-Mail versenden.\n';
+
+                const subject = `Briefing: ${toAscii(document.getElementById('company')?.value || 'Kunde')}`;
+                const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+
+                window.location.href = mailtoLink;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
