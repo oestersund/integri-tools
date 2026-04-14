@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POC: URL-Share Test</title>
+    <style>
+        :root {
+            --integri-primary: #00A896;
+            --integri-primary-dark: #008B7D;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f5f7fa; padding: 40px 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: var(--integri-primary); font-size: 22px; margin-bottom: 5px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+        label { display: block; margin: 15px 0 5px; font-weight: 600; }
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 14px; }
+        textarea { min-height: 80px; resize: vertical; }
+        .checkbox-item { margin: 8px 0; }
+        .checkbox-item label { display: inline; font-weight: normal; margin: 0; }
+        .button-group { margin: 25px 0; text-align: center; }
+        button { background: var(--integri-primary); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 15px; cursor: pointer; margin: 5px; }
+        button:hover { background: var(--integri-primary-dark); }
+        .secondary-link { display: block; text-align: center; margin-top: 10px; color: #666; font-size: 13px; cursor: pointer; text-decoration: underline; }
+        .secondary-link:hover { color: var(--integri-primary); }
+        .result-box { background: #f0faf8; border: 2px solid var(--integri-primary); border-radius: 8px; padding: 20px; margin-top: 20px; display: none; }
+        .result-box h3 { color: var(--integri-primary); margin-bottom: 10px; font-size: 16px; }
+        .result-box .url-display { background: white; border: 1px solid #ddd; border-radius: 4px; padding: 10px; word-break: break-all; font-family: monospace; font-size: 12px; margin: 10px 0; }
+        .result-box .stats { color: #666; font-size: 13px; margin-top: 10px; }
+        .import-banner { background: #d4edda; border: 2px solid var(--integri-primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .import-banner strong { color: var(--integri-primary); }
+        .mailto-preview { background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 15px; margin-top: 15px; font-size: 13px; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>POC: Briefing Share-Link</h1>
+        <p class="subtitle">Proof-of-Concept — testet den URL-Share-Flow mit 5 Beispielfeldern</p>
+
+        <div class="import-banner" id="importBanner">
+            <strong>Daten aus Share-Link geladen.</strong><br>
+            Alle Felder wurden automatisch befüllt. Von hier aus kannst du JSON exportieren.
+        </div>
+
+        <label for="company">Firma:</label>
+        <input type="text" id="company" placeholder="z.B. ETH Facility Services GmbH">
+
+        <label for="topic">Thema:</label>
+        <input type="text" id="topic" placeholder="z.B. Hausmeisterservice für Gewerbeimmobilien">
+
+        <label for="target-primary">Primäre Zielgruppe:</label>
+        <input type="text" id="target-primary" placeholder="z.B. Facility Manager, Hausverwaltungen">
+
+        <label for="problems">Aktuelle Probleme der Zielgruppe:</label>
+        <textarea id="problems" placeholder="z.B. Bisheriger Dienstleister unzuverlässig, kein fester Ansprechpartner..."></textarea>
+
+        <label for="services">Leistungen:</label>
+        <textarea id="services" placeholder="z.B. Technischer Hausmeisterservice, Gebäudereinigung, Winterdienst..."></textarea>
+
+        <label>Geschäftsmodell:</label>
+        <div class="checkbox-item">
+            <input type="checkbox" id="b2b">
+            <label for="b2b">B2B</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="b2c">
+            <label for="b2c">B2C</label>
+        </div>
+
+        <div class="button-group">
+            <button onclick="simulateSendEmail()">Per E-Mail senden</button>
+            <button onclick="window.print()" style="background: #555;">Als PDF speichern</button>
+            <span class="secondary-link" onclick="exportJSON()">JSON exportieren</span>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h3>Ergebnis</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+    // =====================================================
+    // LZString 1.5.0 (MIT License) - pieroxy/lz-string
+    // Minimal inline version: compressToEncodedURIComponent
+    // + decompressFromEncodedURIComponent
+    // =====================================================
+    var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",n={};function e(r,o,n){var e,t,i={},s="",u="",a="",p=2,c=3,l=2,f=[],h=0,d=0;for(t=0;t<r.length;t+=1)if(s=r.charAt(t),Object.prototype.hasOwnProperty.call(i,s)||(i[s]=c++,a[s]=!0),u=e+s,Object.prototype.hasOwnProperty.call(i,u))e=u;else{if(Object.prototype.hasOwnProperty.call(a,e)){if(e.charCodeAt(0)<256){for(var g=0;g<l;g++)h<<=1,15==d?(d=0,f.push(n(h)),h=0):d++;for(var v=e.charCodeAt(0),g=0;g<8;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1}else{for(var v=1,g=0;g<l;g++)h=h<<1|v,15==d?(d=0,f.push(n(h)),h=0):d++,v=0;for(var v=e.charCodeAt(0),g=0;g<16;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1}0==--p&&(p=Math.pow(2,l),l++),delete a[e]}else for(var v=i[e],g=0;g<l;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1;0==--p&&(p=Math.pow(2,l),l++),i[u]=c++,e=""+s}if(""!==e){if(Object.prototype.hasOwnProperty.call(a,e)){if(e.charCodeAt(0)<256){for(var g=0;g<l;g++)h<<=1,15==d?(d=0,f.push(n(h)),h=0):d++;for(var v=e.charCodeAt(0),g=0;g<8;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1}else{for(var v=1,g=0;g<l;g++)h=h<<1|v,15==d?(d=0,f.push(n(h)),h=0):d++,v=0;for(var v=e.charCodeAt(0),g=0;g<16;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1}0==--p&&(p=Math.pow(2,l),l++),delete a[e]}else for(var v=i[e],g=0;g<l;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1;0==--p&&(p=Math.pow(2,l),l++)}for(var v=2,g=0;g<l;g++)h=h<<1|1&v,15==d?(d=0,f.push(n(h)),h=0):d++,v>>=1;for(;;){if(h<<=1,15==d){f.push(n(h));break}d++}return f.join("")}function t(r,o){for(var n=0,e={},t=r.length;n<t;n++)e[r.charAt(n)]=n;return e}return{compressToEncodedURIComponent:function(r){return null==r?"":e(r,6,function(n){return o.charAt(n)})},decompressFromEncodedURIComponent:function(e){if(null==e)return"";if(""==e)return null;var i=t(o);return function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,g="",v="",m={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,g+=c;;){if(m.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=m.val&m.position,m.position>>=1,0==m.position&&(m.position=n,m.val=e(m.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return g}if(0==f&&(f=Math.pow(2,d),d++),l[c])v=l[c];else{if(c!==h)return null;v=i+i.charAt(0)}g+=v,l[h++]=i+v.charAt(0),i=v,0==--f&&(f=Math.pow(2,d),d++)}}(e.length,32,function(r){return i[e.charAt(r)]})}}}();
+
+    // =====================================================
+    // Hilfsfunktionen (wie in Spec definiert)
+    // =====================================================
+
+    function collectFormData() {
+        const formData = {};
+        document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+            if (input.id) formData[input.id] = input.value;
+        });
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            if (cb.id) formData[cb.id] = cb.checked;
+        });
+        return formData;
+    }
+
+    function populateForm(data) {
+        Object.keys(data).forEach(key => {
+            const el = document.getElementById(key);
+            if (el) {
+                if (el.type === 'checkbox') el.checked = data[key];
+                else el.value = data[key];
+            }
+        });
+    }
+
+    function generateShareLink() {
+        const formData = collectFormData();
+        const json = JSON.stringify(formData);
+        const compressed = LZString.compressToEncodedURIComponent(json);
+        return window.location.origin + window.location.pathname + '?d=' + compressed;
+    }
+
+    // =====================================================
+    // URL-Parameter beim Laden erkennen
+    // =====================================================
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const sharedData = params.get('d');
+        if (sharedData) {
+            try {
+                const json = LZString.decompressFromEncodedURIComponent(sharedData);
+                const formData = JSON.parse(json);
+                populateForm(formData);
+                window.history.replaceState({}, '', window.location.pathname);
+                document.getElementById('importBanner').style.display = 'block';
+            } catch (e) {
+                console.error('Share-Link konnte nicht gelesen werden:', e);
+            }
+        }
+    });
+
+    // =====================================================
+    // Aktionen
+    // =====================================================
+
+    function simulateSendEmail() {
+        const shareLink = generateShareLink();
+        const company = document.getElementById('company').value || 'Kunde';
+        const topic = document.getElementById('topic').value || '(kein Thema)';
+        const date = new Date().toISOString().split('T')[0];
+
+        const jsonRaw = JSON.stringify(collectFormData());
+        const compressed = LZString.compressToEncodedURIComponent(jsonRaw);
+
+        const emailBody = `Briefing-Daten für: ${company}\nThema: ${topic}\nDatum: ${date}\n\nBriefing öffnen:\n${shareLink}\n\n---\nGesendet über tools.integri.de/website-briefing`;
+        const subject = `Website-Briefing: ${company}`;
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+
+        // Ergebnis anzeigen
+        const resultBox = document.getElementById('resultBox');
+        const resultContent = document.getElementById('resultContent');
+        resultBox.style.display = 'block';
+        resultContent.innerHTML = `
+            <p><strong>Share-Link:</strong></p>
+            <div class="url-display">${shareLink}</div>
+            <p><strong>mailto-Vorschau (was der Kunde im E-Mail-Client sieht):</strong></p>
+            <div class="mailto-preview">Betreff: ${subject}\n\n${emailBody}</div>
+            <div class="stats">
+                <strong>Statistik:</strong><br>
+                JSON roh: ${jsonRaw.length.toLocaleString()} Bytes<br>
+                Komprimiert (URL-safe): ${compressed.length.toLocaleString()} Zeichen<br>
+                Share-Link gesamt: ${shareLink.length.toLocaleString()} Zeichen<br>
+                mailto-URL gesamt: ${mailtoLink.length.toLocaleString()} Zeichen
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+                <button onclick="window.open('${shareLink.replace(/'/g, "\\'")}', '_blank')">Share-Link in neuem Tab öffnen</button>
+                <button onclick="window.location.href='${mailtoLink.replace(/'/g, "\\'")}'" style="background: #555;">mailto: tatsächlich öffnen</button>
+            </div>
+        `;
+
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function exportJSON() {
+        const formData = collectFormData();
+        const company = document.getElementById('company').value || 'kunde';
+        const date = new Date().toISOString().split('T')[0];
+        const filename = `briefing-${company.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${date}.json`;
+
+        const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+    </script>
+</body>
+</html>
