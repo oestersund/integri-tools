@@ -1,0 +1,5 @@
+# API-Keys und Config
+config/anthropic.php
+
+# macOS
+.DS_Store

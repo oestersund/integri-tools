@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Review Tool - Integri</title>
+    <style>
+        :root {
+            --header-color: #165965;
+            --primary-color: #C1272D;     /* Rot - Hauptfarbe */
+            --secondary-color: #9A1F24;   /* Dunkelrot */
+            --accent-color: #C1272D;      /* Alias für primary */
+            --accent-dark: #9A1F24;       /* Alias für secondary */
+            --action-color: #d51226;      /* CTA Buttons */
+            --action-dark: #a30e1d;
+            --text-dark: #333333;
+            --text-light: #6C757D;
+            --bg-light: #F5F5F5;
+            --bg-white: #FFFFFF;
+            --border-color: #E1E8ED;
+        }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6; 
+            color: #333; 
+            background: #f5f5f5;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        
+        /* Header */
+        .app-header { 
+            background: var(--header-color); 
+            color: white; 
+            padding: 30px; 
+            border-radius: 0; 
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .app-header h1 { 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: 600;
+        }
+        
+        .app-header p { 
+            margin: 10px 0 0 0; 
+            opacity: 0.9; 
+            font-size: 15px;
+        }
+        
+        /* Mode Toggle */
+        .mode-toggle { 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 0; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .mode-toggle button { 
+            padding: 12px 30px; 
+            border: 2px solid var(--header-color); 
+            border-radius: 0; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: white; 
+            color: var(--header-color); 
+            margin: 0 5px;
+        }
+        
+        .mode-toggle button:hover { 
+            background: #f8f9fa;
+        }
+        
+        .mode-toggle button.active { 
+            background: var(--header-color); 
+            color: white;
+        }
+        
+        /* Save Indicator */
+        .save-indicator { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            background: #28a745; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 0; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            z-index: 1001;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .save-indicator.show { 
+            opacity: 1;
+        }
+        
+        /* Edit Mode */
+        #editMode { 
+            display: block;
+        }
+        
+        #editMode.hidden { 
+            display: none;
+        }
+        
+        .info-box { 
+            background: #fff3cd; 
+            border: 2px solid #ffc107; 
+            padding: 20px; 
+            border-radius: 0; 
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .info-box strong { 
+            color: #856404; 
+            font-size: 16px;
+        }
+        
+        .info-box ul {
+            margin: 10px 0 0 20px;
+        }
+        
+        .info-box li {
+            color: #856404;
+            margin: 5px 0;
+        }
+        
+        /* Section Groups */
+        .section-group { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 0; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+        
+        .section-title { 
+            color: var(--accent-color); 
+            font-size: 24px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            padding-bottom: 15px; 
+            border-bottom: 3px solid #e9ecef;
+        }
+        
+        /* Content Blocks */
+        .content-block { 
+            margin-bottom: 30px; 
+            padding: 25px; 
+            background: #f8f9fa; 
+            border-radius: 0; 
+            position: relative;
+            border: 2px solid #dee2e6;
+            transition: all 0.2s;
+        }
+        
+        .content-block.deleted { 
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        .block-label { 
+            font-size: 13px; 
+            font-weight: 700; 
+            color: #6c757d; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            margin-bottom: 15px;
+        }
+        
+        .block-actions { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid #dee2e6; 
+            align-items: center; 
+            flex-wrap: wrap;
+        }
+        
+        .block-actions label { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 14px; 
+            color: #dc3545; 
+            cursor: pointer; 
+            font-weight: 600;
+        }
+        
+        .block-actions input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        .move-buttons {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+        
+        .move-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .move-btn:hover {
+            background: #5a6268;
+        }
+        
+        .move-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .add-block-btn { 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 0; 
+            font-size: 13px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .add-block-btn:hover { 
+            background: #218838;
+        }
+        
+        .add-block-btn.image { 
+            background: #007bff;
+        }
+        
+        .add-block-btn.image:hover { 
+            background: #0056b3;
+        }
+        
+        /* Original Content Display */
+        .original-content { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 0; 
+            border: 1px solid #E1E8ED; 
+            margin-bottom: 15px;
+        }
+        
+        .original-label { 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: #6c757d; 
+            text-transform: uppercase; 
+            margin-bottom: 8px;
+        }
+        
+        .original-text { 
+            color: #495057; 
+            font-size: 15px; 
+            line-height: 1.7; 
+            white-space: pre-wrap;
+        }
+        
+        /* Input Fields */
+        .edit-label { 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: #333; 
+            margin-bottom: 8px;
+        }
+        
+        .edit-hint { 
+            font-size: 12px; 
+            color: #6c757d; 
+            font-style: italic; 
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"], 
+        textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #dee2e6; 
+            border-radius: 0; 
+            font-family: inherit; 
+            font-size: 15px; 
+            line-height: 1.6; 
+            transition: border-color 0.2s;
+            background: white;
+        }
+        
+        input[type="text"]:focus, 
+        textarea:focus { 
+            outline: none; 
+            border-color: var(--accent-color);
+            background: #fff;
+        }
+        
+        input[type="text"].has-content, 
+        textarea.has-content { 
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        textarea { 
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea.small { 
+            min-height: 80px;
+        }
+        
+        textarea.medium { 
+            min-height: 120px;
+        }
+        
+        textarea.large { 
+            min-height: 180px;
+        }
+        
+        /* New Block Forms */
+        .new-block-form { 
+            display: none; 
+            margin-top: 20px; 
+            padding: 25px; 
+            background: #e7f3ff; 
+            border-radius: 0; 
+            border: 2px solid #007bff;
+        }
+        
+        .new-block-form.show { 
+            display: block;
+        }
+        
+        .form-header { 
+            background: #007bff; 
+            color: white; 
+            padding: 12px 20px; 
+            margin: -25px -25px 20px -25px; 
+            border-radius: 6px 6px 0 0; 
+            font-weight: 600; 
+            font-size: 16px;
+        }
+        
+        .new-block-form label { 
+            display: block; 
+            font-weight: 600; 
+            margin: 15px 0 8px 0; 
+            color: #333;
+        }
+        
+        .new-block-form input[type="text"], 
+        .new-block-form textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ced4da; 
+            border-radius: 0; 
+            font-family: inherit; 
+            font-size: 14px;
+        }
+        
+        .new-block-form input:focus, 
+        .new-block-form textarea:focus { 
+            border-color: #007bff;
+        }
+        
+        .form-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-buttons button { 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 0; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .btn-save { 
+            background: #28a745; 
+            color: white;
+        }
+        
+        .btn-save:hover { 
+            background: #218838;
+        }
+        
+        .btn-cancel { 
+            background: #6c757d; 
+            color: white;
+        }
+        
+        .btn-cancel:hover { 
+            background: #5a6268;
+        }
+        
+        /* Drag & Drop Area */
+        .file-upload-area { 
+            margin: 15px 0; 
+            padding: 30px; 
+            border: 3px dashed #ced4da; 
+            border-radius: 0; 
+            text-align: center; 
+            background: white; 
+            cursor: pointer; 
+            transition: all 0.2s;
+        }
+        
+        .file-upload-area:hover { 
+            border-color: #007bff; 
+            background: #f8f9fa;
+        }
+        
+        .file-upload-area.dragover {
+            border-color: #28a745;
+            background: #e7f9ed;
+        }
+        
+        .file-upload-area input[type="file"] { 
+            display: none;
+        }
+        
+        .upload-icon { 
+            font-size: 48px; 
+            color: #6c757d; 
+            margin-bottom: 10px;
+        }
+        
+        .upload-text { 
+            color: #6c757d; 
+            font-size: 14px; 
+            line-height: 1.6;
+        }
+        
+        /* Image Preview */
+        .image-preview { 
+            margin: 15px 0; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 0; 
+            border: 2px solid #28a745; 
+            display: none;
+        }
+        
+        .image-preview.show { 
+            display: block;
+        }
+        
+        .image-preview img { 
+            max-width: 100%; 
+            max-height: 400px; 
+            border-radius: 0; 
+            display: block; 
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .image-preview .filename { 
+            margin-top: 15px; 
+            font-size: 13px; 
+            color: #6c757d; 
+            text-align: center; 
+            font-weight: 600;
+        }
+        
+        /* Preview Mode - CSS Variables */
+        #previewMode { 
+            display: none;
+        }
+        
+        #previewMode.active { 
+            display: block;
+        }
+        
+        /* Hero Section with Image */
+        .preview-hero { 
+            position: relative;
+            padding: 0;
+            overflow: hidden;
+            border-radius: 0;
+            margin-bottom: 30px;
+        }
+        
+        .preview-hero-image-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+        
+        .preview-hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-hero-title-box {
+            width: 100%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .preview-hero-title-box h1 {
+            color: white;
+            font-size: 2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .preview-hero-content {
+            padding: 60px 40px;
+            background: white;
+        }
+        
+        .preview-hero-content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+        }
+        
+        .preview-hero-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            max-width: 900px;
+        }
+        
+        /* Fallback Hero (no image) */
+        .preview-hero-no-image {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 0;
+        }
+        
+        .preview-hero-no-image h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .preview-hero-no-image h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            opacity: 0.95;
+            font-weight: 400;
+            color: white;
+        }
+        
+        .preview-hero-no-image p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Section Layouts */
+        .preview-section { 
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            background: var(--bg-white);
+            padding: 50px 40px; 
+            border-radius: 0; 
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .preview-section h2 { 
+            color: var(--accent-color);
+            font-size: 2rem; 
+            margin-bottom: 30px; 
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        .preview-section h3 { 
+            color: var(--text-dark);
+            font-size: 1.5rem; 
+            margin-bottom: 15px; 
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .preview-section p { 
+            font-size: 1.1rem; 
+            line-height: 1.8; 
+            color: #495057; 
+            margin-bottom: 1rem;
+        }
+        
+        .preview-section.alt { 
+            background: var(--bg-light);
+        }
+        
+        /* Stats Section */
+        .preview-section.stats-section {
+            background: var(--bg-white);
+            padding: 60px 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .preview-stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .preview-stat { 
+            padding: 0;
+        }
+        
+        .preview-stat h3 { 
+            font-size: 2rem; 
+            color: var(--accent-color);
+            margin-bottom: 0.5rem; 
+            font-weight: 700;
+        }
+        
+        .preview-stat p { 
+            font-size: 1.1rem; 
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        /* Grid Layouts */
+        .preview-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 30px; 
+            margin: 30px 0;
+        }
+        
+        .preview-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 0; 
+            border: 1px solid var(--border-color);
+        }
+        
+        .preview-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .preview-card p {
+            margin-bottom: 0;
+        }
+        
+        .preview-item { 
+            padding: 25px; 
+            margin: 20px 0; 
+            background: var(--bg-light);
+            border-radius: 0; 
+            border: 1px solid var(--border-color);
+        }
+        
+        .preview-item h3 {
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        /* Image Display in Preview */
+        .preview-image {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .preview-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .preview-image .caption {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        /* Original-Content Formatierungen */
+        .transformation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+        
+        .problem-box {
+            background: #FFF5F5;
+            border: 1px solid #E1E8ED;
+            padding: 40px;
+            border-radius: 0;
+        }
+        
+        .problem-box h3 {
+            color: #E53E3E;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .solution-box {
+            background: #F0FFF4;
+            border: 1px solid #E1E8ED;
+            padding: 40px;
+            border-radius: 0;
+        }
+        
+        .solution-box h3 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .problem-list,
+        .solution-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .problem-list li,
+        .solution-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        .problem-list li:last-child,
+        .solution-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .problem-list li::before {
+            content: "âœ—";
+            margin-right: 12px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            color: #E53E3E;
+            font-weight: bold;
+        }
+        
+        .solution-list li::before {
+            content: "âœ“";
+            margin-right: 12px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .benefits-box {
+            margin-top: 50px;
+            padding: 40px;
+            background: var(--bg-light);
+            border-radius: 0;
+        }
+        
+        .benefits-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .benefits-box p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        
+        .benefits-box strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .faq-item {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 0;
+            border: 1px solid #e1e8ed;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px 25px;
+            font-weight: 600;
+            color: #333;
+            background: white;
+            border: 1px solid #E1E8ED;
+        }
+        
+        .faq-answer {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            color: #495057;
+            line-height: 1.7;
+        }
+        
+        .case-card {
+            background: white;
+            padding: 30px;
+            border-radius: 0;
+            border: 1px solid #E1E8ED;
+            margin-bottom: 25px;
+        }
+        
+        .case-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .case-card p {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+        
+        .case-card strong {
+            color: #333;
+        }
+        
+        /* CTA Buttons */
+        .cta-section {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #f8f9fa;
+            padding: 50px 40px;
+            text-align: center;
+            border-radius: 0;
+            margin: 30px 0;
+        }
+        
+        .cta-section h2 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .cta-btn {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cta-btn.primary {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .cta-btn.primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193,39,45,0.3);
+        }
+        
+        .cta-btn.secondary {
+            background: white;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+        
+        .cta-btn.secondary:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        /* Action Buttons */
+        .action-buttons { 
+            position: sticky; 
+            bottom: 0; 
+            background: white; 
+            padding: 20px 30px; 
+            border-radius: 0; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn { 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 0; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary { 
+            background: var(--action-color); 
+            color: white;
+        }
+        
+        .btn-primary:hover { 
+            background: var(--action-dark);
+        }
+        
+        .btn-secondary { 
+            background: #6c757d; 
+            color: white;
+        }
+        
+        .btn-secondary:hover { 
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .preview-hero h1 { 
+                font-size: 2rem;
+            }
+            
+            .preview-hero h2 { 
+                font-size: 1.4rem;
+            }
+            
+            .preview-grid,
+            .transformation-grid { 
+                grid-template-columns: 1fr;
+            }
+            
+            .block-actions { 
+                flex-direction: column; 
+                align-items: flex-start;
+            }
+            
+            .move-buttons {
+                margin-left: 0;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; padding:40px 50px; text-align:center; border-radius:0; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+        <div style="font-size:18px; font-weight:600; color:#165965;">KI generiert Content …</div>
+        <div style="font-size:13px; color:#666; margin-top:10px;">Ca. 10–20 Sekunden</div>
+    </div>
+</div>
+
+<!-- Error Message -->
+<div id="errorMessage" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#c0392b; color:white; padding:14px 24px; z-index:9998; font-weight:600; box-shadow:0 2px 10px rgba(0,0,0,0.3);"></div>
+
+<div class="save-indicator" id="saveIndicator">âœ“ Automatisch gespeichert</div>
+
+<div class="container">
+    <div class="app-header">
+        <h1>Integri Content Review Tool v6</h1>
+        <p>Inhalte bearbeiten, prüfen und freigeben</p>
+    </div>
+
+    <div class="mode-toggle">
+        <button id="editBtn" class="active" onclick="switchMode('edit')">Bearbeitungsmodus</button>
+        <button id="previewBtn" onclick="switchMode('preview')">Vorschau</button>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div id="editMode">
+        <div class="info-box">
+            <strong>Hinweise zur Bedienung:</strong>
+            <ul>
+                <li>Leer lassen = Original-Vorschlag wird in der Vorschau angezeigt</li>
+                <li>"Block entfernen" = Abschnitt wird in der Vorschau ausgeblendet</li>
+                <li>Pfeile hoch/runter = Blöcke innerhalb einer Sektion verschieben</li>
+                <li>"+ Neuer Textblock" / "+ Neues Bildelement" = Zusätzliche Inhalte ergänzen</li>
+                <li>Automatische Speicherung nach 1 Sekunde | Grüner Rahmen = Gespeichert</li>
+            </ul>
+        </div>
+
+        <!-- Corporate Colors Configuration -->
+        <div class="section-group" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+            <h2 class="section-title" style="color: #495057; font-size: 18px;">Corporate Colors Konfiguration</h2>
+            <p style="color: #6c757d; margin-bottom: 15px; font-size: 14px;">
+                Farben an Corporate Identity anpassen. Header-Farbe bleibt konstant.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Primärfarbe (Hauptfarbe / Akzent)</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="colorPrimary" value="#C1272D" 
+                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
+                               onchange="syncColorPicker('Primary')">
+                        <input type="text" id="colorPrimaryHex" value="#C1272D" 
+                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
+                               oninput="syncColorInput('Primary')">
+                    </div>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Sekundärfarbe (Dunklere Variante)</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="colorSecondary" value="#9A1F24" 
+                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
+                               onchange="syncColorPicker('Secondary')">
+                        <input type="text" id="colorSecondaryHex" value="#9A1F24" 
+                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
+                               oninput="syncColorInput('Secondary')">
+                    </div>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Aktionsfarbe (CTAs, Buttons)</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="colorAction" value="#d51226" 
+                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
+                               onchange="syncColorPicker('Action')">
+                        <input type="text" id="colorActionHex" value="#d51226" 
+                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
+                               oninput="syncColorInput('Action')">
+                    </div>
+                </div>
+            </div>
+            <button onclick="applyColors()" 
+                    style="padding: 12px 30px; background: #28a745; color: white; border: none; 
+                           font-size: 16px; font-weight: 600; cursor: pointer;">Farben übernehmen</button>
+            <button onclick="resetColors()" 
+                    style="padding: 12px 30px; background: #6c757d; color: white; border: none; 
+                           font-size: 16px; font-weight: 600; cursor: pointer; margin-left: 10px;">Standard wiederherstellen</button>
+        </div>
+
+        <!-- Hero -->
+        <div class="section-group" id="section-hero">
+            <h2 class="section-title">1. Hero-Bereich (Above the Fold)</h2>
+            <button class="add-block-btn image" onclick="addHeroImage()" style="background: #007bff; font-weight: 700; margin-bottom: 20px;"> Hero-Bild hinzufügen (oben im Header)</button>
+            <div id="blocks-hero"></div>
+            <button class="add-block-btn" onclick="addNewBlock('hero', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('hero', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Intro -->
+        <div class="section-group" id="section-intro">
+            <h2 class="section-title">2. Intro / Einstiegstext</h2>
+            <div id="blocks-intro"></div>
+            <button class="add-block-btn" onclick="addNewBlock('intro', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('intro', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="section-group" id="section-stats">
+            <h2 class="section-title">3. Statistiken / Kennzahlen</h2>
+            <div id="blocks-stats"></div>
+            <button class="add-block-btn" onclick="addNewBlock('stats', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('stats', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Problems -->
+        <div class="section-group" id="section-problems">
+            <h2 class="section-title">4. Probleme / Lösungen</h2>
+            <div id="blocks-problems"></div>
+            <button class="add-block-btn image" onclick="addSectionImage('problems', 'problems_image', ' Bild nach Transformation Grid')" style="background: #17a2b8; margin-top: 10px;"> Bild hinzufügen</button>
+            <button class="add-block-btn" onclick="addNewBlock('problems', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('problems', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- USPs -->
+        <div class="section-group" id="section-usps">
+            <h2 class="section-title">5. Alleinstellungsmerkmale (USPs)</h2>
+            <button class="add-block-btn image" onclick="addSectionImage('usps', 'usps_image', ' Bild vor USPs')" style="background: #17a2b8; margin-bottom: 10px;"> Bild vor USPs hinzufügen</button>
+            <div id="blocks-usps"></div>
+            <button class="add-block-btn image" onclick="addSectionImage('usps', 'usps_image_2', ' Bild nach USPs')" style="background: #17a2b8; margin-top: 10px;"> Bild nach USPs hinzufügen</button>
+            <button class="add-block-btn" onclick="addNewBlock('usps', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('usps', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Trust -->
+        <div class="section-group" id="section-trust">
+            <h2 class="section-title">6. Trust-Elemente (Siegel, Referenzen, ...)</h2>
+            <div id="blocks-trust"></div>
+            <button class="add-block-btn" onclick="addNewBlock('trust', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('trust', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Services -->
+        <div class="section-group" id="section-services">
+            <h2 class="section-title">7. Angebote, Services, Leistungen, Produkte</h2>
+            <button class="add-block-btn image" onclick="addSectionImage('services', 'services_image', ' Bild vor Services')" style="background: #17a2b8; margin-bottom: 10px;"> Bild vor Services hinzufügen</button>
+            <div id="blocks-services"></div>
+            <button class="add-block-btn image" onclick="addSectionImage('services', 'services_1_image', ' Bild nach Service 1')" style="background: #17a2b8; margin-top: 10px;"> Bild nach Service 1</button>
+            <button class="add-block-btn image" onclick="addSectionImage('services', 'services_2_image', ' Bild nach Service 2')" style="background: #17a2b8;"> Bild nach Service 2</button>
+            <button class="add-block-btn" onclick="addNewBlock('services', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('services', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- CTA1 -->
+        <div class="section-group" id="section-cta1">
+            <h2 class="section-title">8. Erster Call-to-Action (niedrigschwellig)</h2>
+            <div id="blocks-cta1"></div>
+            <button class="add-block-btn" onclick="addNewBlock('cta1', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('cta1', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Pricing -->
+        <div class="section-group" id="section-pricing">
+            <h2 class="section-title">9. Vertiefende Infos, Preise</h2>
+            <div id="blocks-pricing"></div>
+            <button class="add-block-btn" onclick="addNewBlock('pricing', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('pricing', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- Cases -->
+        <div class="section-group" id="section-cases">
+            <h2 class="section-title">10. Referenzen / Cases</h2>
+            <div id="blocks-cases"></div>
+            <button class="add-block-btn" onclick="addNewBlock('cases', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('cases', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- FAQ -->
+        <div class="section-group" id="section-faq">
+            <h2 class="section-title">11. FAQ (Häufige Fragen)</h2>
+            <div id="blocks-faq"></div>
+            <button class="add-block-btn" onclick="addNewBlock('faq', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('faq', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <!-- CTA2 -->
+        <div class="section-group" id="section-cta2">
+            <h2 class="section-title">12. Finaler Call-to-Action</h2>
+            <div id="blocks-cta2"></div>
+            <button class="add-block-btn" onclick="addNewBlock('cta2', 'text')">+ Neuer Textblock</button>
+            <button class="add-block-btn image" onclick="addNewBlock('cta2', 'image')">+ Neues Bildelement</button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="importBriefing()" style="background: #ff6b35; border-color: #ff6b35;"> Briefing importieren (JSON)</button>
+            <button class="btn btn-success" onclick="loadDemoData()">Demo-Daten laden</button>
+            <button class="btn btn-primary" onclick="exportJSON()">JSON exportieren</button>
+            <button class="btn btn-secondary" onclick="importJSON()">JSON importieren</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Alle Eingaben löschen</button>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- PREVIEW MODE -->
+<div id="previewMode"></div>
+
+<script>
+// Global state
+const sections = ['hero', 'intro', 'stats', 'problems', 'usps', 'trust', 'services', 'cta1', 'pricing', 'cases', 'testimonials', 'faq', 'cta2'];
+let contentData = {};
+let saveTimeout = null;
+let blockCounter = 0;
+
+// Original content from the web
+const originalContent = {
+    hero: { h1: "" },
+    intro: { h2: "", text: "" },
+    stats: { stat1: "", stat2: "", stat3: "" },
+    problems: { title: "", problem1: "", problem2: "", problem3: "", solution1: "", solution2: "", solution3: "" },
+    usps: { title: "", usp1_title: "", usp1_text: "", usp2_title: "", usp2_text: "", usp3_title: "", usp3_text: "" },
+    trust: { trust1: "", trust2: "", trust3: "" },
+    services: { title: "", service1: "", service2: "" },
+    cta1: { title: "", features: "" },
+    pricing: { title: "", info: "" },
+    cases: { case1_title: "", case1_challenge: "", case1_solution: "", case1_result: "", case2_title: "", case2_challenge: "", case2_solution: "", case2_result: "" },
+    testimonials: { title: "", quote1: "", author1: "", quote2: "", author2: "", quote3: "", author3: "" },
+    faq: { title: "", q1: "", a1: "", q2: "", a2: "", q3: "", a3: "", q4: "", a4: "", q5: "", a5: "", q6: "", a6: "", alternatives: "" },
+    cta2: { title: "", btn1: "", btn2: "" }
+};
+
+// Initialize app
+function init() {
+    loadFromLocalStorage();
+    renderAllSections();
+    setupAutoSave();
+    loadColors();
+}
+
+// Load data from localStorage
+function loadFromLocalStorage() {
+    const saved = localStorage.getItem('contentReviewData');
+    if (saved) {
+        contentData = JSON.parse(saved);
+    }
+}
+
+// Save to localStorage
+function saveToLocalStorage() {
+    localStorage.setItem('contentReviewData', JSON.stringify(contentData));
+    showSaveIndicator();
+}
+
+// Show save indicator
+function showSaveIndicator() {
+    const indicator = document.getElementById('saveIndicator');
+    indicator.classList.add('show');
+    setTimeout(() => {
+        indicator.classList.remove('show');
+    }, 2000);
+}
+
+// Setup auto-save for input fields
+function setupAutoSave() {
+    document.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            if (e.target.classList.contains('delete-block')) return;
+            
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveAllData();
+                updateInputVisualFeedback(e.target);
+            }, 1000);
+        }
+    });
+    
+    document.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox' && e.target.classList.contains('delete-block')) {
+            saveAllData();
+            updateBlockVisibility(e.target);
+        }
+    });
+}
+
+// Update input visual feedback
+function updateInputVisualFeedback(input) {
+    if (input.value.trim()) {
+        input.classList.add('has-content');
+    } else {
+        input.classList.remove('has-content');
+    }
+}
+
+// Update block visibility based on delete checkbox
+function updateBlockVisibility(checkbox) {
+    const blockId = checkbox.dataset.target;
+    const block = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (block) {
+        if (checkbox.checked) {
+            block.classList.add('deleted');
+        } else {
+            block.classList.remove('deleted');
+        }
+    }
+}
+
+// Save all data from form
+function saveAllData() {
+    contentData = {};
+    
+    sections.forEach(section => {
+        const container = document.getElementById(`blocks-${section}`);
+        if (!container) return;
+        
+        const blocks = container.querySelectorAll('.content-block');
+        blocks.forEach(block => {
+            const blockId = block.dataset.blockId;
+            const isDeleted = block.querySelector('.delete-block')?.checked || false;
+            const type = block.dataset.blockType || 'text';
+            
+            if (type === 'text') {
+                const input = block.querySelector('input[type="text"], textarea');
+                if (input) {
+                    contentData[blockId] = {
+                        type: 'text',
+                        value: input.value,
+                        deleted: isDeleted
+                    };
+                }
+            } else if (type === 'image') {
+                const fileData = block.dataset.fileData;
+                const alt = block.querySelector('[name="image_alt"]')?.value || '';
+                const caption = block.querySelector('[name="image_caption"]')?.value || '';
+                
+                contentData[blockId] = {
+                    type: 'image',
+                    filename: block.dataset.filename || '',
+                    base64: fileData || '',
+                    alt: alt,
+                    caption: caption,
+                    deleted: isDeleted
+                };
+            }
+        });
+    });
+    
+    saveToLocalStorage();
+}
+
+// Render all sections
+function renderAllSections() {
+    sections.forEach(section => {
+        renderSection(section);
+    });
+}
+
+// Render a single section
+function renderSection(section) {
+    const container = document.getElementById(`blocks-${section}`);
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Define predefined image keys for each section
+    const predefinedImageKeys = {
+        'hero': ['hero_image'],
+        'usps': ['usps_image', 'usps_image_2'],
+        'problems': ['problems_image'],
+        'services': ['services_image', 'services_1_image', 'services_2_image']
+    };
+    
+    // Render predefined images for this section FIRST
+    if (predefinedImageKeys[section]) {
+        predefinedImageKeys[section].forEach(imageKey => {
+            if (contentData[imageKey]) {
+                const imageData = contentData[imageKey];
+                const labels = {
+                    'hero_image': ' Hero-Bild (Header)',
+                    'usps_image': ' Bild vor USPs',
+                    'usps_image_2': ' Bild nach USPs',
+                    'problems_image': ' Bild (nach Transformation Grid)',
+                    'services_image': ' Bild vor Services',
+                    'services_1_image': ' Bild nach Service 1',
+                    'services_2_image': ' Bild nach Service 2'
+                };
+                renderBlock(container, section, imageKey, labels[imageKey] || ' Bild', '', 'image', imageData);
+            }
+        });
+    }
+    
+    // Get original blocks for this section
+    const originalBlocks = getOriginalBlocksForSection(section);
+    
+    originalBlocks.forEach(block => {
+        const blockData = contentData[block.id] || {};
+        renderBlock(container, section, block.id, block.label, block.original, block.type, blockData);
+    });
+    
+    // Render user-added blocks (new_ prefix only, predefined images already handled)
+    Object.keys(contentData).forEach(key => {
+        // Skip predefined image keys as they're already rendered
+        const allPredefinedKeys = Object.values(predefinedImageKeys).flat();
+        if (allPredefinedKeys.includes(key)) return;
+        
+        // Match: section_new_*
+        if (key.startsWith(`${section}_new_`)) {
+            const blockData = contentData[key];
+            const label = 'Eigener Block';
+            renderBlock(container, section, key, label, '', blockData.type || 'text', blockData);
+        }
+    });
+}
+
+// Get original blocks for a section
+function getOriginalBlocksForSection(section) {
+    const blocks = [];
+    
+    switch(section) {
+        case 'hero':
+            blocks.push(
+                { id: 'hero_h1', label: 'H1 - Hauptüberschrift', original: originalContent.hero.h1, type: 'text' }
+            );
+            break;
+        case 'intro':
+            blocks.push(
+                { id: 'intro_h2', label: 'H2 - Unterüberschrift', original: originalContent.intro.h2, type: 'text' },
+                { id: 'intro_text', label: 'Intro-Text', original: originalContent.intro.text, type: 'text' }
+            );
+            break;
+        case 'stats':
+            blocks.push(
+                { id: 'stats_1', label: 'Kennzahl 1', original: originalContent.stats.stat1, type: 'text' },
+                { id: 'stats_2', label: 'Kennzahl 2', original: originalContent.stats.stat2, type: 'text' },
+                { id: 'stats_3', label: 'Kennzahl 3', original: originalContent.stats.stat3, type: 'text' }
+            );
+            break;
+        case 'problems':
+            blocks.push(
+                { id: 'problems_title', label: 'Überschrift', original: originalContent.problems.title, type: 'text' },
+                { id: 'problems_p1', label: 'Problem 1', original: originalContent.problems.problem1, type: 'text' },
+                { id: 'problems_p2', label: 'Problem 2', original: originalContent.problems.problem2, type: 'text' },
+                { id: 'problems_p3', label: 'Problem 3', original: originalContent.problems.problem3, type: 'text' },
+                { id: 'problems_s1', label: 'Lösung 1', original: originalContent.problems.solution1, type: 'text' },
+                { id: 'problems_s2', label: 'Lösung 2', original: originalContent.problems.solution2, type: 'text' },
+                { id: 'problems_s3', label: 'Lösung 3', original: originalContent.problems.solution3, type: 'text' }
+            );
+            break;
+        case 'usps':
+            blocks.push(
+                { id: 'usps_title', label: 'Überschrift', original: originalContent.usps.title, type: 'text' },
+                { id: 'usps_1_title', label: 'USP 1 - Titel', original: originalContent.usps.usp1_title, type: 'text' },
+                { id: 'usps_1_text', label: 'USP 1 - Text', original: originalContent.usps.usp1_text, type: 'text' },
+                { id: 'usps_2_title', label: 'USP 2 - Titel', original: originalContent.usps.usp2_title, type: 'text' },
+                { id: 'usps_2_text', label: 'USP 2 - Text', original: originalContent.usps.usp2_text, type: 'text' },
+                { id: 'usps_3_title', label: 'USP 3 - Titel', original: originalContent.usps.usp3_title, type: 'text' },
+                { id: 'usps_3_text', label: 'USP 3 - Text', original: originalContent.usps.usp3_text, type: 'text' }
+            );
+            break;
+        case 'trust':
+            blocks.push(
+                { id: 'trust_1', label: 'Trust-Element 1', original: originalContent.trust.trust1, type: 'text' },
+                { id: 'trust_2', label: 'Trust-Element 2', original: originalContent.trust.trust2, type: 'text' },
+                { id: 'trust_3', label: 'Trust-Element 3', original: originalContent.trust.trust3, type: 'text' }
+            );
+            break;
+        case 'services':
+            blocks.push(
+                { id: 'services_title', label: 'Überschrift', original: originalContent.services.title, type: 'text' },
+                { id: 'services_1', label: 'Service 1', original: originalContent.services.service1, type: 'text' },
+                { id: 'services_2', label: 'Service 2', original: originalContent.services.service2, type: 'text' }
+            );
+            break;
+        case 'cta1':
+            blocks.push(
+                { id: 'cta1_title', label: 'Überschrift', original: originalContent.cta1.title, type: 'text' },
+                { id: 'cta1_features', label: 'Features', original: originalContent.cta1.features, type: 'text' }
+            );
+            break;
+        case 'pricing':
+            blocks.push(
+                { id: 'pricing_title', label: 'Überschrift', original: originalContent.pricing.title, type: 'text' },
+                { id: 'pricing_info', label: 'Preisinformationen', original: originalContent.pricing.info, type: 'text' }
+            );
+            break;
+        case 'cases':
+            blocks.push(
+                { id: 'cases_1_title', label: 'Case 1 - Titel', original: originalContent.cases.case1_title, type: 'text' },
+                { id: 'cases_1_challenge', label: 'Case 1 - Herausforderung', original: originalContent.cases.case1_challenge, type: 'text' },
+                { id: 'cases_1_solution', label: 'Case 1 - Lösung', original: originalContent.cases.case1_solution, type: 'text' },
+                { id: 'cases_1_result', label: 'Case 1 - Ergebnis', original: originalContent.cases.case1_result, type: 'text' },
+                { id: 'cases_2_title', label: 'Case 2 - Titel', original: originalContent.cases.case2_title, type: 'text' },
+                { id: 'cases_2_challenge', label: 'Case 2 - Herausforderung', original: originalContent.cases.case2_challenge, type: 'text' },
+                { id: 'cases_2_solution', label: 'Case 2 - Lösung', original: originalContent.cases.case2_solution, type: 'text' },
+                { id: 'cases_2_result', label: 'Case 2 - Ergebnis', original: originalContent.cases.case2_result, type: 'text' }
+            );
+            break;
+        case 'testimonials':
+            blocks.push(
+                { id: 'testimonials_title', label: 'Überschrift', original: originalContent.testimonials.title, type: 'text' },
+                { id: 'testimonials_q1', label: 'Zitat 1', original: originalContent.testimonials.quote1, type: 'text' },
+                { id: 'testimonials_a1', label: 'Autor 1', original: originalContent.testimonials.author1, type: 'text' },
+                { id: 'testimonials_q2', label: 'Zitat 2', original: originalContent.testimonials.quote2, type: 'text' },
+                { id: 'testimonials_a2', label: 'Autor 2', original: originalContent.testimonials.author2, type: 'text' },
+                { id: 'testimonials_q3', label: 'Zitat 3', original: originalContent.testimonials.quote3, type: 'text' },
+                { id: 'testimonials_a3', label: 'Autor 3', original: originalContent.testimonials.author3, type: 'text' }
+            );
+            break;
+        case 'faq':
+            blocks.push(
+                { id: 'faq_title', label: 'Überschrift', original: originalContent.faq.title, type: 'text' },
+                { id: 'faq_q1', label: 'Frage 1', original: originalContent.faq.q1, type: 'text' },
+                { id: 'faq_a1', label: 'Antwort 1', original: originalContent.faq.a1, type: 'text' },
+                { id: 'faq_q2', label: 'Frage 2', original: originalContent.faq.q2, type: 'text' },
+                { id: 'faq_a2', label: 'Antwort 2', original: originalContent.faq.a2, type: 'text' },
+                { id: 'faq_q3', label: 'Frage 3', original: originalContent.faq.q3, type: 'text' },
+                { id: 'faq_a3', label: 'Antwort 3', original: originalContent.faq.a3, type: 'text' },
+                { id: 'faq_q4', label: 'Frage 4', original: originalContent.faq.q4, type: 'text' },
+                { id: 'faq_a4', label: 'Antwort 4', original: originalContent.faq.a4, type: 'text' },
+                { id: 'faq_q5', label: 'Frage 5', original: originalContent.faq.q5, type: 'text' },
+                { id: 'faq_a5', label: 'Antwort 5', original: originalContent.faq.a5, type: 'text' },
+                { id: 'faq_q6', label: 'Frage 6', original: originalContent.faq.q6, type: 'text' },
+                { id: 'faq_a6', label: 'Antwort 6', original: originalContent.faq.a6, type: 'text' },
+                { id: 'faq_alternatives', label: 'Abgrenzung zu Alternativen', original: originalContent.faq.alternatives, type: 'text' }
+            );
+            break;
+        case 'cta2':
+            blocks.push(
+                { id: 'cta2_title', label: 'Überschrift', original: originalContent.cta2.title, type: 'text' },
+                { id: 'cta2_btn1', label: 'Button 1', original: originalContent.cta2.btn1, type: 'text' },
+                { id: 'cta2_btn2', label: 'Button 2', original: originalContent.cta2.btn2, type: 'text' }
+            );
+            break;
+    }
+    
+    return blocks;
+}
+
+// Render a single block
+function renderBlock(container, section, blockId, label, original, type, blockData) {
+    const isDeleted = blockData.deleted || false;
+    const value = blockData.value || '';
+    
+    const blockDiv = document.createElement('div');
+    blockDiv.className = 'content-block' + (isDeleted ? ' deleted' : '');
+    blockDiv.dataset.blockId = blockId;
+    blockDiv.dataset.blockType = type;
+    
+    if (type === 'image' && blockData.base64) {
+        blockDiv.dataset.fileData = blockData.base64;
+        blockDiv.dataset.filename = blockData.filename || '';
+    }
+    
+    let html = `
+        <div class="block-actions">
+            <label>
+                <input type="checkbox" class="delete-block" data-target="${blockId}" ${isDeleted ? 'checked' : ''}>
+                Block entfernen
+            </label>
+            <div class="move-buttons">
+                <button class="move-btn" onclick="moveBlock('${blockId}', 'up')">↑</button>
+                <button class="move-btn" onclick="moveBlock('${blockId}', 'down')">↓</button>
+            </div>
+        </div>
+        <div class="block-label">${label}</div>
+    `;
+    
+    if (type === 'text') {
+        if (original) {
+            html += `
+                <div class="original-content">
+                    <div class="original-label">Original-Vorschlag:</div>
+                    <div class="original-text">${escapeHtml(original)}</div>
+                </div>
+            `;
+        }
+        
+        const inputType = original && original.length > 100 ? 'textarea' : 'input';
+        const size = !original || original.length < 100 ? 'small' : original.length < 300 ? 'medium' : 'large';
+        
+        html += `
+            <div class="edit-label">Ihre Änderung${original ? ' (kompletter Text)' : ''}:</div>
+            <div class="edit-hint">Automatisches Speichern nach 1 Sekunde • Grüner Rahmen = Eingabe gespeichert</div>
+        `;
+        
+        if (inputType === 'textarea') {
+            html += `<textarea class="${size}${value ? ' has-content' : ''}" placeholder="${original ? 'Leer lassen = Original verwenden' : 'Text eingeben...'}">${escapeHtml(value)}</textarea>`;
+        } else {
+            html += `<input type="text" class="${value ? 'has-content' : ''}" value="${escapeHtml(value)}" placeholder="${original ? 'Leer lassen = Original verwenden' : 'Text eingeben...'}">`;
+        }
+    } else if (type === 'image') {
+        html += `
+            <div class="edit-label">Bildelement</div>
+            <div class="edit-hint">Bild hochladen (max. 5MB) • Alt-Text für SEO • Caption optional</div>
+            
+            <div class="file-upload-area" onclick="document.getElementById('file_${blockId}').click()">
+                <input type="file" id="file_${blockId}" accept="image/*" onchange="handleImageUpload('${blockId}', this)">
+                <div class="upload-icon"></div>
+                <div class="upload-text">Klicken oder Drag & Drop<br><small>JPG, PNG, WebP (max. 5MB)</small></div>
+            </div>
+        `;
+        
+        if (blockData.base64) {
+            html += `
+                <div class="image-preview show">
+                    <img src="${blockData.base64}" alt="Preview">
+                    <div class="filename">${escapeHtml(blockData.filename || 'Bild')}</div>
+                </div>
+            `;
+        }
+        
+        html += `
+            <label style="display: block; font-weight: 600; margin: 15px 0 8px 0;">Alt-Text (für SEO):</label>
+            <input type="text" name="image_alt" value="${escapeHtml(blockData.alt || '')}" placeholder="Bildbeschreibung...">
+            
+            <label style="display: block; font-weight: 600; margin: 15px 0 8px 0;">Bildunterschrift (optional):</label>
+            <input type="text" name="image_caption" value="${escapeHtml(blockData.caption || '')}" placeholder="z.B. Unser Team im Einsatz">
+        `;
+    }
+    
+    blockDiv.innerHTML = html;
+    container.appendChild(blockDiv);
+    
+    // Setup drag & drop for image upload
+    if (type === 'image') {
+        const uploadArea = blockDiv.querySelector('.file-upload-area');
+        setupDragDrop(uploadArea, blockId);
+    }
+}
+
+// Setup drag & drop for image upload
+function setupDragDrop(element, blockId) {
+    element.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        element.classList.add('dragover');
+    });
+    
+    element.addEventListener('dragleave', () => {
+        element.classList.remove('dragover');
+    });
+    
+    element.addEventListener('drop', (e) => {
+        e.preventDefault();
+        element.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                processImageFile(blockId, file);
+            }
+        }
+    });
+}
+
+// Handle image upload
+function handleImageUpload(blockId, input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+        alert('Bitte wählen Sie eine Bilddatei aus.');
+        return;
+    }
+    
+    processImageFile(blockId, file);
+}
+
+// Process image file
+function processImageFile(blockId, file) {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    if (file.size > maxSize) {
+        alert('Die Datei ist zu groß. Maximale Größe: 5MB');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const base64 = e.target.result;
+        const block = document.querySelector(`[data-block-id="${blockId}"]`);
+        
+        if (block) {
+            block.dataset.fileData = base64;
+            block.dataset.filename = file.name;
+            
+            // Update preview
+            let preview = block.querySelector('.image-preview');
+            if (!preview) {
+                const uploadArea = block.querySelector('.file-upload-area');
+                preview = document.createElement('div');
+                preview.className = 'image-preview';
+                uploadArea.after(preview);
+            }
+            
+            preview.innerHTML = `
+                <img src="${base64}" alt="Preview">
+                <div class="filename">${escapeHtml(file.name)}</div>
+            `;
+            preview.classList.add('show');
+            
+            saveAllData();
+            
+            // Update preview if in preview mode
+            const previewMode = document.getElementById('previewMode');
+            if (previewMode && previewMode.classList.contains('active')) {
+                generatePreview();
+            }
+        }
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// Add Hero Image (special function with fixed key)
+function addHeroImage() {
+    console.log('addHeroImage called');
+    const heroImageKey = 'hero_image';
+    
+    // Check if hero_image already exists
+    if (contentData[heroImageKey] && !contentData[heroImageKey].deleted) {
+        console.log('hero_image exists, asking for confirmation');
+        if (!confirm('Hero-Bild existiert bereits. Ersetzen?')) {
+            return;
+        }
+    }
+    
+    console.log('Creating hero_image entry');
+    
+    // Create or update hero_image entry
+    contentData[heroImageKey] = {
+        type: 'image',
+        filename: '',
+        base64: '',
+        alt: '',
+        caption: '',
+        deleted: false
+    };
+    
+    console.log('Saving to localStorage');
+    saveToLocalStorage();
+    
+    console.log('Rendering hero section');
+    renderSection('hero');
+    
+    // Show success message
+    alert('Hero-Bild Block wurde erstellt! Scrolle nach oben und lade ein Bild hoch.');
+    
+    // Scroll to the hero_image block
+    setTimeout(() => {
+        const heroImageBlock = document.querySelector('[data-block-id="hero_image"]');
+        console.log('hero_image block found:', heroImageBlock);
+        if (heroImageBlock) {
+            heroImageBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            heroImageBlock.style.border = '3px solid #007bff';
+            setTimeout(() => {
+                heroImageBlock.style.border = '2px solid #dee2e6';
+            }, 2000);
+        } else {
+            console.error('hero_image block not found in DOM');
+        }
+    }, 100);
+}
+
+// Add Section Image (generic function for predefined image keys)
+function addSectionImage(section, imageKey, label) {
+    console.log('addSectionImage called:', section, imageKey);
+    
+    // Check if image already exists
+    if (contentData[imageKey] && !contentData[imageKey].deleted) {
+        console.log(imageKey + ' exists, asking for confirmation');
+        if (!confirm(`${label} existiert bereits. Ersetzen?`)) {
+            return;
+        }
+    }
+    
+    console.log('Creating', imageKey, 'entry');
+    
+    // Create or update image entry
+    contentData[imageKey] = {
+        type: 'image',
+        filename: '',
+        base64: '',
+        alt: '',
+        caption: '',
+        deleted: false
+    };
+    
+    console.log('Saving to localStorage');
+    saveToLocalStorage();
+    
+    console.log('Rendering', section, 'section');
+    renderSection(section);
+    
+    // Show success message
+    alert(label + ' Block wurde erstellt! Lade jetzt ein Bild hoch.');
+    
+    // Scroll to the image block
+    setTimeout(() => {
+        const imageBlock = document.querySelector(`[data-block-id="${imageKey}"]`);
+        console.log(imageKey + ' block found:', imageBlock);
+        if (imageBlock) {
+            imageBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            imageBlock.style.border = '3px solid #17a2b8';
+            setTimeout(() => {
+                imageBlock.style.border = '2px solid #dee2e6';
+            }, 2000);
+        } else {
+            console.error(imageKey + ' block not found in DOM');
+        }
+    }, 100);
+}
+
+// Add new block
+function addNewBlock(section, type) {
+    blockCounter++;
+    const blockId = `${section}_new_${Date.now()}_${blockCounter}`;
+    
+    contentData[blockId] = {
+        type: type,
+        value: type === 'text' ? '' : undefined,
+        filename: type === 'image' ? '' : undefined,
+        base64: type === 'image' ? '' : undefined,
+        alt: type === 'image' ? '' : undefined,
+        caption: type === 'image' ? '' : undefined,
+        deleted: false
+    };
+    
+    saveToLocalStorage();
+    renderSection(section);
+}
+
+// Move block up/down
+function moveBlock(blockId, direction) {
+    const block = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (!block) return;
+    
+    const container = block.parentElement;
+    const blocks = Array.from(container.querySelectorAll('.content-block'));
+    const index = blocks.indexOf(block);
+    
+    if (direction === 'up' && index > 0) {
+        container.insertBefore(block, blocks[index - 1]);
+    } else if (direction === 'down' && index < blocks.length - 1) {
+        container.insertBefore(blocks[index + 1], block);
+    }
+    
+    saveAllData();
+}
+
+// Switch between modes
+function switchMode(mode) {
+    const editMode = document.getElementById('editMode');
+    const previewMode = document.getElementById('previewMode');
+    const editBtn = document.getElementById('editBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    
+    if (mode === 'edit') {
+        editMode.classList.remove('hidden');
+        previewMode.classList.remove('active');
+        editBtn.classList.add('active');
+        previewBtn.classList.remove('active');
+    } else {
+        editMode.classList.add('hidden');
+        previewMode.classList.add('active');
+        editBtn.classList.remove('active');
+        previewBtn.classList.add('active');
+        generatePreview();
+    }
+}
+
+// Generate preview
+function generatePreview() {
+    const previewMode = document.getElementById('previewMode');
+    let html = '';
+    
+    // Hero
+    html += generateHeroPreview();
+    
+    // Intro
+    html += generateIntroPreview();
+    
+    // Stats
+    html += generateStatsPreview();
+    
+    // Problems/Solutions
+    html += generateProblemsPreview();
+    
+    // USPs
+    html += generateUSPsPreview();
+    
+    // Trust
+    html += generateTrustPreview();
+    
+    // Services
+    html += generateServicesPreview();
+    
+    // CTA1
+    html += generateCTA1Preview();
+    
+    // Pricing
+    html += generatePricingPreview();
+    
+    // Cases
+    html += generateCasesPreview();
+    
+    // FAQ
+    html += generateFAQPreview();
+    
+    // CTA2
+    html += generateCTA2Preview();
+    
+    previewMode.innerHTML = html;
+}
+
+// Generate Hero preview
+function generateHeroPreview() {
+    const h1 = getContent('hero_h1', originalContent.hero.h1);
+    
+    // Check if there's a hero image
+    const heroImageData = contentData['hero_image'];
+    const hasImage = heroImageData && heroImageData.base64 && !heroImageData.deleted;
+    
+    if (isDeleted('hero_h1') && !hasImage) return '';
+    
+    let html = '';
+    
+    if (hasImage) {
+        // Version WITH image
+        html += '<div class="preview-hero">';
+        
+        // Image container
+        html += '<div class="preview-hero-image-container">';
+        html += `<img src="${heroImageData.base64}" alt="${heroImageData.alt || 'Hero Image'}" class="preview-hero-image">`;
+        html += '</div>';
+        
+        // Title box (red background bar) - NUR H1
+        if (!isDeleted('hero_h1') && h1) {
+            html += '<div class="preview-hero-title-box">';
+            html += `<h1>${escapeHtml(h1)}</h1>`;
+            html += '</div>';
+        }
+        
+        html += '</div>';
+    } else {
+        // Fallback version WITHOUT image - nur H1 in roter Box
+        html += '<div class="preview-hero-title-box" style="margin-bottom: 30px;">';
+        if (!isDeleted('hero_h1') && h1) html += `<h1>${escapeHtml(h1)}</h1>`;
+        html += '</div>';
+    }
+    
+    return html;
+}
+
+// Generate Intro preview
+function generateIntroPreview() {
+    const h2 = getContent('intro_h2', originalContent.intro.h2);
+    const text = getContent('intro_text', originalContent.intro.text);
+    
+    if ((isDeleted('intro_h2') || !h2) && (isDeleted('intro_text') || !text)) return '';
+    
+    let html = '<div class="preview-section">';
+    if (!isDeleted('intro_h2') && h2) {
+        html += `<h2>${escapeHtml(h2)}</h2>`;
+    }
+    if (!isDeleted('intro_text') && text) {
+        html += `<p>${escapeHtml(text).replace(/\n/g, '<br>')}</p>`;
+    }
+    html += '</div>';
+    
+    return html;
+}
+
+// Generate Stats preview
+function generateStatsPreview() {
+    const stat1 = getContent('stats_1', originalContent.stats.stat1);
+    const stat2 = getContent('stats_2', originalContent.stats.stat2);
+    const stat3 = getContent('stats_3', originalContent.stats.stat3);
+    
+    if ((isDeleted('stats_1') || !stat1) && (isDeleted('stats_2') || !stat2) && (isDeleted('stats_3') || !stat3)) return '';
+    
+    let html = '<div class="preview-section stats-section"><div class="preview-stats">';
+    
+    if (!isDeleted('stats_1') && stat1) {
+        const parts = stat1.split('\n');
+        html += `<div class="preview-stat"><h3>${escapeHtml(parts[0])}</h3><p>${escapeHtml(parts.slice(1).join(' '))}</p></div>`;
+    }
+    if (!isDeleted('stats_2') && stat2) {
+        const parts = stat2.split('\n');
+        html += `<div class="preview-stat"><h3>${escapeHtml(parts[0])}</h3><p>${escapeHtml(parts.slice(1).join(' '))}</p></div>`;
+    }
+    if (!isDeleted('stats_3') && stat3) {
+        const parts = stat3.split('\n');
+        html += `<div class="preview-stat"><h3>${escapeHtml(parts[0])}</h3><p>${escapeHtml(parts.slice(1).join(' '))}</p></div>`;
+    }
+    
+    html += '</div></div>';
+    return html;
+}
+
+// Generate Problems preview
+function generateProblemsPreview() {
+    const title = getContent('problems_title', originalContent.problems.title);
+    
+    let hasContent = false;
+    let html = '<div class="preview-section alt">';
+    
+    if (!isDeleted('problems_title') && title) {
+        html += `<h2>${escapeHtml(title)}</h2>`;
+        hasContent = true;
+    }
+    
+    html += '<div class="transformation-grid">';
+    
+    // Problems column
+    let problemsHtml = '<div class="problem-box"><h3>❌ Vorher: Typische Probleme</h3><ul class="problem-list">';
+    ['problems_p1', 'problems_p2', 'problems_p3'].forEach(key => {
+        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+        if (!isDeleted(key) && content) {
+            const cleanContent = content.replace(/^[❌✓]\s*/, '');
+            problemsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
+            hasContent = true;
+        }
+    });
+    problemsHtml += '</ul></div>';
+    
+    // Solutions column
+    let solutionsHtml = '<div class="solution-box"><h3>✓ Nachher: Mit Ihrer Lösung</h3><ul class="solution-list">';
+    ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
+        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+        if (!isDeleted(key) && content) {
+            const cleanContent = content.replace(/^[❌✓]\s*/, '');
+            solutionsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
+            hasContent = true;
+        }
+    });
+    solutionsHtml += '</ul></div>';
+    
+    html += problemsHtml + solutionsHtml + '</div>';
+    
+    // Optional image after transformation grid
+    html += renderImageIfExists('problems_image');
+    
+    // Benefits box if any content exists
+    if (hasContent) {
+        html += '<div class="benefits-box">';
+        html += '<h3>Messbare Vorteile für Sie:</h3>';
+        
+        ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
+            const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
+            if (!isDeleted(key) && content) {
+                const cleanContent = content.replace(/^[❌✓]\s*/, '');
+                // Extract title and detail from "Title - Detail" format
+                const parts = cleanContent.split(' - ');
+                if (parts.length >= 2) {
+                    html += `<p><strong>${escapeHtml(parts[0])}:</strong> ${escapeHtml(parts.slice(1).join(' - '))}</p>`;
+                } else {
+                    html += `<p>${escapeHtml(cleanContent)}</p>`;
+                }
+            }
+        });
+        
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    
+    return hasContent ? html : '';
+}
+
+// Generate USPs preview
+function generateUSPsPreview() {
+    const title = getContent('usps_title', originalContent.usps.title);
+    
+    let html = '<div class="preview-section">';
+    if (!isDeleted('usps_title') && title) html += `<h2>${escapeHtml(title)}</h2>`;
+    
+    // Optional image before USPs
+    html += renderImageIfExists('usps_image');
+    
+    html += '<div class="preview-grid">';
+    
+    let hasContent = false;
+    for (let i = 1; i <= 3; i++) {
+        const uspTitle = getContent(`usps_${i}_title`, originalContent.usps[`usp${i}_title`]);
+        const uspText = getContent(`usps_${i}_text`, originalContent.usps[`usp${i}_text`]);
+        
+        if ((!isDeleted(`usps_${i}_title`) || !isDeleted(`usps_${i}_text`)) && (uspTitle || uspText)) {
+            html += '<div class="preview-card">';
+            if (uspTitle) html += `<h3>${escapeHtml(uspTitle)}</h3>`;
+            if (uspText) html += `<p>${escapeHtml(uspText)}</p>`;
+            html += '</div>';
+            hasContent = true;
+        }
+    }
+    
+    html += '</div>';
+    
+    // Optional image after USPs
+    html += renderImageIfExists('usps_image_2');
+    
+    html += '</div>';
+    
+    return hasContent || title ? html : '';
+}
+
+// Generate Trust preview
+function generateTrustPreview() {
+    let html = '<div class="preview-section alt"><div class="preview-grid">';
+    
+    let hasContent = false;
+    for (let i = 1; i <= 3; i++) {
+        const trust = getContent(`trust_${i}`, originalContent.trust[`trust${i}`]);
+        if (!isDeleted(`trust_${i}`) && trust) {
+            const parts = trust.split('\n');
+            html += `<div class="preview-card"><h3>${escapeHtml(parts[0])}</h3><p>${escapeHtml(parts.slice(1).join(' '))}</p></div>`;
+            hasContent = true;
+        }
+    }
+    
+    html += '</div></div>';
+    
+    return hasContent ? html : '';
+}
+
+// Generate Services preview
+function generateServicesPreview() {
+    const title = getContent('services_title', originalContent.services.title);
+    
+    let html = '<div class="preview-section">';
+    if (!isDeleted('services_title') && title) html += `<h2>${escapeHtml(title)}</h2>`;
+    
+    let hasContent = title && !isDeleted('services_title');
+    
+    // Check for services image before services
+    html += renderImageIfExists('services_image');
+    
+    for (let i = 1; i <= 2; i++) {
+        const service = getContent(`services_${i}`, originalContent.services[`service${i}`]);
+        if (!isDeleted(`services_${i}`) && service) {
+            html += `<div class="preview-item"><p>${escapeHtml(service)}</p></div>`;
+            hasContent = true;
+        }
+        // Check for optional image after each service
+        html += renderImageIfExists(`services_${i}_image`);
+    }
+    
+    html += '</div>';
+    
+    return hasContent ? html : '';
+}
+
+// Generate CTA1 preview
+function generateCTA1Preview() {
+    const title = getContent('cta1_title', originalContent.cta1.title);
+    const features = getContent('cta1_features', originalContent.cta1.features);
+    
+    if ((isDeleted('cta1_title') || !title) && (isDeleted('cta1_features') || !features)) return '';
+    
+    let html = '<div class="cta-section">';
+    
+    // Title can be multiline (Question + Subtext)
+    if (!isDeleted('cta1_title') && title) {
+        const titleLines = title.split('\n');
+        if (titleLines.length > 1) {
+            html += `<h2>${escapeHtml(titleLines[0])}</h2>`;
+            html += `<p>${escapeHtml(titleLines.slice(1).join(' '))}</p>`;
+        } else {
+            html += `<h2>${escapeHtml(title)}</h2>`;
+        }
+    }
+    
+    html += '<div class="cta-buttons"><button class="cta-btn primary">Kostenlose Machbarkeitsprüfung</button></div>';
+    
+    // Features as subtext
+    if (!isDeleted('cta1_features') && features) {
+        html += `<p class="cta-subtext" style="font-size: 1rem; line-height: 1.8; margin-top: 20px;">${escapeHtml(features).replace(/\n/g, '<br>')}</p>`;
+    }
+    
+    html += '</div>';
+    
+    return html;
+}
+
+
+// Generate Pricing preview
+function generatePricingPreview() {
+    const title = getContent('pricing_title', originalContent.pricing.title);
+    const info = getContent('pricing_info', originalContent.pricing.info);
+    
+    if ((isDeleted('pricing_title') || !title) && (isDeleted('pricing_info') || !info)) return '';
+    
+    let html = '<div class="preview-section alt">';
+    if (!isDeleted('pricing_title') && title) html += `<h2>${escapeHtml(title)}</h2>`;
+    if (!isDeleted('pricing_info') && info) html += `<p>${escapeHtml(info)}</p>`;
+    html += '</div>';
+    
+    return html;
+}
+
+// Generate Cases preview
+function generateCasesPreview() {
+    let html = '<div class="preview-section">';
+    html += '<h2>Referenzen & Erfolgsgeschichten</h2>';
+    
+    let hasContent = false;
+    
+    for (let i = 1; i <= 2; i++) {
+        const caseTitle = getContent(`cases_${i}_title`, originalContent.cases[`case${i}_title`]);
+        const caseChallenge = getContent(`cases_${i}_challenge`, originalContent.cases[`case${i}_challenge`]);
+        const caseSolution = getContent(`cases_${i}_solution`, originalContent.cases[`case${i}_solution`]);
+        const caseResult = getContent(`cases_${i}_result`, originalContent.cases[`case${i}_result`]);
+        
+        if (caseTitle || caseChallenge || caseSolution || caseResult) {
+            html += '<div class="case-card">';
+            if (caseTitle && !isDeleted(`cases_${i}_title`)) html += `<h3>${escapeHtml(caseTitle)}</h3>`;
+            if (caseChallenge && !isDeleted(`cases_${i}_challenge`)) {
+                // Remove "Herausforderung:" prefix if present
+                const cleanChallenge = caseChallenge.replace(/^Herausforderung:\s*/i, '');
+                html += `<p><strong>Herausforderung:</strong> ${escapeHtml(cleanChallenge)}</p>`;
+            }
+            if (caseSolution && !isDeleted(`cases_${i}_solution`)) {
+                // Remove "Lösung:" prefix if present
+                const cleanSolution = caseSolution.replace(/^Lösung:\s*/i, '');
+                html += `<p><strong>Lösung:</strong> ${escapeHtml(cleanSolution)}</p>`;
+            }
+            if (caseResult && !isDeleted(`cases_${i}_result`)) {
+                // Remove "Ergebnis:" prefix if present
+                const cleanResult = caseResult.replace(/^Ergebnis:\s*/i, '');
+                html += `<p><strong>Ergebnis:</strong> ${escapeHtml(cleanResult)}</p>`;
+            }
+            html += '</div>';
+            hasContent = true;
+        }
+    }
+    
+    html += '</div>';
+    
+    return hasContent ? html : '';
+}
+
+// Generate FAQ preview
+function generateFAQPreview() {
+    const title = getContent('faq_title', originalContent.faq.title);
+    
+    let html = '<div class="preview-section alt">';
+    if (!isDeleted('faq_title') && title) html += `<h2>${escapeHtml(title)}</h2>`;
+    
+    let hasContent = title && !isDeleted('faq_title');
+    
+    for (let i = 1; i <= 6; i++) {
+        const question = getContent(`faq_q${i}`, originalContent.faq[`q${i}`]);
+        const answer = getContent(`faq_a${i}`, originalContent.faq[`a${i}`]);
+        
+        if ((question || answer) && (!isDeleted(`faq_q${i}`) || !isDeleted(`faq_a${i}`))) {
+            html += '<div class="faq-item">';
+            if (question && !isDeleted(`faq_q${i}`)) {
+                html += `<div class="faq-question">${escapeHtml(question)}</div>`;
+            }
+            if (answer && !isDeleted(`faq_a${i}`)) {
+                html += `<div class="faq-answer">${escapeHtml(answer)}</div>`;
+            }
+            html += '</div>';
+            hasContent = true;
+        }
+    }
+    
+    const alternatives = getContent('faq_alternatives', originalContent.faq.alternatives);
+    if (!isDeleted('faq_alternatives') && alternatives) {
+        html += '<div class="faq-item">';
+        html += '<div class="faq-question">Warum sollten Sie sich für uns entscheiden?</div>';
+        html += `<div class="faq-answer">${escapeHtml(alternatives).replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</div>`;
+        html += '</div>';
+        hasContent = true;
+    }
+    
+    html += '</div>';
+    
+    return hasContent ? html : '';
+}
+
+// Generate CTA2 preview
+function generateCTA2Preview() {
+    const title = getContent('cta2_title', originalContent.cta2.title);
+    const btn1 = getContent('cta2_btn1', originalContent.cta2.btn1);
+    const btn2 = getContent('cta2_btn2', originalContent.cta2.btn2);
+    
+    if ((isDeleted('cta2_title') || !title) && (isDeleted('cta2_btn1') || !btn1) && (isDeleted('cta2_btn2') || !btn2)) return '';
+    
+    let html = '<div class="cta-section">';
+    
+    // Title can be multiline
+    if (!isDeleted('cta2_title') && title) {
+        const titleLines = title.split('\n');
+        titleLines.forEach((line, idx) => {
+            if (idx === 0) {
+                html += `<h2>${escapeHtml(line)}</h2>`;
+            } else {
+                html += `<p style="font-size: 1.1rem; margin-bottom: 10px;">${escapeHtml(line)}</p>`;
+            }
+        });
+    }
+    
+    html += '<div class="cta-buttons">';
+    if (!isDeleted('cta2_btn1') && btn1) html += `<button class="cta-btn secondary">${escapeHtml(btn1)}</button>`;
+    if (!isDeleted('cta2_btn2') && btn2) html += `<button class="cta-btn primary">${escapeHtml(btn2)}</button>`;
+    html += '</div>';
+    
+    // Option explanations
+    html += '<p class="cta-options" style="font-size: 0.95rem; color: #6c757d; margin-top: 20px; line-height: 1.8;">';
+    html += 'Option 1: Erst kennenlernen, dann entscheiden<br>';
+    html += 'Option 2: Sie wissen schon was Sie brauchen? Direkt Angebot anfordern';
+    html += '</p>';
+    
+    html += '</div>';
+    
+    return html;
+}
+
+
+// Render image if exists in contentData
+function renderImageIfExists(key) {
+    const imageData = contentData[key];
+    if (!imageData || imageData.type !== 'image' || !imageData.base64 || imageData.deleted) {
+        return '';
+    }
+    
+    let html = '<div class="preview-image">';
+    html += `<img src="${imageData.base64}" alt="${imageData.alt || ''}" />`;
+    if (imageData.caption) {
+        html += `<div class="caption">${escapeHtml(imageData.caption)}</div>`;
+    }
+    html += '</div>';
+    return html;
+}
+
+// Get content (user input or original)
+function getContent(key, original) {
+    const data = contentData[key];
+    if (data && data.value) return data.value;
+    return original || '';
+}
+
+// Check if block is deleted
+function isDeleted(key) {
+    const data = contentData[key];
+    return data && data.deleted;
+}
+
+// Escape HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Export JSON
+function exportJSON() {
+    saveAllData();
+    
+    const exportData = {
+        colors: {}
+    };
+    
+    // Export colors
+    const savedColors = localStorage.getItem('corporateColors');
+    if (savedColors) {
+        exportData.colors = JSON.parse(savedColors);
+    } else {
+        exportData.colors = {
+            primary: '#C1272D',
+            secondary: '#9A1F24',
+            action: '#d51226',
+            actionDark: '#a30e1d'
+        };
+    }
+    
+    Object.keys(contentData).forEach(key => {
+        const data = contentData[key];
+        if (data.type === 'text') {
+            exportData[key] = data.value || '';
+        } else if (data.type === 'image') {
+            exportData[key] = {
+                filename: data.filename || '',
+                base64: data.base64 || '',
+                alt: data.alt || '',
+                caption: data.caption || ''
+            };
+        }
+    });
+    
+    const json = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `content-review-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Import JSON
+function importJSON() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const imported = JSON.parse(event.target.result);
+                
+                // Import colors if present
+                if (imported.colors) {
+                    localStorage.setItem('corporateColors', JSON.stringify(imported.colors));
+                    
+                    // Apply colors immediately
+                    document.documentElement.style.setProperty('--primary-color', imported.colors.primary);
+                    document.documentElement.style.setProperty('--secondary-color', imported.colors.secondary);
+                    document.documentElement.style.setProperty('--accent-color', imported.colors.primary);      // Alias
+                    document.documentElement.style.setProperty('--accent-dark', imported.colors.secondary);     // Alias
+                    document.documentElement.style.setProperty('--action-color', imported.colors.action);
+                    document.documentElement.style.setProperty('--action-dark', imported.colors.actionDark);
+                    
+                    // Update UI
+                    document.getElementById('colorPrimary').value = imported.colors.primary;
+                    document.getElementById('colorPrimaryHex').value = imported.colors.primary;
+                    document.getElementById('colorSecondary').value = imported.colors.secondary;
+                    document.getElementById('colorSecondaryHex').value = imported.colors.secondary;
+                    document.getElementById('colorAction').value = imported.colors.action;
+                    document.getElementById('colorActionHex').value = imported.colors.action;
+                }
+                
+                // Convert imported data to internal format
+                Object.keys(imported).forEach(key => {
+                    if (key === 'colors') return; // Skip colors object
+                    
+                    const value = imported[key];
+                    if (typeof value === 'string') {
+                        contentData[key] = {
+                            type: 'text',
+                            value: value,
+                            deleted: false
+                        };
+                    } else if (typeof value === 'object' && value.base64) {
+                        contentData[key] = {
+                            type: 'image',
+                            filename: value.filename || '',
+                            base64: value.base64 || '',
+                            alt: value.alt || '',
+                            caption: value.caption || '',
+                            deleted: false
+                        };
+                    }
+                });
+                
+                saveToLocalStorage();
+                renderAllSections();
+                alert('Import erfolgreich!');
+            } catch (error) {
+                alert('Fehler beim Import: Ungültige JSON-Datei');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+// Load demo data
+function loadDemoData() {
+    if (!confirm('Dies lädt Demo-Daten und überschreibt aktuelle Eingaben. Fortfahren?')) return;
+    
+    contentData = {};
+    
+    // Load all original content as demo data
+    sections.forEach(section => {
+        const blocks = getOriginalBlocksForSection(section);
+        blocks.forEach(block => {
+            contentData[block.id] = {
+                type: 'text',
+                value: block.original,
+                deleted: false
+            };
+        });
+    });
+    
+    saveToLocalStorage();
+    renderAllSections();
+    alert('Demo-Daten geladen!');
+}
+
+// Clear all data
+function clearAllData() {
+    if (!confirm('Alle Eingaben löschen? Dies kann nicht rückgängig gemacht werden.')) return;
+    
+    contentData = {};
+    localStorage.removeItem('contentReviewData');
+    renderAllSections();
+    alert('Alle Daten gelöscht.');
+}
+
+// Import Briefing from integri.de form
+function importBriefing() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const briefing = JSON.parse(event.target.result);
+                contentData = {};
+                generateWithClaude(briefing);
+            } catch (error) {
+                alert('Fehler beim Import: Ungültige JSON-Datei');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+// ============================================================
+// Claude API Integration
+// ============================================================
+
+async function generateWithClaude(briefingData) {
+    showLoadingState(true);
+    try {
+        const response = await fetch('https://integri.de/claude-proxy.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ briefing: briefingData })
+        });
+
+        if (!response.ok) {
+            let errMsg = `HTTP ${response.status}`;
+            try { const err = await response.json(); errMsg = err.error || errMsg; } catch {}
+            throw new Error(errMsg);
+        }
+
+        const content = await response.json();
+        applyGeneratedContent(content);
+
+    } catch (error) {
+        showError('KI-Generierung fehlgeschlagen: ' + error.message);
+    } finally {
+        showLoadingState(false);
+    }
+}
+
+function applyGeneratedContent(content) {
+    // Reset originalContent
+    Object.keys(originalContent).forEach(section => {
+        if (typeof originalContent[section] === 'object') {
+            Object.keys(originalContent[section]).forEach(key => {
+                originalContent[section][key] = '';
+            });
+        }
+    });
+
+    // Fill from Claude response
+    Object.keys(content).forEach(section => {
+        if (originalContent[section] && typeof originalContent[section] === 'object') {
+            Object.assign(originalContent[section], content[section]);
+        }
+    });
+
+    contentData = {};
+    renderAllSections();
+}
+
+function showLoadingState(show) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = show ? 'flex' : 'none';
+}
+
+function showError(msg) {
+    const el = document.getElementById('errorMessage');
+    if (el) {
+        el.textContent = msg;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 8000);
+    } else {
+        alert(msg);
+    }
+}
+
+function syncColorInput(type) {
+    const hex = document.getElementById(`color${type}Hex`).value;
+    if (/^#[0-9A-F]{6}$/i.test(hex)) {
+        document.getElementById(`color${type}`).value = hex;
+    }
+}
+
+// Sync color picker to hex input when changed
+function syncColorPicker(type) {
+    const color = document.getElementById(`color${type}`).value;
+    document.getElementById(`color${type}Hex`).value = color.toUpperCase();
+}
+
+// Calculate darker variant of a color (for hover states)
+function calculateDarkVariant(hex) {
+    const r = parseInt(hex.substr(1, 2), 16);
+    const g = parseInt(hex.substr(3, 2), 16);
+    const b = parseInt(hex.substr(5, 2), 16);
+    
+    const darkR = Math.max(0, Math.floor(r * 0.8));
+    const darkG = Math.max(0, Math.floor(g * 0.8));
+    const darkB = Math.max(0, Math.floor(b * 0.8));
+    
+    return `#${darkR.toString(16).padStart(2, '0')}${darkG.toString(16).padStart(2, '0')}${darkB.toString(16).padStart(2, '0')}`;
+}
+
+// Apply colors to CSS variables
+function applyColors() {
+    const primaryColor = document.getElementById('colorPrimary').value;
+    const accentColor = document.getElementById('colorAccent').value;
+    
+    // Update hex inputs
+    document.getElementById('colorPrimaryHex').value = primaryColor;
+    document.getElementById('colorAccentHex').value = accentColor;
+    
+    // Calculate dark variants
+    const primaryDark = calculateDarkVariant(primaryColor);
+    const accentDark = calculateDarkVariant(accentColor);
+    
+    // Apply to CSS variables
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--primary-dark', primaryDark);
+    document.documentElement.style.setProperty('--accent-color', accentColor);
+    document.documentElement.style.setProperty('--accent-dark', accentDark);
+    document.documentElement.style.setProperty('--secondary-color', accentDark);
+    
+    // Save to localStorage
+    localStorage.setItem('corporateColors', JSON.stringify({
+        primary: primaryColor,
+        primaryDark: primaryDark,
+        accent: accentColor,
+        accentDark: accentDark
+    }));
+    
+    // Show feedback
+    showSaveIndicator();
+    
+    // Regenerate preview to apply changes
+    generatePreview();
+}
+
+// Reset colors to default
+function resetColors() {
+    document.getElementById('colorPrimary').value = '#C1272D';
+    document.getElementById('colorPrimaryHex').value = '#C1272D';
+    document.getElementById('colorSecondary').value = '#9A1F24';
+    document.getElementById('colorSecondaryHex').value = '#9A1F24';
+    document.getElementById('colorAction').value = '#d51226';
+    document.getElementById('colorActionHex').value = '#d51226';
+    applyColors();
+}
+
+// Load saved colors on init
+function loadColors() {
+    const saved = localStorage.getItem('corporateColors');
+    if (saved) {
+        const colors = JSON.parse(saved);
+        document.getElementById('colorPrimary').value = colors.primary;
+        document.getElementById('colorPrimaryHex').value = colors.primary;
+        document.getElementById('colorAccent').value = colors.accent;
+        document.getElementById('colorAccentHex').value = colors.accent;
+        
+        // Apply to CSS
+        document.documentElement.style.setProperty('--primary-color', colors.primary);
+        document.documentElement.style.setProperty('--primary-dark', colors.primaryDark);
+        document.documentElement.style.setProperty('--accent-color', colors.accent);
+        document.documentElement.style.setProperty('--accent-dark', colors.accentDark);
+        document.documentElement.style.setProperty('--secondary-color', colors.accentDark);
+    }
+}
+
+
+// COLOR PICKER
+function syncColorInput(t) {
+    const h = document.getElementById(`color${t}Hex`).value;
+    if (/^#[0-9A-F]{6}$/i.test(h)) document.getElementById(`color${t}`).value = h;
+}
+function syncColorPicker(t) {
+    document.getElementById(`color${t}Hex`).value = document.getElementById(`color${t}`).value.toUpperCase();
+}
+function calculateDark(h) {
+    const r=parseInt(h.substr(1,2),16), g=parseInt(h.substr(3,2),16), b=parseInt(h.substr(5,2),16);
+    return `#${Math.floor(r*0.8).toString(16).padStart(2,'0')}${Math.floor(g*0.8).toString(16).padStart(2,'0')}${Math.floor(b*0.8).toString(16).padStart(2,'0')}`;
+}
+function applyColors() {
+    const primary = document.getElementById('colorPrimary').value;
+    const secondary = document.getElementById('colorSecondary').value;
+    const action = document.getElementById('colorAction').value;
+    
+    document.getElementById('colorPrimaryHex').value = primary;
+    document.getElementById('colorSecondaryHex').value = secondary;
+    document.getElementById('colorActionHex').value = action;
+    
+    const actionDark = calculateDark(action);
+    
+    document.documentElement.style.setProperty('--primary-color', primary);
+    document.documentElement.style.setProperty('--secondary-color', secondary);
+    document.documentElement.style.setProperty('--accent-color', primary);      // Alias für primary
+    document.documentElement.style.setProperty('--accent-dark', secondary);     // Alias für secondary
+    document.documentElement.style.setProperty('--action-color', action);
+    document.documentElement.style.setProperty('--action-dark', actionDark);
+    
+    localStorage.setItem('corporateColors', JSON.stringify({
+        primary: primary,
+        secondary: secondary,
+        action: action,
+        actionDark: actionDark
+    }));
+    
+    showSaveIndicator();
+    generatePreview();
+}
+function resetColors() {
+    document.getElementById('colorPrimary').value = '#C1272D';
+    document.getElementById('colorPrimaryHex').value = '#C1272D';
+    document.getElementById('colorSecondary').value = '#9A1F24';
+    document.getElementById('colorSecondaryHex').value = '#9A1F24';
+    document.getElementById('colorAction').value = '#d51226';
+    document.getElementById('colorActionHex').value = '#d51226';
+    applyColors();
+}
+function loadColors() {
+    const s = localStorage.getItem('corporateColors');
+    if (s) {
+        const c = JSON.parse(s);
+        document.getElementById('colorPrimary').value = c.primary;
+        document.getElementById('colorPrimaryHex').value = c.primary;
+        document.getElementById('colorSecondary').value = c.secondary;
+        document.getElementById('colorSecondaryHex').value = c.secondary;
+        document.getElementById('colorAction').value = c.action;
+        document.getElementById('colorActionHex').value = c.action;
+        document.documentElement.style.setProperty('--primary-color', c.primary);
+        document.documentElement.style.setProperty('--secondary-color', c.secondary);
+        document.documentElement.style.setProperty('--accent-color', c.primary);      // Alias
+        document.documentElement.style.setProperty('--accent-dark', c.secondary);     // Alias
+        document.documentElement.style.setProperty('--action-color', c.action);
+        document.documentElement.style.setProperty('--action-dark', c.actionDark);
+    }
+}
+
+// Initialize on load
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
