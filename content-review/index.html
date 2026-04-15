@@ -764,42 +764,22 @@
         
         .problem-list,
         .solution-list {
-            list-style: none;
-            padding: 0;
+            list-style: disc;
+            padding-left: 20px;
             margin: 0;
         }
-        
+
         .problem-list li,
         .solution-list li {
-            padding: 12px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            align-items: flex-start;
             line-height: 1.7;
             font-size: 1rem;
         }
-        
+
         .problem-list li:last-child,
         .solution-list li:last-child {
             border-bottom: none;
-        }
-        
-        .problem-list li::before {
-            content: "\2717";
-            margin-right: 12px;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            color: #E53E3E;
-            font-weight: bold;
-        }
-        
-        .solution-list li::before {
-            content: “✓”;
-            margin-right: 12px;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            color: #28a745;
-            font-weight: bold;
         }
         
         .benefits-box {
