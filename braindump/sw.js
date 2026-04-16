@@ -1,4 +1,4 @@
-const CACHE = 'braindump-v4';
+const CACHE = 'braindump-v5';
 
 self.addEventListener('install', function(e) {
     e.waitUntil(

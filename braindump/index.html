@@ -21,10 +21,14 @@
             --bg:           #F7F7F5;
             --card:         #FFFFFF;
             --border:       #D1D5D8;
+            /* Ampel */
             --urgent:       #C53030;
             --urgent-bg:    #FFF5F5;
-            --important:    #B7791F;
-            --important-bg: #FFFBEB;
+            --important:    #2D7D3E;
+            --important-bg: #E8F5E9;
+            --normal-col:   #9A7D0A;
+            --normal-bg:    #FFFDE7;
+            /* Private */
             --private-col:  #8B6914;
             --private-bg:   #FFF5E0;
         }
@@ -36,7 +40,7 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            padding-bottom: 40px;
+            padding-bottom: 60px;
             font-size: 16px;
             line-height: 1.5;
         }
@@ -54,11 +58,15 @@
 
         .logo-bar {
             display: flex;
-            align-items: baseline;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
             padding: 9px 16px 8px;
             border-bottom: 1px solid var(--border);
             background: var(--petrol);
+        }
+
+        .logo-bar .logo-icon {
+            flex-shrink: 0;
         }
 
         .logo-bar .logo {
@@ -136,8 +144,7 @@
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            border: 2px solid var(--border);
-            background: var(--card);
+            border: 2px solid transparent;
             cursor: pointer;
             padding: 0;
             transition: all 0.15s;
@@ -147,15 +154,15 @@
         .priority-pills button:hover { filter: brightness(0.88); }
         .priority-pills button:active { transform: scale(0.92); }
 
-        /* Inactive: subtle tint so all three are visible */
-        #prio-normal   { background: #E4E7EB; border-color: #C0C6CE; }
-        #prio-important { background: #FAE8C8; border-color: #E5C072; }
-        #prio-urgent   { background: #FCCFCF; border-color: #E89090; }
+        /* Inactive: subtle tint */
+        #prio-normal    { background: #FFF9C4; border-color: #E8C94A; }
+        #prio-important { background: #C8E6C9; border-color: #81C784; }
+        #prio-urgent    { background: #FCCFCF; border-color: #E89090; }
 
         /* Active: fully saturated */
-        #prio-normal.active-normal     { background: var(--text);      border-color: var(--text); }
+        #prio-normal.active-normal       { background: #D4A017; border-color: #B8860B; }
         #prio-important.active-important { background: var(--important); border-color: var(--important); }
-        #prio-urgent.active-urgent     { background: var(--urgent);    border-color: var(--urgent); }
+        #prio-urgent.active-urgent       { background: var(--urgent); border-color: var(--urgent); }
 
         /* Capture input row */
         .capture-row {
@@ -235,13 +242,6 @@
             font-weight: 600;
         }
 
-        /* Settings-Tab optisch abgesetzt */
-        nav button#nav-settings {
-            flex: 0 0 44px;
-            border-left: 1px solid var(--border);
-            font-size: 16px;
-        }
-
         .nav-badge {
             display: inline-block;
             background: var(--terra);
@@ -252,6 +252,31 @@
             margin-left: 3px;
             vertical-align: middle;
         }
+
+        /* Filter select in nav */
+        .nav-filter-wrap {
+            display: flex;
+            align-items: center;
+            border-left: 1px solid var(--border);
+            padding: 0 6px;
+            flex: 0 0 auto;
+        }
+
+        #nav-filter {
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-family: inherit;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px 2px;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            max-width: 80px;
+        }
+
+        #nav-filter:focus { color: var(--petrol); }
 
         /* =============================================
            MAIN CONTENT
@@ -277,7 +302,7 @@
 
         .entry-card.priority-urgent    { border-left-color: var(--urgent); }
         .entry-card.priority-important { border-left-color: var(--important); }
-        .entry-card.priority-normal    { border-left-color: var(--border); }
+        .entry-card.priority-normal    { border-left-color: #D4A017; }
         .entry-card.is-done            { opacity: 0.4; }
         .entry-card.impulse-card {
             background: var(--waldgruen-bg);
@@ -299,6 +324,7 @@
             gap: 5px;
             flex-wrap: wrap;
             margin-bottom: 7px;
+            align-items: center;
         }
 
         .badge {
@@ -312,6 +338,7 @@
         .badge-priv      { background: var(--private-bg); color: var(--private-col); }
         .badge-urgent    { background: var(--urgent-bg); color: var(--urgent); }
         .badge-important { background: var(--important-bg); color: var(--important); }
+        .badge-normal    { background: var(--normal-bg); color: var(--normal-col); }
         .badge-tag       { background: var(--waldgruen-bg); color: var(--waldgruen); }
         .badge-tagging   { background: #F7F7F5; color: #aaa; font-style: italic; }
 
@@ -358,7 +385,7 @@
         .btn-undo           { border-color: var(--border); color: var(--muted); }
         .btn-prio-urgent    { border-color: var(--urgent); color: var(--urgent); }
         .btn-prio-important { border-color: var(--important); color: var(--important); }
-        .btn-prio-normal    { border-color: var(--border); color: var(--muted); }
+        .btn-prio-normal    { border-color: #D4A017; color: var(--normal-col); }
 
         .btn-delete {
             border-color: var(--border);
@@ -525,6 +552,26 @@
 
         .add-tag-row input:focus { outline: none; border-color: var(--petrol); }
 
+        /* Settings trigger at bottom */
+        .settings-trigger {
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .settings-trigger button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .settings-trigger button:hover { color: var(--petrol); background: rgba(3,49,50,0.05); }
+
         /* ---- TOAST ---- */
         .toast {
             position: fixed;
@@ -552,6 +599,15 @@
 <div class="top-block">
 
     <div class="logo-bar">
+        <!-- Inline SVG compass icon — inverted for petrol background -->
+        <svg class="logo-icon" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="11" cy="11" r="9.5" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+            <circle cx="11" cy="11" r="1.8" fill="rgba(255,255,255,0.7)"/>
+            <!-- North pointer (white) -->
+            <polygon points="11,3 12.5,10.5 11,9.2 9.5,10.5" fill="white"/>
+            <!-- South pointer (terra) -->
+            <polygon points="11,19 9.5,11.5 11,12.8 12.5,11.5" fill="#F08972"/>
+        </svg>
         <span class="logo">INTEGRI</span>
         <span class="app-name">Braindump</span>
     </div>
@@ -579,10 +635,18 @@
     </div>
 
     <nav>
-        <button id="nav-morning" onclick="showView('morning')">☀️ Morning</button>
+        <button id="nav-morning" onclick="showView('morning')">☀️ Heute</button>
         <button id="nav-inbox" class="active" onclick="showView('inbox')">📥 Inbox <span class="nav-badge" id="inbox-badge">0</span></button>
         <button id="nav-archiv" onclick="showView('archiv')">📦 Archiv</button>
-        <button id="nav-settings" onclick="showView('settings')">⚙️</button>
+        <div class="nav-filter-wrap">
+            <select id="nav-filter" onchange="refreshAll()" title="Filtern">
+                <option value="">Alle</option>
+                <option value="arbeit">🔵 Arbeit</option>
+                <option value="private">🟤 Privat</option>
+                <option value="urgent">🔴 Dringend</option>
+                <option value="important">🟢 Wichtig</option>
+            </select>
+        </div>
     </nav>
 
 </div>
@@ -642,6 +706,11 @@
         </div>
     </div>
 
+    <!-- Settings trigger (always visible at bottom) -->
+    <div class="settings-trigger">
+        <button onclick="showView('settings')">⚙️ Einstellungen</button>
+    </div>
+
 </main>
 
 <div class="toast" id="toast"></div>
@@ -650,12 +719,12 @@
 // ============================================================
 // STATE
 // ============================================================
-let db = null;
-let currentView = 'inbox';
-let ctx = 'arbeit';
-let prio = 'normal';
+var db = null;
+var currentView = 'inbox';
+var ctx = 'arbeit';
+var prio = 'normal';
 
-const DEFAULT_TAGS = ['Content-Idee', 'Aufgabe', 'Zitat', 'Link', 'Referenz', 'Inspiration', 'Notiz'];
+var DEFAULT_TAGS = ['Content-Idee', 'Aufgabe', 'Zitat', 'Link', 'Referenz', 'Inspiration', 'Notiz'];
 
 function getTags() {
     try {
@@ -672,6 +741,11 @@ function saveTags(tags) {
 
 function getApiKey() {
     return localStorage.getItem('bd_api_key') || '';
+}
+
+function getNavFilter() {
+    var el = document.getElementById('nav-filter');
+    return el ? el.value : '';
 }
 
 // ============================================================
@@ -873,15 +947,15 @@ function buildCard(entry, opts) {
     var doneClass    = entry.done ? 'is-done' : '';
     var impulseClass = opts.impulse ? 'impulse-card' : '';
 
-    var ctxBadge = entry.context === 'arbeit' || entry.context === 'professional'
+    var ctxBadge = (entry.context === 'arbeit' || entry.context === 'professional')
         ? '<span class="badge badge-arbeit">🔵 Arbeit</span>'
         : '<span class="badge badge-priv">🟤 Privat</span>';
 
     var prioBadge = entry.priority === 'urgent'
-        ? '<span class="badge badge-urgent">Dringend</span>'
+        ? '<span class="badge badge-urgent">🔴 Dringend</span>'
         : entry.priority === 'important'
-            ? '<span class="badge badge-important">Wichtig</span>'
-            : '';
+            ? '<span class="badge badge-important">🟢 Wichtig</span>'
+            : '<span class="badge badge-normal">🟡 Normal</span>';
 
     var tagHtml = entry.tagging
         ? '<span class="badge badge-tagging">⏳ wird getaggt…</span>'
@@ -924,11 +998,78 @@ function buildCard(entry, opts) {
 }
 
 // ============================================================
+// DELETE — 2-click confirm, survives refreshAll
+// ============================================================
+var deleteTimers = {};
+var pendingDeletes = {};
+
+function applyDeleteStyle(btn, confirm) {
+    if (confirm) {
+        btn.textContent = 'Sicher?';
+        btn.style.background = 'var(--urgent-bg)';
+        btn.style.borderColor = 'var(--urgent)';
+        btn.style.color = 'var(--urgent)';
+    } else {
+        btn.textContent = '✕ Löschen';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+    }
+}
+
+function applyPendingDeleteStyles() {
+    Object.keys(pendingDeletes).forEach(function(id) {
+        var btn = document.getElementById('del-' + id);
+        if (btn) applyDeleteStyle(btn, true);
+    });
+}
+
+function doDeleteClick(id) {
+    var btn = document.getElementById('del-' + id);
+    if (!btn) return;
+
+    if (deleteTimers[id]) {
+        clearTimeout(deleteTimers[id]);
+        delete deleteTimers[id];
+        delete pendingDeletes[id];
+        doDeleteConfirmed(id);
+    } else {
+        pendingDeletes[id] = true;
+        applyDeleteStyle(btn, true);
+        deleteTimers[id] = setTimeout(function() {
+            delete deleteTimers[id];
+            delete pendingDeletes[id];
+            var b = document.getElementById('del-' + id);
+            if (b) applyDeleteStyle(b, false);
+        }, 3000);
+    }
+}
+
+async function doDeleteConfirmed(id) {
+    await dbDelete(id);
+    refreshAll();
+    showToast('Gelöscht');
+}
+
+// ============================================================
+// NAV FILTER helper
+// ============================================================
+function matchesNavFilter(entry) {
+    var f = getNavFilter();
+    if (!f) return true;
+    if (f === 'arbeit')    return entry.context === 'arbeit' || entry.context === 'professional';
+    if (f === 'private')   return entry.context === 'private';
+    if (f === 'urgent')    return entry.priority === 'urgent';
+    if (f === 'important') return entry.priority === 'important';
+    return true;
+}
+
+// ============================================================
 // MORNING VIEW
 // ============================================================
 async function renderMorning() {
     var entries = await dbGetAll();
-    var active = entries.filter(function(e) { return !e.done; });
+    var active = entries.filter(function(e) { return !e.done && matchesNavFilter(e); });
 
     var urgent = active.filter(function(e) { return e.priority === 'urgent'; });
 
@@ -963,6 +1104,8 @@ async function renderMorning() {
     impulseEl.innerHTML = impulse.length > 0
         ? '<div class="section-header">Aus dem Archiv</div>' + impulse.map(function(e) { return buildCard(e, { impulse: true, actions: false }); }).join('')
         : '';
+
+    applyPendingDeleteStyles();
 }
 
 // ============================================================
@@ -971,15 +1114,18 @@ async function renderMorning() {
 async function renderInbox() {
     var entries = await dbGetAll();
     var inbox = entries
-        .filter(function(e) { return !e.done; })
+        .filter(function(e) { return !e.done && matchesNavFilter(e); })
         .sort(function(a, b) { return b.createdAt - a.createdAt; });
 
-    document.getElementById('inbox-badge').textContent = inbox.length;
+    var allActive = entries.filter(function(e) { return !e.done; }).length;
+    document.getElementById('inbox-badge').textContent = allActive;
 
     var el = document.getElementById('inbox-list');
     el.innerHTML = inbox.length === 0
         ? '<div class="empty-state">Inbox leer.</div>'
         : inbox.map(function(e) { return buildCard(e); }).join('');
+
+    applyPendingDeleteStyles();
 }
 
 // ============================================================
@@ -1010,7 +1156,6 @@ async function renderArchiv() {
     var filtered = entries
         .filter(function(e) {
             if (!ctxFilter) return true;
-            // handle legacy 'professional' entries
             if (ctxFilter === 'arbeit') return e.context === 'arbeit' || e.context === 'professional';
             return e.context === ctxFilter;
         })
@@ -1023,6 +1168,8 @@ async function renderArchiv() {
     el.innerHTML = filtered.length === 0
         ? '<div class="empty-state">Keine Einträge gefunden.</div>'
         : filtered.map(function(e) { return buildCard(e); }).join('');
+
+    applyPendingDeleteStyles();
 }
 
 // ============================================================
@@ -1042,42 +1189,6 @@ async function doUndoDone(id) {
 async function doChangePrio(id, p) {
     await dbUpdate(id, { priority: p });
     refreshAll();
-}
-
-var deleteTimers = {};
-
-function doDeleteClick(id) {
-    var btn = document.getElementById('del-' + id);
-    if (!btn) return;
-
-    if (deleteTimers[id]) {
-        // Zweiter Klick — wirklich löschen
-        clearTimeout(deleteTimers[id]);
-        delete deleteTimers[id];
-        doDeleteConfirmed(id);
-    } else {
-        // Erster Klick — Bestätigung anfordern
-        btn.textContent = 'Sicher?';
-        btn.style.background = 'var(--urgent-bg)';
-        btn.style.borderColor = 'var(--urgent)';
-        btn.style.color = 'var(--urgent)';
-        deleteTimers[id] = setTimeout(function() {
-            delete deleteTimers[id];
-            if (document.getElementById('del-' + id)) {
-                var b = document.getElementById('del-' + id);
-                b.textContent = '✕ Löschen';
-                b.style.background = '';
-                b.style.borderColor = '';
-                b.style.color = '';
-            }
-        }, 3000);
-    }
-}
-
-async function doDeleteConfirmed(id) {
-    await dbDelete(id);
-    refreshAll();
-    showToast('Gelöscht');
 }
 
 // ============================================================
@@ -1142,7 +1253,8 @@ function showView(v) {
     document.querySelectorAll('.view').forEach(function(el) { el.classList.remove('active'); });
     document.querySelectorAll('nav button').forEach(function(el) { el.classList.remove('active'); });
     document.getElementById('view-' + v).classList.add('active');
-    document.getElementById('nav-' + v).classList.add('active');
+    var navBtn = document.getElementById('nav-' + v);
+    if (navBtn) navBtn.classList.add('active');
 
     if (v === 'morning')  renderMorning();
     if (v === 'inbox')    renderInbox();
