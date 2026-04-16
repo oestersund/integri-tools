@@ -667,7 +667,6 @@
     <div class="view" id="view-heute">
         <div id="heute-urgent"></div>
         <div id="heute-important"></div>
-        <div id="heute-impulse"></div>
     </div>
 
     <div class="view active" id="view-inbox">
@@ -1025,15 +1024,8 @@ async function renderHeute() {
         .sort(function(a, b) { return a.createdAt - b.createdAt; })
         .slice(0, 3);
 
-    var archived = entries.filter(function(e) { return e.done; });
-    var impulse = [];
-    if (archived.length > 0) {
-        impulse = archived.slice().sort(function() { return Math.random() - 0.5; }).slice(0, Math.min(2, archived.length));
-    }
-
     var urgentEl    = document.getElementById('heute-urgent');
     var importantEl = document.getElementById('heute-important');
-    var impulseEl   = document.getElementById('heute-impulse');
 
     urgentEl.innerHTML = urgent.length > 0
         ? '<div class="section-header">Dringend</div>' + urgent.map(function(e) { return buildCard(e); }).join('')
@@ -1046,10 +1038,6 @@ async function renderHeute() {
     if (urgent.length === 0 && important.length === 0) {
         urgentEl.innerHTML = '<div class="empty-state">Nichts Dringendes. Guter Start.</div>';
     }
-
-    impulseEl.innerHTML = impulse.length > 0
-        ? '<div class="section-header">Aus dem Archiv</div>' + impulse.map(function(e) { return buildCard(e, { impulse: true, actions: false }); }).join('')
-        : '';
 }
 
 // ============================================================
