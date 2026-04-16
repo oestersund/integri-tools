@@ -706,12 +706,6 @@
             <p class="settings-hint" id="sync-hint">Schreibt <code>braindump-sync.json</code> direkt in deinen Claude_Workspace-Ordner. Beim ersten Mal Ordner auswählen.</p>
         </div>
         <div class="settings-section">
-            <h3>Claude API Key</h3>
-            <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
-            <button class="btn-primary" onclick="saveApiKey()">Speichern</button>
-            <p class="settings-hint">Lokal gespeichert. Aktiviert Auto-Tagging via Claude Haiku nach dem Speichern eines Eintrags.</p>
-        </div>
-        <div class="settings-section">
             <h3>Tags</h3>
             <div class="tag-list" id="tag-list"></div>
             <div class="add-tag-row">
@@ -754,9 +748,6 @@ function saveTags(tags) {
     localStorage.setItem('bd_tags', JSON.stringify(tags));
 }
 
-function getApiKey() {
-    return localStorage.getItem('bd_api_key') || '';
-}
 
 function getNavFilterCtx() {
     var el = document.getElementById('nav-filter-ctx');
@@ -831,46 +822,6 @@ function dbGetAll() {
 }
 
 // ============================================================
-// AUTO-TAGGING
-// ============================================================
-async function autoTag(id, text) {
-    var apiKey = getApiKey();
-    if (!apiKey) return;
-    var tags = getTags();
-    try {
-        var resp = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-dangerous-direct-browser-access': 'true'
-            },
-            body: JSON.stringify({
-                model: 'claude-haiku-4-5-20251001',
-                max_tokens: 60,
-                messages: [{
-                    role: 'user',
-                    content: 'Welche dieser Tags passen zum folgenden Text? Tags: ' + tags.join(', ') + '. Antworte NUR mit kommaseparierter Liste passender Tags. Wenn kein Tag passt: "keine". Text: "' + text.replace(/"/g, "'") + '"'
-                }]
-            })
-        });
-        if (!resp.ok) { await dbUpdate(id, { tagging: false }); refreshAll(); return; }
-        var data = await resp.json();
-        var raw = data.content[0].text.trim();
-        var assigned = [];
-        if (raw.toLowerCase() !== 'keine') {
-            assigned = raw.split(',').map(function(t) { return t.trim(); }).filter(function(t) { return tags.indexOf(t) !== -1; });
-        }
-        await dbUpdate(id, { tags: assigned, tagging: false });
-        refreshAll();
-    } catch (e) {
-        await dbUpdate(id, { tagging: false });
-        refreshAll();
-    }
-}
-
-// ============================================================
 // INPUT
 // ============================================================
 function setContext(c) {
@@ -899,8 +850,7 @@ async function submitEntry() {
     var input = document.getElementById('entry-input');
     var text = input.value.trim();
     if (!text) return;
-    var hasKey = !!getApiKey();
-    var entry = { text: text, context: ctx, priority: prio, tags: [], tagging: hasKey, done: false, createdAt: Date.now() };
+    var entry = { text: text, context: ctx, priority: prio, tags: [], tagging: false, done: false, createdAt: Date.now() };
     var id = await dbAdd(entry);
     input.value = '';
     input.style.height = 'auto';
@@ -908,7 +858,6 @@ async function submitEntry() {
     setPriority('important'); // reset to default Grün
     refreshAll();
     showToast('Gespeichert');
-    if (hasKey) { autoTag(id, text); }
 }
 
 // ============================================================
@@ -1128,12 +1077,6 @@ async function doChangePrio(id, p) {
 // ============================================================
 // SETTINGS
 // ============================================================
-function saveApiKey() {
-    var key = document.getElementById('api-key-input').value.trim();
-    localStorage.setItem('bd_api_key', key);
-    showToast('API Key gespeichert');
-}
-
 function renderTagSettings() {
     var tags = getTags();
     document.getElementById('tag-list').innerHTML = tags.map(function(tag) {
@@ -1187,7 +1130,6 @@ function showView(v) {
     if (v === 'archiv')  renderArchiv();
     if (v === 'settings') {
         renderTagSettings();
-        document.getElementById('api-key-input').value = getApiKey();
     }
 }
 
