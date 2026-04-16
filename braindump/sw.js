@@ -1,10 +1,9 @@
-const CACHE = 'braindump-v3';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const CACHE = 'braindump-v4';
 
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE).then(function(cache) {
-            return cache.addAll(ASSETS);
+            return cache.addAll(['./manifest.json', './icon-192.png', './icon-512.png', './sw.js']);
         })
     );
     self.skipWaiting();
@@ -23,14 +22,26 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-    // Anthropic API-Calls nie cachen
     if (e.request.url.indexOf('api.anthropic.com') !== -1) return;
 
+    var isHTML = e.request.headers.get('accept') && e.request.headers.get('accept').indexOf('text/html') !== -1;
+
+    if (isHTML) {
+        // HTML immer vom Netzwerk — nie vom Cache
+        e.respondWith(
+            fetch(e.request).catch(function() {
+                return caches.match(e.request);
+            })
+        );
+        return;
+    }
+
+    // Statische Assets: Cache-First
     e.respondWith(
         caches.match(e.request).then(function(cached) {
             if (cached) return cached;
             return fetch(e.request).then(function(response) {
-                if (response.ok && e.request.url.startsWith(self.location.origin)) {
+                if (response.ok) {
                     var clone = response.clone();
                     caches.open(CACHE).then(function(cache) {
                         cache.put(e.request, clone);
