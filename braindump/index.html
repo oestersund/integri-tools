@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-title" content="Braindump">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <title>Braindump – INTEGRI</title>
     <style>
         :root {
@@ -33,7 +32,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -105,8 +104,13 @@
             background: var(--card);
             font-family: inherit;
             color: var(--muted);
-            transition: all 0.15s;
+            transition: background 0.15s, color 0.15s;
             white-space: nowrap;
+        }
+
+        .context-toggle button:hover:not(.active-arbeit):not(.active-priv) {
+            background: var(--bg);
+            color: var(--text);
         }
 
         .context-toggle button.active-arbeit {
@@ -120,44 +124,38 @@
             font-weight: 600;
         }
 
-        /* Priority pills */
+        /* Priority circles — Ampel */
         .priority-pills {
             display: flex;
-            gap: 5px;
+            gap: 6px;
             margin-left: auto;
+            align-items: center;
         }
 
         .priority-pills button {
-            padding: 5px 9px;
-            border-radius: 20px;
-            border: 1.5px solid var(--border);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
             background: var(--card);
-            color: var(--muted);
+            cursor: pointer;
+            padding: 0;
             transition: all 0.15s;
-            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .priority-pills button.active-normal {
-            background: var(--text);
-            color: white;
-            border-color: var(--text);
-        }
+        .priority-pills button:hover { filter: brightness(0.88); }
+        .priority-pills button:active { transform: scale(0.92); }
 
-        .priority-pills button.active-important {
-            background: var(--important);
-            color: white;
-            border-color: var(--important);
-        }
+        /* Inactive: subtle tint so all three are visible */
+        #prio-normal   { background: #E4E7EB; border-color: #C0C6CE; }
+        #prio-important { background: #FAE8C8; border-color: #E5C072; }
+        #prio-urgent   { background: #FCCFCF; border-color: #E89090; }
 
-        .priority-pills button.active-urgent {
-            background: var(--urgent);
-            color: white;
-            border-color: var(--urgent);
-        }
+        /* Active: fully saturated */
+        #prio-normal.active-normal     { background: var(--text);      border-color: var(--text); }
+        #prio-important.active-important { background: var(--important); border-color: var(--important); }
+        #prio-urgent.active-urgent     { background: var(--urgent);    border-color: var(--urgent); }
 
         /* Capture input row */
         .capture-row {
@@ -210,6 +208,7 @@
         nav {
             display: flex;
             border-top: 1px solid var(--border);
+            align-items: stretch;
         }
 
         nav button {
@@ -222,15 +221,25 @@
             color: var(--muted);
             cursor: pointer;
             border-bottom: 3px solid transparent;
-            transition: all 0.15s;
+            transition: color 0.15s, border-color 0.15s;
             font-family: inherit;
             white-space: nowrap;
         }
+
+        nav button:hover { color: var(--petrol); background: rgba(3,49,50,0.04); }
+        nav button:active { background: rgba(3,49,50,0.08); }
 
         nav button.active {
             color: var(--petrol);
             border-bottom-color: var(--terra);
             font-weight: 600;
+        }
+
+        /* Settings-Tab optisch abgesetzt */
+        nav button#nav-settings {
+            flex: 0 0 44px;
+            border-left: 1px solid var(--border);
+            font-size: 16px;
         }
 
         .nav-badge {
@@ -337,18 +346,27 @@
             font-weight: 500;
             cursor: pointer;
             font-family: inherit;
-            transition: filter 0.1s;
             background: var(--card);
             color: var(--text);
+            transition: filter 0.15s, background 0.15s, color 0.15s;
         }
-        .btn-sm:active { filter: brightness(0.9); }
+        .btn-sm:hover  { filter: brightness(0.94); }
+        .btn-sm:active { filter: brightness(0.84); transform: scale(0.97); }
 
-        .btn-done          { border-color: var(--waldgruen); color: var(--waldgruen); }
-        .btn-undo          { border-color: var(--border); color: var(--muted); }
-        .btn-prio-urgent   { border-color: var(--urgent); color: var(--urgent); }
+        .btn-done           { border-color: var(--waldgruen); color: var(--waldgruen); }
+        .btn-done:hover     { background: var(--waldgruen); color: white; }
+        .btn-undo           { border-color: var(--border); color: var(--muted); }
+        .btn-prio-urgent    { border-color: var(--urgent); color: var(--urgent); }
         .btn-prio-important { border-color: var(--important); color: var(--important); }
-        .btn-prio-normal   { border-color: var(--border); color: var(--muted); }
-        .btn-delete        { border-color: var(--border); color: var(--muted); margin-left: auto; }
+        .btn-prio-normal    { border-color: var(--border); color: var(--muted); }
+
+        .btn-delete {
+            border-color: var(--border);
+            color: var(--muted);
+            margin-left: auto;
+        }
+        .btn-delete:hover  { border-color: var(--urgent); color: var(--urgent); filter: none; background: var(--urgent-bg); }
+        .btn-delete:active { filter: brightness(0.9); }
 
         /* ---- SECTION HEADERS ---- */
         .section-header {
@@ -545,9 +563,9 @@
                 <button id="btn-priv" onclick="setContext('private')">🟤 Privat</button>
             </div>
             <div class="priority-pills">
-                <button id="prio-normal" class="active-normal" onclick="setPriority('normal')">Normal</button>
-                <button id="prio-important" onclick="setPriority('important')">Wichtig</button>
-                <button id="prio-urgent" onclick="setPriority('urgent')">Dringend</button>
+                <button id="prio-normal" class="active-normal" onclick="setPriority('normal')" title="Normal" aria-label="Normal"></button>
+                <button id="prio-important" onclick="setPriority('important')" title="Wichtig" aria-label="Wichtig"></button>
+                <button id="prio-urgent" onclick="setPriority('urgent')" title="Dringend" aria-label="Dringend"></button>
             </div>
         </div>
         <div class="capture-row">
@@ -890,7 +908,7 @@ function buildCard(entry, opts) {
 
         actions = '<div class="entry-actions">'
             + doneBtn + prioBtn
-            + '<button class="btn-sm btn-delete" onclick="doDelete(' + entry.id + ')">✕</button>'
+            + '<button class="btn-sm btn-delete" id="del-' + entry.id + '" onclick="doDeleteClick(' + entry.id + ')">✕ Löschen</button>'
             + '</div>';
     }
 
@@ -1026,8 +1044,37 @@ async function doChangePrio(id, p) {
     refreshAll();
 }
 
-async function doDelete(id) {
-    if (!confirm('Eintrag löschen?')) return;
+var deleteTimers = {};
+
+function doDeleteClick(id) {
+    var btn = document.getElementById('del-' + id);
+    if (!btn) return;
+
+    if (deleteTimers[id]) {
+        // Zweiter Klick — wirklich löschen
+        clearTimeout(deleteTimers[id]);
+        delete deleteTimers[id];
+        doDeleteConfirmed(id);
+    } else {
+        // Erster Klick — Bestätigung anfordern
+        btn.textContent = 'Sicher?';
+        btn.style.background = 'var(--urgent-bg)';
+        btn.style.borderColor = 'var(--urgent)';
+        btn.style.color = 'var(--urgent)';
+        deleteTimers[id] = setTimeout(function() {
+            delete deleteTimers[id];
+            if (document.getElementById('del-' + id)) {
+                var b = document.getElementById('del-' + id);
+                b.textContent = '✕ Löschen';
+                b.style.background = '';
+                b.style.borderColor = '';
+                b.style.color = '';
+            }
+        }, 3000);
+    }
+}
+
+async function doDeleteConfirmed(id) {
     await dbDelete(id);
     refreshAll();
     showToast('Gelöscht');
