@@ -13,7 +13,7 @@
         :root {
             --primary: #00A896;
             --primary-dark: #008B7D;
-            --text: #333;
+            --text: #1a1a1a;
             --bg: #f5f7fa;
             --card: #ffffff;
             --border: #e0e0e0;
@@ -31,46 +31,164 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            padding-bottom: 180px;
+            padding-bottom: 40px;
         }
 
-        /* ---- HEADER ---- */
-        header {
-            background: white;
-            border-bottom: 2px solid var(--primary);
-            padding: 10px 16px 0;
+        /* =============================================
+           TOP BLOCK — sticky as a unit
+        ============================================= */
+        .top-block {
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .header-top {
+        /* Logo bar */
+        .logo-bar {
             display: flex;
             align-items: baseline;
-            gap: 8px;
-            margin-bottom: 6px;
+            gap: 7px;
+            padding: 9px 16px 8px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .header-top .logo {
-            font-size: 16px;
+        .logo-bar .logo {
+            font-size: 15px;
             font-weight: 800;
             color: var(--primary);
             letter-spacing: 2px;
         }
 
-        .header-top .app-name {
+        .logo-bar .app-name {
             font-size: 13px;
             color: var(--muted);
         }
 
+        /* Capture area */
+        .capture-area {
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .capture-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .context-toggle {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .context-toggle button {
+            padding: 6px 10px;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            background: white;
+            font-family: inherit;
+            color: var(--muted);
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .context-toggle button.active-pro {
+            background: #EBF4FF;
+            color: var(--professional);
+            font-weight: 600;
+        }
+
+        .context-toggle button.active-priv {
+            background: #FFF3E0;
+            color: var(--private);
+            font-weight: 600;
+        }
+
+        .priority-btns {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+
+        .priority-btns button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            padding: 0;
+        }
+
+        .priority-btns button.active-normal   { border-color: var(--muted);      background: #F7FAFC; }
+        .priority-btns button.active-important { border-color: var(--important);  background: #FFFBEB; }
+        .priority-btns button.active-urgent    { border-color: var(--urgent);     background: #FFF5F5; }
+
+        .capture-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        #entry-input {
+            flex: 1;
+            padding: 11px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+            min-height: 46px;
+            max-height: 130px;
+            line-height: 1.45;
+            overflow-y: auto;
+            color: var(--text);
+            background: #fafafa;
+        }
+
+        #entry-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        #submit-btn {
+            width: 46px;
+            height: 46px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        #submit-btn:active { background: var(--primary-dark); }
+
+        /* Nav tabs */
         nav {
             display: flex;
+            border-top: 1px solid var(--border);
         }
 
         nav button {
             flex: 1;
-            padding: 7px 2px;
+            padding: 8px 2px;
             border: none;
             background: none;
             font-size: 14px;
@@ -99,7 +217,9 @@
             vertical-align: middle;
         }
 
-        /* ---- MAIN ---- */
+        /* =============================================
+           MAIN CONTENT
+        ============================================= */
         main {
             padding: 14px 14px 0;
             max-width: 600px;
@@ -113,20 +233,24 @@
         .entry-card {
             background: white;
             border-radius: 10px;
-            padding: 12px 14px;
+            padding: 13px 15px;
             margin-bottom: 10px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.07);
             border-left: 4px solid var(--border);
         }
 
-        .entry-card.priority-urgent { border-left-color: var(--urgent); }
+        .entry-card.priority-urgent   { border-left-color: var(--urgent); }
         .entry-card.priority-important { border-left-color: var(--important); }
-        .entry-card.priority-normal { border-left-color: var(--border); }
-        .entry-card.is-done { opacity: 0.45; }
-        .entry-card.impulse-card { background: linear-gradient(135deg, #F0FDF9, #E6FFFA); border: 1px solid #B2F5EA; border-left: 4px solid var(--primary); }
+        .entry-card.priority-normal    { border-left-color: var(--border); }
+        .entry-card.is-done            { opacity: 0.45; }
+        .entry-card.impulse-card {
+            background: linear-gradient(135deg, #F0FDF9, #E6FFFA);
+            border: 1px solid #B2F5EA;
+            border-left: 4px solid var(--primary);
+        }
 
         .impulse-label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -138,7 +262,7 @@
             display: flex;
             gap: 5px;
             flex-wrap: wrap;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
         }
 
         .badge {
@@ -148,12 +272,12 @@
             font-weight: 500;
         }
 
-        .badge-pro { background: #EBF4FF; color: var(--professional); }
-        .badge-priv { background: #FFF3E0; color: var(--private); }
-        .badge-urgent { background: #FFF5F5; color: var(--urgent); }
+        .badge-pro       { background: #EBF4FF; color: var(--professional); }
+        .badge-priv      { background: #FFF3E0; color: var(--private); }
+        .badge-urgent    { background: #FFF5F5; color: var(--urgent); }
         .badge-important { background: #FFFBEB; color: var(--important); }
-        .badge-tag { background: #F0FDF9; color: var(--primary-dark); }
-        .badge-tagging { background: #F5F5F5; color: #aaa; font-style: italic; }
+        .badge-tag       { background: #F0FDF9; color: var(--primary-dark); }
+        .badge-tagging   { background: #F5F5F5; color: #aaa; font-style: italic; }
 
         .entry-text {
             font-size: 17px;
@@ -174,6 +298,7 @@
             gap: 6px;
             margin-top: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .btn-sm {
@@ -187,12 +312,12 @@
         }
         .btn-sm:active { opacity: 0.7; }
 
-        .btn-done { background: #E6FFFA; color: var(--primary-dark); }
-        .btn-undo { background: #F0F0F0; color: var(--muted); }
-        .btn-prio-urgent { background: #FFF5F5; color: var(--urgent); }
+        .btn-done          { background: #E6FFFA; color: var(--primary-dark); }
+        .btn-undo          { background: #F0F0F0; color: var(--muted); }
+        .btn-prio-urgent   { background: #FFF5F5; color: var(--urgent); }
         .btn-prio-important { background: #FFFBEB; color: var(--important); }
-        .btn-prio-normal { background: #F7FAFC; color: var(--muted); }
-        .btn-delete { background: #FFF5F5; color: var(--urgent); margin-left: auto; }
+        .btn-prio-normal   { background: #F7FAFC; color: var(--muted); }
+        .btn-delete        { background: #FFF5F5; color: var(--urgent); margin-left: auto; }
 
         /* ---- SECTION HEADERS ---- */
         .section-header {
@@ -208,8 +333,8 @@
         .empty-state {
             text-align: center;
             color: #bbb;
-            font-size: 15px;
-            padding: 32px 0;
+            font-size: 16px;
+            padding: 36px 0;
         }
 
         /* ---- ARCHIV FILTERS ---- */
@@ -224,10 +349,10 @@
         .filter-bar select {
             flex: 1;
             min-width: 110px;
-            padding: 8px 10px;
+            padding: 9px 10px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-family: inherit;
             background: white;
             color: var(--text);
@@ -235,115 +360,6 @@
 
         .filter-bar input:focus,
         .filter-bar select:focus { outline: none; border-color: var(--primary); }
-
-        /* ---- INPUT BAR ---- */
-        .input-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid var(--border);
-            padding: 10px 14px;
-            padding-bottom: max(10px, env(safe-area-inset-bottom));
-            z-index: 200;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.07);
-        }
-
-        .input-controls {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .context-toggle {
-            display: flex;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-
-        .context-toggle button {
-            padding: 5px 9px;
-            border: none;
-            font-size: 12px;
-            cursor: pointer;
-            background: white;
-            font-family: inherit;
-            color: var(--muted);
-            transition: all 0.15s;
-            white-space: nowrap;
-        }
-
-        .context-toggle button.active-pro { background: #EBF4FF; color: var(--professional); font-weight: 600; }
-        .context-toggle button.active-priv { background: #FFF3E0; color: var(--private); font-weight: 600; }
-
-        .priority-btns {
-            display: flex;
-            gap: 5px;
-            margin-left: auto;
-        }
-
-        .priority-btns button {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            background: white;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
-            padding: 0;
-        }
-
-        .priority-btns button.active-normal { border-color: var(--muted); background: #F7FAFC; }
-        .priority-btns button.active-important { border-color: var(--important); background: #FFFBEB; }
-        .priority-btns button.active-urgent { border-color: var(--urgent); background: #FFF5F5; }
-
-        .input-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-
-        #entry-input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: inherit;
-            resize: none;
-            min-height: 44px;
-            max-height: 120px;
-            line-height: 1.4;
-            overflow-y: auto;
-        }
-
-        #entry-input:focus { outline: none; border-color: var(--primary); }
-
-        #submit-btn {
-            width: 44px;
-            height: 44px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            line-height: 1;
-        }
-
-        #submit-btn:active { background: var(--primary-dark); }
 
         /* ---- SETTINGS ---- */
         .settings-section {
@@ -355,7 +371,7 @@
         }
 
         .settings-section h3 {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
@@ -369,7 +385,7 @@
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-family: inherit;
             margin-bottom: 8px;
         }
@@ -377,9 +393,10 @@
         .settings-section input:focus { outline: none; border-color: var(--primary); }
 
         .settings-hint {
-            font-size: 12px;
+            font-size: 13px;
             color: #aaa;
             margin-top: 6px;
+            line-height: 1.4;
         }
 
         .btn-primary {
@@ -388,18 +405,18 @@
             border: none;
             padding: 9px 18px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             font-family: inherit;
         }
 
         .btn-secondary {
-            background: #718096;
+            background: var(--muted);
             color: white;
             border: none;
             padding: 9px 18px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             font-family: inherit;
         }
@@ -414,12 +431,12 @@
         .tag-chip {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: #F0FDF9;
             color: var(--primary-dark);
-            padding: 4px 10px 4px 10px;
+            padding: 5px 10px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .tag-chip button {
@@ -430,7 +447,6 @@
             font-size: 13px;
             padding: 0;
             opacity: 0.5;
-            line-height: 1;
         }
 
         .tag-chip button:hover { opacity: 1; }
@@ -442,10 +458,10 @@
 
         .add-tag-row input {
             flex: 1;
-            padding: 8px 10px;
+            padding: 9px 10px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-family: inherit;
         }
 
@@ -454,14 +470,14 @@
         /* ---- TOAST ---- */
         .toast {
             position: fixed;
-            top: 70px;
+            top: 180px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.72);
             color: white;
             padding: 7px 16px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             z-index: 500;
             opacity: 0;
             transition: opacity 0.25s;
@@ -474,30 +490,57 @@
 </head>
 <body>
 
-<header>
-    <div class="header-top">
+<!-- ============ TOP BLOCK (sticky) ============ -->
+<div class="top-block">
+
+    <div class="logo-bar">
         <span class="logo">INTEGRI</span>
         <span class="app-name">Braindump</span>
     </div>
+
+    <div class="capture-area">
+        <div class="capture-controls">
+            <div class="context-toggle">
+                <button id="btn-pro" class="active-pro" onclick="setContext('professional')">🔵 Professionell</button>
+                <button id="btn-priv" onclick="setContext('private')">🟤 Privat</button>
+            </div>
+            <div class="priority-btns">
+                <button id="prio-normal" class="active-normal" onclick="setPriority('normal')" title="Normal">⚪</button>
+                <button id="prio-important" onclick="setPriority('important')" title="Wichtig">🟡</button>
+                <button id="prio-urgent" onclick="setPriority('urgent')" title="Dringend">🔴</button>
+            </div>
+        </div>
+        <div class="capture-row">
+            <textarea id="entry-input"
+                placeholder="Gedanke, Aufgabe, URL, Zitat..."
+                rows="1"
+                onkeydown="handleKey(event)"
+                oninput="autoResize(this)"></textarea>
+            <button id="submit-btn" onclick="submitEntry()">↑</button>
+        </div>
+    </div>
+
     <nav>
-        <button id="nav-morning" class="active" onclick="showView('morning')">☀️ Morning</button>
-        <button id="nav-inbox" onclick="showView('inbox')">📥 Inbox <span class="nav-badge" id="inbox-badge">0</span></button>
+        <button id="nav-morning" onclick="showView('morning')">☀️ Morning</button>
+        <button id="nav-inbox" class="active" onclick="showView('inbox')">📥 Inbox <span class="nav-badge" id="inbox-badge">0</span></button>
         <button id="nav-archiv" onclick="showView('archiv')">📦 Archiv</button>
         <button id="nav-settings" onclick="showView('settings')">⚙️</button>
     </nav>
-</header>
 
+</div>
+
+<!-- ============ MAIN ============ -->
 <main>
 
     <!-- MORNING VIEW -->
-    <div class="view active" id="view-morning">
+    <div class="view" id="view-morning">
         <div id="morning-urgent"></div>
         <div id="morning-important"></div>
         <div id="morning-impulse"></div>
     </div>
 
     <!-- INBOX VIEW -->
-    <div class="view" id="view-inbox">
+    <div class="view active" id="view-inbox">
         <div id="inbox-list"></div>
     </div>
 
@@ -529,7 +572,7 @@
             <h3>Claude API Key</h3>
             <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
             <button class="btn-primary" onclick="saveApiKey()">Speichern</button>
-            <p class="settings-hint">Wird lokal im Browser gespeichert. Ermöglicht Auto-Tagging neuer Einträge via Claude Haiku.</p>
+            <p class="settings-hint">Lokal gespeichert. Aktiviert Auto-Tagging via Claude Haiku nach dem Speichern eines Eintrags.</p>
         </div>
         <div class="settings-section">
             <h3>Tags</h3>
@@ -548,29 +591,6 @@
 
 </main>
 
-<!-- INPUT BAR -->
-<div class="input-bar" id="input-bar">
-    <div class="input-controls">
-        <div class="context-toggle">
-            <button id="btn-pro" class="active-pro" onclick="setContext('professional')">🔵 Professionell</button>
-            <button id="btn-priv" onclick="setContext('private')">🟤 Privat</button>
-        </div>
-        <div class="priority-btns">
-            <button id="prio-normal" class="active-normal" onclick="setPriority('normal')" title="Normal">⚪</button>
-            <button id="prio-important" onclick="setPriority('important')" title="Wichtig">🟡</button>
-            <button id="prio-urgent" onclick="setPriority('urgent')" title="Dringend">🔴</button>
-        </div>
-    </div>
-    <div class="input-row">
-        <textarea id="entry-input"
-            placeholder="Gedanke, Aufgabe, URL, Zitat..."
-            rows="1"
-            onkeydown="handleKey(event)"
-            oninput="autoResize(this)"></textarea>
-        <button id="submit-btn" onclick="submitEntry()">↑</button>
-    </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -578,7 +598,7 @@
 // STATE
 // ============================================================
 let db = null;
-let currentView = 'morning';
+let currentView = 'inbox';
 let ctx = 'professional';
 let prio = 'normal';
 
@@ -586,10 +606,10 @@ const DEFAULT_TAGS = ['Content-Idee', 'Aufgabe', 'Zitat', 'Link', 'Referenz', 'I
 
 function getTags() {
     try {
-        const s = localStorage.getItem('bd_tags');
-        return s ? JSON.parse(s) : [...DEFAULT_TAGS];
+        var s = localStorage.getItem('bd_tags');
+        return s ? JSON.parse(s) : DEFAULT_TAGS.slice();
     } catch (e) {
-        return [...DEFAULT_TAGS];
+        return DEFAULT_TAGS.slice();
     }
 }
 
@@ -687,7 +707,7 @@ async function autoTag(id, text) {
                 max_tokens: 60,
                 messages: [{
                     role: 'user',
-                    content: 'Welche dieser Tags passen zum folgenden Text? Verfügbare Tags: ' + tags.join(', ') + '. Antworte NUR mit einer kommaseparierten Liste passender Tags, keine anderen Wörter. Wenn kein Tag passt, antworte mit "keine". Text: "' + text.replace(/"/g, "'") + '"'
+                    content: 'Welche dieser Tags passen zum folgenden Text? Tags: ' + tags.join(', ') + '. Antworte NUR mit kommaseparierter Liste passender Tags. Wenn kein Tag passt: "keine". Text: "' + text.replace(/"/g, "'") + '"'
                 }]
             })
         });
@@ -705,7 +725,7 @@ async function autoTag(id, text) {
         if (raw.toLowerCase() !== 'keine') {
             assigned = raw.split(',')
                 .map(function(t) { return t.trim(); })
-                .filter(function(t) { return tags.includes(t); });
+                .filter(function(t) { return tags.indexOf(t) !== -1; });
         }
 
         await dbUpdate(id, { tags: assigned, tagging: false });
@@ -741,7 +761,7 @@ function handleKey(e) {
 
 function autoResize(el) {
     el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    el.style.height = Math.min(el.scrollHeight, 130) + 'px';
 }
 
 async function submitEntry() {
@@ -764,6 +784,7 @@ async function submitEntry() {
 
     input.value = '';
     input.style.height = 'auto';
+    input.focus();
     setPriority('normal');
 
     refreshAll();
@@ -823,18 +844,17 @@ function buildCard(entry, opts) {
 
         var prioBtn = '';
         if (entry.priority !== 'urgent') {
-            prioBtn += '<button class="btn-sm btn-prio-urgent" onclick="doChangePrio(' + entry.id + ', \'urgent\')">🔴</button>';
+            prioBtn += '<button class="btn-sm btn-prio-urgent" onclick="doChangePrio(' + entry.id + ",\'urgent\')" + '>🔴</button>';
         }
         if (entry.priority !== 'important') {
-            prioBtn += '<button class="btn-sm btn-prio-important" onclick="doChangePrio(' + entry.id + ', \'important\')">🟡</button>';
+            prioBtn += '<button class="btn-sm btn-prio-important" onclick="doChangePrio(' + entry.id + ",\'important\')" + '>🟡</button>';
         }
         if (entry.priority !== 'normal') {
-            prioBtn += '<button class="btn-sm btn-prio-normal" onclick="doChangePrio(' + entry.id + ', \'normal\')">⚪</button>';
+            prioBtn += '<button class="btn-sm btn-prio-normal" onclick="doChangePrio(' + entry.id + ",\'normal\')" + '>⚪</button>';
         }
 
         actions = '<div class="entry-actions">'
-            + doneBtn
-            + prioBtn
+            + doneBtn + prioBtn
             + '<button class="btn-sm btn-delete" onclick="doDelete(' + entry.id + ')">✕</button>'
             + '</div>';
     }
@@ -871,9 +891,9 @@ async function renderMorning() {
         impulse = shuffled.slice(0, Math.min(2, shuffled.length));
     }
 
-    var urgentEl = document.getElementById('morning-urgent');
+    var urgentEl   = document.getElementById('morning-urgent');
     var importantEl = document.getElementById('morning-important');
-    var impulseEl = document.getElementById('morning-impulse');
+    var impulseEl  = document.getElementById('morning-impulse');
 
     if (urgent.length > 0) {
         urgentEl.innerHTML = '<div class="section-header">🔴 Dringend</div>'
@@ -926,14 +946,13 @@ async function renderInbox() {
 async function renderArchiv() {
     var entries = await dbGetAll();
 
-    var search = document.getElementById('f-search').value.toLowerCase();
-    var ctxFilter = document.getElementById('f-context').value;
+    var search    = document.getElementById('f-search').value.toLowerCase();
+    var ctxFilter  = document.getElementById('f-context').value;
     var prioFilter = document.getElementById('f-priority').value;
-    var tagFilter = document.getElementById('f-tag').value;
 
     var tagSelect = document.getElementById('f-tag');
-    var prevTag = tagSelect.value;
-    var allTags = [];
+    var prevTag   = tagSelect.value;
+    var allTags   = [];
     entries.forEach(function(e) {
         (e.tags || []).forEach(function(t) {
             if (allTags.indexOf(t) === -1) allTags.push(t);
@@ -945,11 +964,13 @@ async function renderArchiv() {
             return '<option value="' + t + '"' + (t === prevTag ? ' selected' : '') + '>' + t + '</option>';
         }).join('');
 
+    var tagFilter = tagSelect.value;
+
     var filtered = entries
-        .filter(function(e) { return !search || e.text.toLowerCase().indexOf(search) !== -1; })
-        .filter(function(e) { return !ctxFilter || e.context === ctxFilter; })
+        .filter(function(e) { return !search    || e.text.toLowerCase().indexOf(search) !== -1; })
+        .filter(function(e) { return !ctxFilter  || e.context === ctxFilter; })
         .filter(function(e) { return !prioFilter || e.priority === prioFilter; })
-        .filter(function(e) { return !tagFilter || (e.tags || []).indexOf(tagFilter) !== -1; })
+        .filter(function(e) { return !tagFilter  || (e.tags || []).indexOf(tagFilter) !== -1; })
         .sort(function(a, b) { return b.createdAt - a.createdAt; });
 
     var el = document.getElementById('archiv-list');
@@ -1000,7 +1021,7 @@ function renderTagSettings() {
     document.getElementById('tag-list').innerHTML = tags.map(function(tag) {
         var escaped = tag.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         return '<div class="tag-chip">' + tag
-            + '<button onclick="removeTag(\'' + escaped + '\')" title="Entfernen">✕</button>'
+            + '<button onclick="removeTag(\'' + escaped + '\')">✕</button>'
             + '</div>';
     }).join('');
 }
@@ -1050,11 +1071,9 @@ function showView(v) {
     document.getElementById('view-' + v).classList.add('active');
     document.getElementById('nav-' + v).classList.add('active');
 
-    document.getElementById('input-bar').style.display = v === 'settings' ? 'none' : '';
-
-    if (v === 'morning') renderMorning();
-    if (v === 'inbox') renderInbox();
-    if (v === 'archiv') renderArchiv();
+    if (v === 'morning')  renderMorning();
+    if (v === 'inbox')    renderInbox();
+    if (v === 'archiv')   renderArchiv();
     if (v === 'settings') {
         renderTagSettings();
         document.getElementById('api-key-input').value = getApiKey();
@@ -1063,8 +1082,8 @@ function showView(v) {
 
 function refreshAll() {
     if (currentView === 'morning') renderMorning();
-    if (currentView === 'inbox') renderInbox();
-    if (currentView === 'archiv') renderArchiv();
+    if (currentView === 'inbox')   renderInbox();
+    if (currentView === 'archiv')  renderArchiv();
     dbGetAll().then(function(entries) {
         var count = entries.filter(function(e) { return !e.done; }).length;
         document.getElementById('inbox-badge').textContent = count;
@@ -1086,13 +1105,12 @@ function showToast(msg) {
 // ============================================================
 async function init() {
     db = await initDB();
-    showView('morning');
+    showView('inbox');
     document.getElementById('entry-input').focus();
 }
 
 init();
 
-// SERVICE WORKER
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js').catch(function() {});
