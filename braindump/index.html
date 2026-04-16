@@ -618,16 +618,17 @@
             <span class="app-name"> Braindump</span>
         </div>
         <div class="logo-filter-wrap">
-            <select id="nav-filter-ctx" onchange="refreshAll()" title="Kontext filtern">
+            <select id="nav-filter-combined" onchange="refreshAll()" title="Filtern">
                 <option value="">Alle</option>
-                <option value="arbeit">🔵 Arbeit</option>
-                <option value="private">🟤 Privat</option>
-            </select>
-            <select id="nav-filter-prio" onchange="refreshAll()" title="Priorität filtern">
-                <option value="">Alle Prio</option>
-                <option value="urgent">🔴 Dringend</option>
-                <option value="important">🟢 Wichtig</option>
-                <option value="normal">🟡 Normal</option>
+                <optgroup label="Kontext">
+                    <option value="ctx:arbeit">🔵 Arbeit</option>
+                    <option value="ctx:private">🟤 Privat</option>
+                </optgroup>
+                <optgroup label="Priorität">
+                    <option value="prio:urgent">🔴 Dringend</option>
+                    <option value="prio:important">🟢 Wichtig</option>
+                    <option value="prio:normal">🟡 Normal</option>
+                </optgroup>
             </select>
         </div>
     </div>
@@ -753,13 +754,15 @@ function getApiKey() {
 }
 
 function getNavFilterCtx() {
-    var el = document.getElementById('nav-filter-ctx');
-    return el ? el.value : '';
+    var el = document.getElementById('nav-filter-combined');
+    if (!el) return '';
+    return el.value.startsWith('ctx:') ? el.value.replace('ctx:', '') : '';
 }
 
 function getNavFilterPrio() {
-    var el = document.getElementById('nav-filter-prio');
-    return el ? el.value : '';
+    var el = document.getElementById('nav-filter-combined');
+    if (!el) return '';
+    return el.value.startsWith('prio:') ? el.value.replace('prio:', '') : '';
 }
 
 // ============================================================
