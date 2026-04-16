@@ -112,15 +112,16 @@
 
         /* Capture area */
         .capture-area {
-            padding: 10px 14px 12px;
-            border-bottom: 1px solid var(--border);
+            padding: 14px 14px 18px;
+            border-bottom: 3px solid var(--border);
+            background: var(--card);
         }
 
         .capture-controls {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         /* Context toggle */
@@ -201,40 +202,43 @@
 
         #entry-input {
             flex: 1;
-            padding: 11px 13px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 13px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 17px;
             font-family: inherit;
             resize: none;
-            min-height: 46px;
-            max-height: 130px;
-            line-height: 1.45;
+            min-height: 80px;
+            max-height: 200px;
+            line-height: 1.5;
             overflow-y: auto;
             color: var(--text);
             background: var(--bg);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
         }
 
         #entry-input:focus {
             outline: none;
             border-color: var(--petrol);
             background: var(--card);
+            box-shadow: 0 0 0 3px rgba(3,49,50,0.08), inset 0 1px 3px rgba(0,0,0,0.04);
         }
 
         #submit-btn {
-            width: 46px;
-            height: 46px;
+            width: 52px;
+            height: 52px;
             background: var(--terra);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 22px;
+            border-radius: 10px;
+            font-size: 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-family: inherit;
+            align-self: flex-end;
         }
 
         #submit-btn:active { filter: brightness(0.85); }
