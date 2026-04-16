@@ -697,6 +697,11 @@
 
     <div class="view" id="view-settings">
         <div class="settings-section">
+            <h3>Cowork Sync</h3>
+            <button class="btn-primary" onclick="syncToWorkspace()">⬆ Sync zu Cowork</button>
+            <p class="settings-hint" id="sync-hint">Schreibt <code>braindump-sync.json</code> direkt in deinen Claude_Workspace-Ordner. Beim ersten Mal Ordner auswählen.</p>
+        </div>
+        <div class="settings-section">
             <h3>Claude API Key</h3>
             <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
             <button class="btn-primary" onclick="saveApiKey()">Speichern</button>
@@ -1202,12 +1207,108 @@ function showToast(msg) {
 }
 
 // ============================================================
+// WORKSPACE SYNC
+// ============================================================
+var settingsDb = null;
+
+async function initSettingsDB() {
+    if (settingsDb) return settingsDb;
+    return new Promise(function(resolve, reject) {
+        var req = indexedDB.open('braindump_settings', 1);
+        req.onupgradeneeded = function(e) {
+            e.target.result.createObjectStore('settings', { keyPath: 'key' });
+        };
+        req.onsuccess = function(e) { settingsDb = e.target.result; resolve(settingsDb); };
+        req.onerror = function() { reject(req.error); };
+    });
+}
+
+async function getSyncDirHandle() {
+    await initSettingsDB();
+    return new Promise(function(resolve) {
+        var tx = settingsDb.transaction('settings', 'readonly');
+        var req = tx.objectStore('settings').get('syncDir');
+        req.onsuccess = function() { resolve(req.result ? req.result.handle : null); };
+        req.onerror = function() { resolve(null); };
+    });
+}
+
+async function saveSyncDirHandle(handle) {
+    await initSettingsDB();
+    return new Promise(function(resolve) {
+        var tx = settingsDb.transaction('settings', 'readwrite');
+        tx.objectStore('settings').put({ key: 'syncDir', handle: handle });
+        tx.oncomplete = resolve;
+    });
+}
+
+async function syncToWorkspace() {
+    var entries = await dbGetAll();
+    var lastSync = localStorage.getItem('bd_last_sync') || null;
+    var payload = JSON.stringify({
+        exported: new Date().toISOString(),
+        lastSync: lastSync,
+        entries: entries
+    }, null, 2);
+
+    // File System Access API (Chrome/Edge Desktop)
+    if ('showDirectoryPicker' in window) {
+        try {
+            var dirHandle = await getSyncDirHandle();
+
+            if (dirHandle) {
+                var perm = await dirHandle.queryPermission({ mode: 'readwrite' });
+                if (perm !== 'granted') perm = await dirHandle.requestPermission({ mode: 'readwrite' });
+                if (perm !== 'granted') dirHandle = null;
+            }
+
+            if (!dirHandle) {
+                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+                await saveSyncDirHandle(dirHandle);
+            }
+
+            var fileHandle = await dirHandle.getFileHandle('braindump-sync.json', { create: true });
+            var writable = await fileHandle.createWritable();
+            await writable.write(payload);
+            await writable.close();
+
+            localStorage.setItem('bd_last_sync', new Date().toISOString());
+            document.getElementById('sync-hint').textContent = 'Letzter Sync: ' + new Date().toLocaleString('de-DE');
+            showToast('Sync ✓');
+            return;
+        } catch(e) {
+            if (e.name === 'AbortError') return; // Nutzer hat abgebrochen
+            // Bei anderen Fehlern: Fallback auf Download
+        }
+    }
+
+    // Fallback: normaler Download (iPhone / Safari)
+    var blob = new Blob([payload], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'braindump-sync.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    localStorage.setItem('bd_last_sync', new Date().toISOString());
+    showToast('Exportiert — Datei in Claude_Workspace speichern');
+}
+
+// ============================================================
 // INIT
 // ============================================================
 async function init() {
     db = await initDB();
     showView('inbox');
     document.getElementById('entry-input').focus();
+    // Letzten Sync-Zeitpunkt anzeigen
+    var lastSync = localStorage.getItem('bd_last_sync');
+    if (lastSync) {
+        var hint = document.getElementById('sync-hint');
+        if (hint) hint.textContent = 'Letzter Sync: ' + new Date(lastSync).toLocaleString('de-DE');
+    }
 }
 
 init();
