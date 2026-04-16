@@ -8,68 +8,77 @@
     <meta name="apple-mobile-web-app-title" content="Braindump">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <title>Braindump – INTEGRI</title>
     <style>
         :root {
-            --primary: #00A896;
-            --primary-dark: #008B7D;
-            --text: #1a1a1a;
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --border: #e0e0e0;
-            --urgent: #e53e3e;
-            --important: #d69e2e;
-            --muted: #718096;
-            --professional: #3182ce;
-            --private: #8B6914;
+            --petrol:       #033132;
+            --petrol-bg:    #E8F5F4;
+            --terra:        #F08972;
+            --waldgruen:    #2D7D3E;
+            --waldgruen-bg: #E8F5E9;
+            --text:         #2C3E50;
+            --muted:        #718096;
+            --bg:           #F7F7F5;
+            --card:         #FFFFFF;
+            --border:       #D1D5D8;
+            --urgent:       #C53030;
+            --urgent-bg:    #FFF5F5;
+            --important:    #B7791F;
+            --important-bg: #FFFBEB;
+            --private-col:  #8B6914;
+            --private-bg:   #FFF5E0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             padding-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         /* =============================================
-           TOP BLOCK — sticky as a unit
+           TOP BLOCK — sticky
         ============================================= */
         .top-block {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: var(--card);
+            box-shadow: 0 2px 8px rgba(3,49,50,0.10);
         }
 
-        /* Logo bar */
         .logo-bar {
             display: flex;
             align-items: baseline;
-            gap: 7px;
+            gap: 8px;
             padding: 9px 16px 8px;
             border-bottom: 1px solid var(--border);
+            background: var(--petrol);
         }
 
         .logo-bar .logo {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 2px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 2.5px;
         }
 
         .logo-bar .app-name {
             font-size: 13px;
-            color: var(--muted);
+            color: rgba(255,255,255,0.65);
+            font-weight: 400;
         }
 
         /* Capture area */
         .capture-area {
-            padding: 10px 14px;
-            border-bottom: 2px solid var(--primary);
+            padding: 10px 14px 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .capture-controls {
@@ -79,62 +88,78 @@
             margin-bottom: 8px;
         }
 
+        /* Context toggle */
         .context-toggle {
             display: flex;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
         }
 
         .context-toggle button {
             padding: 6px 10px;
             border: none;
             font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            background: white;
+            background: var(--card);
             font-family: inherit;
             color: var(--muted);
             transition: all 0.15s;
             white-space: nowrap;
         }
 
-        .context-toggle button.active-pro {
-            background: #EBF4FF;
-            color: var(--professional);
-            font-weight: 600;
+        .context-toggle button.active-arbeit {
+            background: var(--petrol);
+            color: white;
         }
 
         .context-toggle button.active-priv {
-            background: #FFF3E0;
-            color: var(--private);
+            background: var(--private-bg);
+            color: var(--private-col);
             font-weight: 600;
         }
 
-        .priority-btns {
+        /* Priority pills */
+        .priority-pills {
             display: flex;
             gap: 5px;
             margin-left: auto;
         }
 
-        .priority-btns button {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            background: white;
+        .priority-pills button {
+            padding: 5px 9px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: inherit;
+            background: var(--card);
+            color: var(--muted);
             transition: all 0.15s;
-            padding: 0;
+            white-space: nowrap;
         }
 
-        .priority-btns button.active-normal   { border-color: var(--muted);      background: #F7FAFC; }
-        .priority-btns button.active-important { border-color: var(--important);  background: #FFFBEB; }
-        .priority-btns button.active-urgent    { border-color: var(--urgent);     background: #FFF5F5; }
+        .priority-pills button.active-normal {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
 
+        .priority-pills button.active-important {
+            background: var(--important);
+            color: white;
+            border-color: var(--important);
+        }
+
+        .priority-pills button.active-urgent {
+            background: var(--urgent);
+            color: white;
+            border-color: var(--urgent);
+        }
+
+        /* Capture input row */
         .capture-row {
             display: flex;
             gap: 8px;
@@ -145,7 +170,7 @@
             flex: 1;
             padding: 11px 13px;
             border: 1.5px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
             resize: none;
@@ -154,31 +179,32 @@
             line-height: 1.45;
             overflow-y: auto;
             color: var(--text);
-            background: #fafafa;
+            background: var(--bg);
         }
 
         #entry-input:focus {
             outline: none;
-            border-color: var(--primary);
-            background: white;
+            border-color: var(--petrol);
+            background: var(--card);
         }
 
         #submit-btn {
             width: 46px;
             height: 46px;
-            background: var(--primary);
+            background: var(--terra);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            font-family: inherit;
         }
 
-        #submit-btn:active { background: var(--primary-dark); }
+        #submit-btn:active { filter: brightness(0.85); }
 
         /* Nav tabs */
         nav {
@@ -191,7 +217,8 @@
             padding: 8px 2px;
             border: none;
             background: none;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--muted);
             cursor: pointer;
             border-bottom: 3px solid transparent;
@@ -201,14 +228,14 @@
         }
 
         nav button.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
+            color: var(--petrol);
+            border-bottom-color: var(--terra);
             font-weight: 600;
         }
 
         .nav-badge {
             display: inline-block;
-            background: var(--primary);
+            background: var(--terra);
             color: white;
             border-radius: 10px;
             font-size: 10px;
@@ -231,30 +258,30 @@
 
         /* ---- CARDS ---- */
         .entry-card {
-            background: white;
-            border-radius: 10px;
+            background: var(--card);
+            border-radius: 8px;
             padding: 13px 15px;
             margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+            box-shadow: 0 1px 3px rgba(3,49,50,0.08);
             border-left: 4px solid var(--border);
         }
 
-        .entry-card.priority-urgent   { border-left-color: var(--urgent); }
+        .entry-card.priority-urgent    { border-left-color: var(--urgent); }
         .entry-card.priority-important { border-left-color: var(--important); }
         .entry-card.priority-normal    { border-left-color: var(--border); }
-        .entry-card.is-done            { opacity: 0.45; }
+        .entry-card.is-done            { opacity: 0.4; }
         .entry-card.impulse-card {
-            background: linear-gradient(135deg, #F0FDF9, #E6FFFA);
-            border: 1px solid #B2F5EA;
-            border-left: 4px solid var(--primary);
+            background: var(--waldgruen-bg);
+            border: 1px solid #A9D9B0;
+            border-left: 4px solid var(--waldgruen);
         }
 
         .impulse-label {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary);
+            letter-spacing: 0.8px;
+            color: var(--waldgruen);
             margin-bottom: 6px;
         }
 
@@ -272,24 +299,25 @@
             font-weight: 500;
         }
 
-        .badge-pro       { background: #EBF4FF; color: var(--professional); }
-        .badge-priv      { background: #FFF3E0; color: var(--private); }
-        .badge-urgent    { background: #FFF5F5; color: var(--urgent); }
-        .badge-important { background: #FFFBEB; color: var(--important); }
-        .badge-tag       { background: #F0FDF9; color: var(--primary-dark); }
-        .badge-tagging   { background: #F5F5F5; color: #aaa; font-style: italic; }
+        .badge-arbeit    { background: var(--petrol-bg); color: var(--petrol); }
+        .badge-priv      { background: var(--private-bg); color: var(--private-col); }
+        .badge-urgent    { background: var(--urgent-bg); color: var(--urgent); }
+        .badge-important { background: var(--important-bg); color: var(--important); }
+        .badge-tag       { background: var(--waldgruen-bg); color: var(--waldgruen); }
+        .badge-tagging   { background: #F7F7F5; color: #aaa; font-style: italic; }
 
         .entry-text {
             font-size: 17px;
             line-height: 1.55;
             word-break: break-word;
+            color: var(--text);
         }
 
-        .entry-text a { color: var(--primary); text-decoration: none; }
+        .entry-text a { color: var(--waldgruen); text-decoration: none; }
 
         .entry-date {
             font-size: 12px;
-            color: #bbb;
+            color: #aaa;
             margin-top: 5px;
         }
 
@@ -302,27 +330,30 @@
         }
 
         .btn-sm {
-            padding: 5px 13px;
+            padding: 5px 12px;
             border-radius: 6px;
-            border: none;
-            font-size: 13px;
+            border: 1.5px solid var(--border);
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
             font-family: inherit;
-            transition: opacity 0.1s;
+            transition: filter 0.1s;
+            background: var(--card);
+            color: var(--text);
         }
-        .btn-sm:active { opacity: 0.7; }
+        .btn-sm:active { filter: brightness(0.9); }
 
-        .btn-done          { background: #E6FFFA; color: var(--primary-dark); }
-        .btn-undo          { background: #F0F0F0; color: var(--muted); }
-        .btn-prio-urgent   { background: #FFF5F5; color: var(--urgent); }
-        .btn-prio-important { background: #FFFBEB; color: var(--important); }
-        .btn-prio-normal   { background: #F7FAFC; color: var(--muted); }
-        .btn-delete        { background: #FFF5F5; color: var(--urgent); margin-left: auto; }
+        .btn-done          { border-color: var(--waldgruen); color: var(--waldgruen); }
+        .btn-undo          { border-color: var(--border); color: var(--muted); }
+        .btn-prio-urgent   { border-color: var(--urgent); color: var(--urgent); }
+        .btn-prio-important { border-color: var(--important); color: var(--important); }
+        .btn-prio-normal   { border-color: var(--border); color: var(--muted); }
+        .btn-delete        { border-color: var(--border); color: var(--muted); margin-left: auto; }
 
         /* ---- SECTION HEADERS ---- */
         .section-header {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             color: var(--muted);
@@ -333,7 +364,7 @@
         .empty-state {
             text-align: center;
             color: #bbb;
-            font-size: 16px;
+            font-size: 15px;
             padding: 36px 0;
         }
 
@@ -350,29 +381,29 @@
             flex: 1;
             min-width: 110px;
             padding: 9px 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
             font-family: inherit;
-            background: white;
+            background: var(--card);
             color: var(--text);
         }
 
         .filter-bar input:focus,
-        .filter-bar select:focus { outline: none; border-color: var(--primary); }
+        .filter-bar select:focus { outline: none; border-color: var(--petrol); }
 
         /* ---- SETTINGS ---- */
         .settings-section {
-            background: white;
-            border-radius: 10px;
+            background: var(--card);
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 3px rgba(3,49,50,0.07);
         }
 
         .settings-section h3 {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             color: var(--muted);
@@ -383,43 +414,49 @@
         .settings-section input[type="password"] {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
             font-size: 15px;
             font-family: inherit;
             margin-bottom: 8px;
+            color: var(--text);
+            background: var(--bg);
         }
 
-        .settings-section input:focus { outline: none; border-color: var(--primary); }
+        .settings-section input:focus { outline: none; border-color: var(--petrol); }
 
         .settings-hint {
             font-size: 13px;
             color: #aaa;
             margin-top: 6px;
-            line-height: 1.4;
+            line-height: 1.45;
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--terra);
             color: white;
             border: none;
             padding: 9px 18px;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
             font-family: inherit;
         }
+        .btn-primary:active { filter: brightness(0.9); }
 
         .btn-secondary {
-            background: var(--muted);
-            color: white;
-            border: none;
+            background: transparent;
+            color: var(--petrol);
+            border: 1.5px solid var(--petrol);
             padding: 9px 18px;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
             font-family: inherit;
         }
+        .btn-secondary:active { background: var(--petrol); color: white; }
 
         .tag-list {
             display: flex;
@@ -432,11 +469,12 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            background: #F0FDF9;
-            color: var(--primary-dark);
+            background: var(--waldgruen-bg);
+            color: var(--waldgruen);
             padding: 5px 10px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .tag-chip button {
@@ -459,13 +497,15 @@
         .add-tag-row input {
             flex: 1;
             padding: 9px 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
             font-family: inherit;
+            background: var(--bg);
+            color: var(--text);
         }
 
-        .add-tag-row input:focus { outline: none; border-color: var(--primary); }
+        .add-tag-row input:focus { outline: none; border-color: var(--petrol); }
 
         /* ---- TOAST ---- */
         .toast {
@@ -473,11 +513,12 @@
             top: 180px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.72);
+            background: var(--petrol);
             color: white;
             padding: 7px 16px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             z-index: 500;
             opacity: 0;
             transition: opacity 0.25s;
@@ -490,7 +531,6 @@
 </head>
 <body>
 
-<!-- ============ TOP BLOCK (sticky) ============ -->
 <div class="top-block">
 
     <div class="logo-bar">
@@ -501,13 +541,13 @@
     <div class="capture-area">
         <div class="capture-controls">
             <div class="context-toggle">
-                <button id="btn-pro" class="active-pro" onclick="setContext('professional')">🔵 Professionell</button>
+                <button id="btn-arbeit" class="active-arbeit" onclick="setContext('arbeit')">🔵 Arbeit</button>
                 <button id="btn-priv" onclick="setContext('private')">🟤 Privat</button>
             </div>
-            <div class="priority-btns">
-                <button id="prio-normal" class="active-normal" onclick="setPriority('normal')" title="Normal">⚪</button>
-                <button id="prio-important" onclick="setPriority('important')" title="Wichtig">🟡</button>
-                <button id="prio-urgent" onclick="setPriority('urgent')" title="Dringend">🔴</button>
+            <div class="priority-pills">
+                <button id="prio-normal" class="active-normal" onclick="setPriority('normal')">Normal</button>
+                <button id="prio-important" onclick="setPriority('important')">Wichtig</button>
+                <button id="prio-urgent" onclick="setPriority('urgent')">Dringend</button>
             </div>
         </div>
         <div class="capture-row">
@@ -529,35 +569,31 @@
 
 </div>
 
-<!-- ============ MAIN ============ -->
 <main>
 
-    <!-- MORNING VIEW -->
     <div class="view" id="view-morning">
         <div id="morning-urgent"></div>
         <div id="morning-important"></div>
         <div id="morning-impulse"></div>
     </div>
 
-    <!-- INBOX VIEW -->
     <div class="view active" id="view-inbox">
         <div id="inbox-list"></div>
     </div>
 
-    <!-- ARCHIV VIEW -->
     <div class="view" id="view-archiv">
         <div class="filter-bar">
             <input type="text" id="f-search" placeholder="Suche..." oninput="renderArchiv()">
             <select id="f-context" onchange="renderArchiv()">
                 <option value="">Alle Kontexte</option>
-                <option value="professional">🔵 Professionell</option>
+                <option value="arbeit">🔵 Arbeit</option>
                 <option value="private">🟤 Privat</option>
             </select>
             <select id="f-priority" onchange="renderArchiv()">
                 <option value="">Alle Prioritäten</option>
-                <option value="urgent">🔴 Dringend</option>
-                <option value="important">🟡 Wichtig</option>
-                <option value="normal">⚪ Normal</option>
+                <option value="urgent">Dringend</option>
+                <option value="important">Wichtig</option>
+                <option value="normal">Normal</option>
             </select>
             <select id="f-tag" onchange="renderArchiv()">
                 <option value="">Alle Tags</option>
@@ -566,7 +602,6 @@
         <div id="archiv-list"></div>
     </div>
 
-    <!-- SETTINGS VIEW -->
     <div class="view" id="view-settings">
         <div class="settings-section">
             <h3>Claude API Key</h3>
@@ -599,7 +634,7 @@
 // ============================================================
 let db = null;
 let currentView = 'inbox';
-let ctx = 'professional';
+let ctx = 'arbeit';
 let prio = 'normal';
 
 const DEFAULT_TAGS = ['Content-Idee', 'Aufgabe', 'Zitat', 'Link', 'Referenz', 'Inspiration', 'Notiz'];
@@ -741,7 +776,7 @@ async function autoTag(id, text) {
 // ============================================================
 function setContext(c) {
     ctx = c;
-    document.getElementById('btn-pro').className = c === 'professional' ? 'active-pro' : '';
+    document.getElementById('btn-arbeit').className = c === 'arbeit' ? 'active-arbeit' : '';
     document.getElementById('btn-priv').className = c === 'private' ? 'active-priv' : '';
 }
 
@@ -816,18 +851,18 @@ function linkify(text) {
 function buildCard(entry, opts) {
     opts = opts || {};
 
-    var prioClass = 'priority-' + entry.priority;
-    var doneClass = entry.done ? 'is-done' : '';
+    var prioClass    = 'priority-' + entry.priority;
+    var doneClass    = entry.done ? 'is-done' : '';
     var impulseClass = opts.impulse ? 'impulse-card' : '';
 
-    var ctxBadge = entry.context === 'professional'
-        ? '<span class="badge badge-pro">🔵 Professionell</span>'
+    var ctxBadge = entry.context === 'arbeit' || entry.context === 'professional'
+        ? '<span class="badge badge-arbeit">🔵 Arbeit</span>'
         : '<span class="badge badge-priv">🟤 Privat</span>';
 
     var prioBadge = entry.priority === 'urgent'
-        ? '<span class="badge badge-urgent">🔴 Dringend</span>'
+        ? '<span class="badge badge-urgent">Dringend</span>'
         : entry.priority === 'important'
-            ? '<span class="badge badge-important">🟡 Wichtig</span>'
+            ? '<span class="badge badge-important">Wichtig</span>'
             : '';
 
     var tagHtml = entry.tagging
@@ -839,18 +874,18 @@ function buildCard(entry, opts) {
     var actions = '';
     if (opts.actions !== false) {
         var doneBtn = !entry.done
-            ? '<button class="btn-sm btn-done" onclick="doMarkDone(' + entry.id + ')">✅ Erledigt</button>'
+            ? '<button class="btn-sm btn-done" onclick="doMarkDone(' + entry.id + ')">✓ Erledigt</button>'
             : '<button class="btn-sm btn-undo" onclick="doUndoDone(' + entry.id + ')">↩ Rückgängig</button>';
 
         var prioBtn = '';
         if (entry.priority !== 'urgent') {
-            prioBtn += '<button class="btn-sm btn-prio-urgent" onclick="doChangePrio(' + entry.id + ",\'urgent\')" + '>🔴</button>';
+            prioBtn += '<button class="btn-sm btn-prio-urgent" onclick="doChangePrio(' + entry.id + ",'urgent')" + '>Dringend</button>';
         }
         if (entry.priority !== 'important') {
-            prioBtn += '<button class="btn-sm btn-prio-important" onclick="doChangePrio(' + entry.id + ",\'important\')" + '>🟡</button>';
+            prioBtn += '<button class="btn-sm btn-prio-important" onclick="doChangePrio(' + entry.id + ",'important')" + '>Wichtig</button>';
         }
         if (entry.priority !== 'normal') {
-            prioBtn += '<button class="btn-sm btn-prio-normal" onclick="doChangePrio(' + entry.id + ",\'normal\')" + '>⚪</button>';
+            prioBtn += '<button class="btn-sm btn-prio-normal" onclick="doChangePrio(' + entry.id + ",'normal')" + '>Normal</button>';
         }
 
         actions = '<div class="entry-actions">'
@@ -891,34 +926,25 @@ async function renderMorning() {
         impulse = shuffled.slice(0, Math.min(2, shuffled.length));
     }
 
-    var urgentEl   = document.getElementById('morning-urgent');
+    var urgentEl    = document.getElementById('morning-urgent');
     var importantEl = document.getElementById('morning-important');
-    var impulseEl  = document.getElementById('morning-impulse');
+    var impulseEl   = document.getElementById('morning-impulse');
 
-    if (urgent.length > 0) {
-        urgentEl.innerHTML = '<div class="section-header">🔴 Dringend</div>'
-            + urgent.map(function(e) { return buildCard(e); }).join('');
-    } else {
-        urgentEl.innerHTML = '';
-    }
+    urgentEl.innerHTML = urgent.length > 0
+        ? '<div class="section-header">Dringend</div>' + urgent.map(function(e) { return buildCard(e); }).join('')
+        : '';
 
-    if (important.length > 0) {
-        importantEl.innerHTML = '<div class="section-header">🟡 Wichtig</div>'
-            + important.map(function(e) { return buildCard(e); }).join('');
-    } else {
-        importantEl.innerHTML = '';
-    }
+    importantEl.innerHTML = important.length > 0
+        ? '<div class="section-header">Wichtig</div>' + important.map(function(e) { return buildCard(e); }).join('')
+        : '';
 
     if (urgent.length === 0 && important.length === 0) {
-        urgentEl.innerHTML = '<div class="empty-state">☀️ Nichts Dringendes. Guter Start.</div>';
+        urgentEl.innerHTML = '<div class="empty-state">Nichts Dringendes. Guter Start.</div>';
     }
 
-    if (impulse.length > 0) {
-        impulseEl.innerHTML = '<div class="section-header">💡 Aus dem Archiv</div>'
-            + impulse.map(function(e) { return buildCard(e, { impulse: true, actions: false }); }).join('');
-    } else {
-        impulseEl.innerHTML = '';
-    }
+    impulseEl.innerHTML = impulse.length > 0
+        ? '<div class="section-header">Aus dem Archiv</div>' + impulse.map(function(e) { return buildCard(e, { impulse: true, actions: false }); }).join('')
+        : '';
 }
 
 // ============================================================
@@ -933,11 +959,9 @@ async function renderInbox() {
     document.getElementById('inbox-badge').textContent = inbox.length;
 
     var el = document.getElementById('inbox-list');
-    if (inbox.length === 0) {
-        el.innerHTML = '<div class="empty-state">Inbox leer.</div>';
-        return;
-    }
-    el.innerHTML = inbox.map(function(e) { return buildCard(e); }).join('');
+    el.innerHTML = inbox.length === 0
+        ? '<div class="empty-state">Inbox leer.</div>'
+        : inbox.map(function(e) { return buildCard(e); }).join('');
 }
 
 // ============================================================
@@ -946,7 +970,7 @@ async function renderInbox() {
 async function renderArchiv() {
     var entries = await dbGetAll();
 
-    var search    = document.getElementById('f-search').value.toLowerCase();
+    var search     = document.getElementById('f-search').value.toLowerCase();
     var ctxFilter  = document.getElementById('f-context').value;
     var prioFilter = document.getElementById('f-priority').value;
 
@@ -963,22 +987,24 @@ async function renderArchiv() {
         + allTags.map(function(t) {
             return '<option value="' + t + '"' + (t === prevTag ? ' selected' : '') + '>' + t + '</option>';
         }).join('');
-
     var tagFilter = tagSelect.value;
 
     var filtered = entries
-        .filter(function(e) { return !search    || e.text.toLowerCase().indexOf(search) !== -1; })
-        .filter(function(e) { return !ctxFilter  || e.context === ctxFilter; })
+        .filter(function(e) {
+            if (!ctxFilter) return true;
+            // handle legacy 'professional' entries
+            if (ctxFilter === 'arbeit') return e.context === 'arbeit' || e.context === 'professional';
+            return e.context === ctxFilter;
+        })
+        .filter(function(e) { return !search     || e.text.toLowerCase().indexOf(search) !== -1; })
         .filter(function(e) { return !prioFilter || e.priority === prioFilter; })
         .filter(function(e) { return !tagFilter  || (e.tags || []).indexOf(tagFilter) !== -1; })
         .sort(function(a, b) { return b.createdAt - a.createdAt; });
 
     var el = document.getElementById('archiv-list');
-    if (filtered.length === 0) {
-        el.innerHTML = '<div class="empty-state">Keine Einträge gefunden.</div>';
-        return;
-    }
-    el.innerHTML = filtered.map(function(e) { return buildCard(e); }).join('');
+    el.innerHTML = filtered.length === 0
+        ? '<div class="empty-state">Keine Einträge gefunden.</div>'
+        : filtered.map(function(e) { return buildCard(e); }).join('');
 }
 
 // ============================================================
@@ -987,7 +1013,7 @@ async function renderArchiv() {
 async function doMarkDone(id) {
     await dbUpdate(id, { done: true });
     refreshAll();
-    showToast('Erledigt ✅');
+    showToast('Erledigt ✓');
 }
 
 async function doUndoDone(id) {
