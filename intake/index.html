@@ -354,13 +354,10 @@
 
     <form id="intake-form" novalidate>
 
-      <!-- Hidden fields für FormSubmit -->
-      <input type="hidden" name="_subject" id="field-subject" value="KI-Mentoring Intake">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_context" id="field-context">
-      <input type="hidden" name="_anrede" id="field-anrede">
-      <input type="hidden" name="_anlass" id="field-anlass">
+      <!-- Meta-Felder (werden per JS gesetzt und im JSON mitgesendet) -->
+      <input type="hidden" id="field-context">
+      <input type="hidden" id="field-anrede">
+      <input type="hidden" id="field-anlass">
 
       <!-- ══════════════════════════════════════
            CLUSTER 1 — KONTEXT
@@ -616,9 +613,8 @@
 // KONFIGURATION
 // ═══════════════════════════════════════════════════════════════
 
-// FormSubmit: Hash schützt die E-Mail vor Spam-Bots.
-// Generiert beim Aktivieren des Formulars (einmalig).
-var FORMSUBMIT_EMAIL = '9a04b2edc972041da2b3277b9d8d2085';
+// Cloudflare Worker URL — nach dem Deployment eintragen.
+var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
 
 // ═══════════════════════════════════════════════════════════════
 // TEXTE — Du / Sie
@@ -970,14 +966,9 @@ function submitForm(context, anrede) {
 
   var data = collectData(context);
 
-  // _cc: FormSubmit schickt dem Absender eine Kopie der vollständigen Submission
-  if (data['email']) {
-    data['_cc'] = data['email'];
-  }
-
   var submittedEmail = data['email'];
 
-  fetch('https://formsubmit.co/ajax/' + FORMSUBMIT_EMAIL, {
+  fetch(WORKER_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
