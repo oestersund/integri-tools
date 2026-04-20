@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Mentoring — Intake-Fragebogen</title>
+<style>
+  :root {
+    --integri-primary: #00A896;
+    --integri-primary-dark: #008B7D;
+    --integri-text: #333;
+    --integri-bg: #f5f7fa;
+    --integri-section-bg: #ffffff;
+    --integri-border: #e0e0e0;
+    --error: #c0392b;
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--integri-bg);
+    color: var(--integri-text);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── Header (identisch zu website-briefing) ── */
+  header {
+    background: white;
+    border-bottom: 3px solid var(--integri-primary);
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .header-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--integri-primary);
+  }
+
+  /* ── Page layout ── */
+  .page-wrap {
+    max-width: 720px;
+    margin: 40px auto 80px;
+    padding: 0 24px;
+  }
+
+  .intro {
+    margin-bottom: 32px;
+  }
+  .intro h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--integri-text);
+  }
+  .intro p {
+    color: #666;
+    font-size: 15px;
+  }
+  .badge-context {
+    display: inline-block;
+    background: var(--integri-primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Cluster header ── */
+  .cluster-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--integri-primary);
+    margin: 40px 0 14px;
+    padding-bottom: 7px;
+    border-bottom: 2px solid var(--integri-primary);
+  }
+
+  /* ── Question cards ── */
+  .question {
+    background: var(--integri-section-bg);
+    border: 1px solid var(--integri-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .question.hidden { display: none; }
+
+  .q-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--integri-text);
+  }
+  .required-mark { color: var(--error); margin-left: 2px; }
+  .q-hint {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  /* ── Inputs ── */
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--integri-border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--integri-text);
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--integri-primary);
+    box-shadow: 0 0 0 3px rgba(0,168,150,0.1);
+  }
+  textarea { resize: vertical; min-height: 88px; }
+
+  input.readonly-field {
+    background: #f0f4f7;
+    color: #888;
+    cursor: default;
+  }
+
+  /* ── Q1 sub-fields ── */
+  .q1-group { display: flex; flex-direction: column; gap: 10px; }
+  .sub-label {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 3px;
+    display: block;
+  }
+
+  /* ── Radio / Checkbox groups ── */
+  .radio-group,
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 4px;
+  }
+  .radio-group label,
+  .checkbox-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid var(--integri-border);
+    border-radius: var(--radius);
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .radio-group label:hover,
+  .checkbox-group label:hover {
+    background: #f0faf9;
+    border-color: var(--integri-primary);
+  }
+  .radio-group input,
+  .checkbox-group input {
+    width: auto;
+    margin-top: 3px;
+    flex-shrink: 0;
+    accent-color: var(--integri-primary);
+  }
+  .other-text {
+    margin-top: 8px;
+    display: none;
+  }
+  .other-text.visible { display: block; }
+
+  /* ── Compound sub-sections (inside Q8) ── */
+  .sub-section {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--integri-border);
+  }
+  .sub-section-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* ── Optional part inside Q12 ── */
+  .optional-part {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--integri-border);
+  }
+  .optional-part .q-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #888;
+  }
+
+  /* ── DSGVO ── */
+  .dsgvo-block {
+    background: #fff;
+    border: 1px solid var(--integri-border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin: 28px 0 20px;
+  }
+  .dsgvo-block label {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    align-items: flex-start;
+  }
+  .dsgvo-block input[type="checkbox"] {
+    width: auto;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--integri-primary);
+  }
+  .dsgvo-block a { color: var(--integri-primary); }
+  .dsgvo-error {
+    color: var(--error);
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--integri-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .submit-btn:hover { background: var(--integri-primary-dark); }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── Validation ── */
+  .field-error {
+    color: var(--error);
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+  }
+  .field-error.visible { display: block; }
+  .has-error input,
+  .has-error textarea {
+    border-color: var(--error);
+  }
+
+  /* ── Thank-you screen ── */
+  .thank-you {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+  }
+  .thank-you .checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--integri-primary);
+    color: #fff;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .thank-you h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .thank-you p {
+    color: #666;
+    font-size: 15px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 20px 24px;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid var(--integri-border);
+  }
+  footer a { color: #aaa; text-decoration: none; }
+  footer a:hover { color: var(--integri-primary); }
+
+  @media (max-width: 480px) {
+    .page-wrap { padding: 0 14px; }
+    .question { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header: identisch zu tools.integri.de/website-briefing/ -->
+<header>
+  <div class="header-container">
+    <div class="logo">INTEGRI</div>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- ── Form view ── -->
+  <div id="form-view">
+
+    <div class="intro">
+      <div id="context-badge" class="badge-context"></div>
+      <h2 id="form-title">KI-Mentoring — Fragebogen</h2>
+      <p id="form-subtitle"></p>
+    </div>
+
+    <form id="intake-form" novalidate>
+
+      <!-- Hidden fields für FormSubmit -->
+      <input type="hidden" name="_subject" id="field-subject" value="KI-Mentoring Intake">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_context" id="field-context">
+      <input type="hidden" name="_anrede" id="field-anrede">
+      <input type="hidden" name="_anlass" id="field-anlass">
+
+      <!-- ══════════════════════════════════════
+           CLUSTER 1 — KONTEXT
+           ══════════════════════════════════════ -->
+      <div class="cluster-header">Kontext</div>
+
+      <!-- Q1: Zur Person -->
+      <div class="question" id="q1">
+        <span class="q-label" id="q1-label">Zu deiner Person <span class="required-mark">*</span></span>
+
+        <!-- Variante Website: Name + Rolle + Branche + E-Mail -->
+        <div id="q1-website" class="q1-group">
+          <div>
+            <span class="sub-label">Name</span>
+            <input type="text" name="name" id="field-name" placeholder="Dein Name">
+          </div>
+          <div>
+            <span class="sub-label">Rolle / Funktion</span>
+            <input type="text" name="rolle" id="field-rolle" placeholder="z.B. Geschäftsführer, Marketing Lead">
+          </div>
+          <div>
+            <span class="sub-label">Branche</span>
+            <input type="text" name="branche" id="field-branche" placeholder="z.B. Agentur, Beratung, E-Commerce">
+          </div>
+          <div>
+            <span class="sub-label" id="q1-email-label">Deine E-Mail-Adresse <span class="required-mark">*</span></span>
+            <input type="email" name="email" id="field-email" placeholder="name@beispiel.de">
+          </div>
+        </div>
+
+        <!-- Variante Warm: Nur Name + E-Mail -->
+        <div id="q1-warm" class="q1-group" style="display:none">
+          <div>
+            <span class="sub-label">Name</span>
+            <input type="text" name="name_warm" id="field-name-warm" placeholder="Dein Name">
+          </div>
+          <div>
+            <span class="sub-label" id="q1-email-label-warm">Deine E-Mail-Adresse <span class="required-mark">*</span></span>
+            <input type="email" name="email" id="field-email-warm" placeholder="name@beispiel.de">
+          </div>
+        </div>
+
+        <!-- Variante Gruppe: Anlass (read-only) + Pseudonym + E-Mail -->
+        <div id="q1-group" class="q1-group" style="display:none">
+          <div>
+            <span class="sub-label">Anlass</span>
+            <input type="text" name="anlass_label" id="field-anlass-label" class="readonly-field" readonly>
+          </div>
+          <div>
+            <span class="sub-label">Pseudonym (optional)</span>
+            <input type="text" name="pseudonym" id="field-pseudonym" placeholder="Optional — z.B. ein Spitzname">
+          </div>
+          <div>
+            <span class="sub-label" id="q1-email-label-group">E-Mail-Adresse (optional, für Kopie deiner Antworten)</span>
+            <input type="email" name="email" id="field-email-group" placeholder="name@beispiel.de">
+          </div>
+        </div>
+
+        <div class="field-error" id="q1-error">Bitte füll dieses Feld aus.</div>
+      </div>
+
+      <!-- Q2: Unternehmensgröße -->
+      <div class="question" id="q2">
+        <span class="q-label">Unternehmensgröße</span>
+        <div class="radio-group">
+          <label><input type="radio" name="unternehmensgroesse" value="Solo / Selbstständig"> Solo / Selbstständig</label>
+          <label><input type="radio" name="unternehmensgroesse" value="2–10 Mitarbeitende"> 2–10 Mitarbeitende</label>
+          <label><input type="radio" name="unternehmensgroesse" value="11–50 Mitarbeitende"> 11–50 Mitarbeitende</label>
+          <label><input type="radio" name="unternehmensgroesse" value="50+ Mitarbeitende"> 50+ Mitarbeitende</label>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           CLUSTER 2 — STATUS QUO
+           ══════════════════════════════════════ -->
+      <div class="cluster-header" id="cluster2-header">Status quo</div>
+
+      <!-- Q3: KI-Tools -->
+      <div class="question" id="q3">
+        <span class="q-label" id="q3-label">Welche KI-Tools nutzt du aktuell?</span>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="tools" value="ChatGPT"> ChatGPT</label>
+          <label><input type="checkbox" name="tools" value="Claude"> Claude</label>
+          <label><input type="checkbox" name="tools" value="Gemini"> Gemini</label>
+          <label><input type="checkbox" name="tools" value="Copilot"> Copilot (Microsoft / GitHub)</label>
+          <label><input type="checkbox" name="tools" value="Perplexity"> Perplexity</label>
+          <label><input type="checkbox" name="tools" value="Bildgeneratoren"> Midjourney / DALL-E / andere Bildgeneratoren</label>
+          <label><input type="checkbox" name="tools" value="Branchenspezifisch"> Branchenspezifische Tools</label>
+          <label>
+            <input type="checkbox" name="tools" value="Andere" id="cb-tools-andere">
+            Andere
+          </label>
+          <label><input type="checkbox" name="tools" value="Noch keine"> Noch keine</label>
+        </div>
+        <input type="text" name="tools_andere_text" id="field-tools-andere" class="other-text" placeholder="Welche Tools?">
+      </div>
+
+      <!-- Q4: Einschränkungen -->
+      <div class="question" id="q4">
+        <span class="q-label">Gibt es Einschränkungen oder Vorgaben?</span>
+        <p class="q-hint">z.B. Datenschutz, Tool-Vorgaben, Compliance</p>
+        <input type="text" name="einschraenkungen" id="field-einschraenkungen" placeholder="Freitext">
+      </div>
+
+      <!-- Q5: Datenlage -->
+      <div class="question" id="q5">
+        <span class="q-label" id="q5-label">Wo liegen deine Daten und Prozesse aktuell?</span>
+        <div class="radio-group">
+          <label><input type="radio" name="datenlage" value="Dokumentiert in Systemen"> Dokumentiert in Systemen (CRM, Wiki, SOPs)</label>
+          <label><input type="radio" name="datenlage" value="Teilweise dokumentiert"> Teilweise dokumentiert, teilweise im Kopf</label>
+          <label><input type="radio" name="datenlage" value="Überwiegend im Kopf"> Überwiegend im Kopf der Beteiligten</label>
+          <label><input type="radio" name="datenlage" value="Weiß nicht"> Weiß ich nicht / unterschiedlich je Bereich</label>
+        </div>
+      </div>
+
+      <!-- Q6: Konkreter Anwendungsfall -->
+      <div class="question" id="q6">
+        <span class="q-label" id="q6-label">Beschreibe einen konkreten Anwendungsfall, an dem du gerade arbeitest — auch wenn er noch nicht gut funktioniert. <span class="required-mark">*</span></span>
+        <textarea name="anwendungsfall" id="field-anwendungsfall" placeholder="Freitext"></textarea>
+        <div class="field-error" id="q6-error">Bitte füll dieses Feld aus.</div>
+      </div>
+
+      <!-- Q7: Bisherige Erfahrungen -->
+      <div class="question" id="q7">
+        <span class="q-label" id="q7-label">Welche Erfahrungen hast du bisher mit KI gemacht — was lief gut, was weniger?</span>
+        <textarea name="erfahrungen" id="field-erfahrungen" placeholder="Freitext"></textarea>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           CLUSTER 3 — ZIEL
+           Drei Dimensionen als zusammenhängender Block:
+           Fähigkeit → Erfolgskriterium → Zeitrahmen
+           ══════════════════════════════════════ -->
+      <div class="cluster-header" id="cluster3-header">Ziel</div>
+
+      <!-- Q8: Compound — Ziel (Fähigkeit + Erfolgskriterium + Zeitrahmen) -->
+      <div class="question" id="q8">
+        <span class="q-label" id="q8a-label">Was willst du mit KI können, was heute nicht möglich ist?</span>
+        <textarea name="ziel_koennen" id="field-ziel-koennen" placeholder="Freitext"></textarea>
+
+        <div class="sub-section" id="q8b-section">
+          <span class="sub-section-label" id="q8b-label">Woran erkennst du, dass du es erreicht hast?</span>
+          <p class="q-hint">Konkretes, sichtbares Ergebnis — kein allgemeines Ziel</p>
+          <textarea name="erfolgsmessung" id="field-erfolgsmessung" placeholder="Freitext" style="min-height:72px"></textarea>
+        </div>
+
+        <div class="sub-section" id="q8c-section">
+          <span class="sub-section-label">Bis wann?</span>
+          <div class="radio-group" style="margin-top:8px">
+            <label><input type="radio" name="zeithorizont" value="Innerhalb 4 Wochen"> Innerhalb 4 Wochen</label>
+            <label><input type="radio" name="zeithorizont" value="1–3 Monate"> 1–3 Monate</label>
+            <label><input type="radio" name="zeithorizont" value="3–6 Monate"> 3–6 Monate</label>
+            <label><input type="radio" name="zeithorizont" value="6–12 Monate"> 6–12 Monate</label>
+            <label><input type="radio" name="zeithorizont" value="Kein festes Zeitfenster"> Kein festes Zeitfenster</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q9: Priorität (neue Reihenfolge) -->
+      <div class="question" id="q9">
+        <span class="q-label">Welcher Bereich hat Priorität?</span>
+        <div class="radio-group">
+          <label><input type="radio" name="prioritaet" value="Grundverständnis & Einordnung"> Grundverständnis &amp; Einordnung</label>
+          <label><input type="radio" name="prioritaet" value="Tool-Auswahl & Setup"> Tool-Auswahl &amp; Setup</label>
+          <label><input type="radio" name="prioritaet" value="Prompting-Qualität"> Prompting-Qualität</label>
+          <label><input type="radio" name="prioritaet" value="Workflow & Automatisierung"> Workflow &amp; Automatisierung</label>
+          <label><input type="radio" name="prioritaet" value="Teamintegration"> Teamintegration</label>
+          <label>
+            <input type="radio" name="prioritaet" value="Anderes" id="rb-prio-andere">
+            Anderes
+          </label>
+        </div>
+        <input type="text" name="prioritaet_andere_text" id="field-prio-andere" class="other-text" placeholder="Was genau?">
+      </div>
+
+      <!-- ══════════════════════════════════════
+           CLUSTER 4 — NÄCHSTER AUSTAUSCH
+           ══════════════════════════════════════ -->
+      <div class="cluster-header" id="cluster4-header">Nächster Austausch</div>
+
+      <!-- Q10: Vertiefungsthemen -->
+      <div class="question" id="q10">
+        <span class="q-label">Welche Themen oder Fragen sollen wir im nächsten Austausch vertiefen? Stichworte reichen. <span class="required-mark">*</span></span>
+        <textarea name="vertiefung" id="field-vertiefung" placeholder="Stichworte genügen"></textarea>
+        <div class="optional-part">
+          <span class="q-label">Optional: Konkretes Beispiel, Problem oder Projekt, das wir durchgehen sollen.</span>
+          <textarea name="vertiefung_beispiel" id="field-vertiefung-beispiel" placeholder="Freitext (optional)" style="min-height:70px"></textarea>
+        </div>
+        <div class="field-error" id="q10-error">Bitte füll dieses Feld aus.</div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           CLUSTER 5 — RAHMENBEDINGUNGEN
+           ══════════════════════════════════════ -->
+      <div class="cluster-header" id="cluster5-header">Rahmenbedingungen</div>
+
+      <!-- Q11: Zeitbudget -->
+      <div class="question" id="q11">
+        <span class="q-label">Zeitbudget pro Woche für Weiterbildung / Umsetzung</span>
+        <div class="radio-group">
+          <label><input type="radio" name="zeitbudget" value="Unter 1 Stunde"> Unter 1 Stunde</label>
+          <label><input type="radio" name="zeitbudget" value="1–3 Stunden"> 1–3 Stunden</label>
+          <label><input type="radio" name="zeitbudget" value="3–5 Stunden"> 3–5 Stunden</label>
+          <label><input type="radio" name="zeitbudget" value="Mehr als 5 Stunden"> Mehr als 5 Stunden</label>
+        </div>
+      </div>
+
+      <!-- Q12: Wunschformat -->
+      <div class="question" id="q12">
+        <span class="q-label">Wunschformat</span>
+        <div class="radio-group">
+          <label><input type="radio" name="format" value="Intensiv-Sprint"> Intensiv-Sprint (wenige Wochen, hohe Taktung)</label>
+          <label><input type="radio" name="format" value="Kontinuierliche Begleitung"> Kontinuierliche Begleitung (3–6 Monate)</label>
+          <label><input type="radio" name="format" value="Punktuell bei Bedarf"> Punktuell bei Bedarf</label>
+          <label><input type="radio" name="format" value="Weiß ich noch nicht"> Weiß ich noch nicht</label>
+        </div>
+      </div>
+
+      <!-- DSGVO -->
+      <div class="dsgvo-block">
+        <label>
+          <input type="checkbox" id="dsgvo-consent">
+          <span id="dsgvo-text">Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen findest du in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+        </label>
+        <div class="dsgvo-error" id="dsgvo-error">Bitte stimme der Datenschutzerklärung zu.</div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Fragebogen absenden</button>
+
+    </form>
+  </div><!-- /form-view -->
+
+  <!-- ── Thank-you view ── -->
+  <div class="thank-you" id="thank-you-view">
+    <div class="checkmark">✓</div>
+    <h2>Danke für deine Antworten.</h2>
+    <p id="thankyou-text">Ich melde mich in Kürze bei dir.</p>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<footer>
+  <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+  &nbsp;·&nbsp;
+  <a href="https://integri.de/impressum" target="_blank" rel="noopener">Impressum</a>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// KONFIGURATION
+// ═══════════════════════════════════════════════════════════════
+
+// FormSubmit: Ersetze mit deiner E-Mail-Adresse.
+// Beim ersten Einsatz kommt eine Bestätigungsmail an diese Adresse.
+var FORMSUBMIT_EMAIL = 'info@integri.de';
+
+// ═══════════════════════════════════════════════════════════════
+// TEXTE — Du / Sie
+// Alle pronomenabhängigen Texte an einer Stelle.
+// Neue Fragen: hier eintragen, beide Versionen.
+// ═══════════════════════════════════════════════════════════════
+var TEXTS = {
+  du: {
+    q1_label:         'Zu deiner Person',
+    q1_email_label:   'Deine E-Mail-Adresse',
+    q3_label:         'Welche KI-Tools nutzt du aktuell?',
+    q5_label:         'Wo liegen deine Daten und Prozesse aktuell?',
+    q6_label:         'Beschreibe einen konkreten Anwendungsfall, an dem du gerade arbeitest — auch wenn er noch nicht gut funktioniert.',
+    q6_group_label:   'Nenne eine konkrete Situation aus Studium, Job oder Alltag, in der KI dir helfen könnte oder schon hilft.',
+    q7_label:         'Welche Erfahrungen hast du bisher mit KI gemacht — was lief gut, was weniger?',
+    q8a_label:        'Was willst du mit KI können, was heute nicht möglich ist?',
+    q8b_label:        'Woran erkennst du, dass du es erreicht hast?',
+    q8b_group_label:  'Was wäre für dich nach der Session ein gutes Ergebnis?',
+    dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen findest du in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
+    subtitle_website: 'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
+    subtitle_warm:    'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
+    subtitle_group:   'Bitte nimm dir 5–7 Minuten Zeit. Deine Antworten helfen mir, die Session auf eure Situation zuzuschneiden.',
+    thankyou_website: 'Ich melde mich in Kürze bei dir.',
+    thankyou_warm:    'Ich melde mich vor unserem nächsten Austausch bei dir.',
+    thankyou_group:   'Deine Antworten sind eingegangen. Ich freue mich auf die Session.',
+    thankyou_heading: 'Danke für deine Antworten.',
+    submit_label:     'Fragebogen absenden'
+  },
+  sie: {
+    q1_label:         'Zu Ihrer Person',
+    q1_email_label:   'Ihre E-Mail-Adresse',
+    q3_label:         'Welche KI-Tools nutzen Sie aktuell?',
+    q5_label:         'Wo liegen Ihre Daten und Prozesse aktuell?',
+    q6_label:         'Beschreiben Sie einen konkreten Anwendungsfall, an dem Sie gerade arbeiten — auch wenn er noch nicht gut funktioniert.',
+    q6_group_label:   'Nennen Sie eine konkrete Situation aus Studium, Job oder Alltag, in der KI Ihnen helfen könnte oder schon hilft.',
+    q7_label:         'Welche Erfahrungen haben Sie bisher mit KI gemacht — was lief gut, was weniger?',
+    q8a_label:        'Was möchten Sie mit KI können, was heute nicht möglich ist?',
+    q8b_label:        'Woran erkennen Sie, dass Sie es erreicht haben?',
+    q8b_group_label:  'Was wäre für Sie nach der Session ein gutes Ergebnis?',
+    dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen finden Sie in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
+    subtitle_website: 'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
+    subtitle_warm:    'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
+    subtitle_group:   'Bitte nehmen Sie sich 5–7 Minuten Zeit. Ihre Antworten helfen mir, die Session auf Ihre Situation zuzuschneiden.',
+    thankyou_website: 'Ich melde mich in Kürze bei Ihnen.',
+    thankyou_warm:    'Ich melde mich vor unserem nächsten Austausch bei Ihnen.',
+    thankyou_group:   'Ihre Antworten sind eingegangen. Ich freue mich auf die Session.',
+    thankyou_heading: 'Danke für Ihre Antworten.',
+    submit_label:     'Fragebogen absenden'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// CONTEXT CONFIG
+// ═══════════════════════════════════════════════════════════════
+var CONTEXT_CONFIG = {
+  website: {
+    badge:             'Erstgespräch / Kennenlernen',
+    title:             'KI-Mentoring — Fragebogen',
+    hiddenQuestions:   [],
+    hiddenSubSections: [],
+    requiredQuestions: ['q1', 'q6', 'q10']
+  },
+  warm: {
+    badge:             'Laufendes Mentoring',
+    title:             'KI-Mentoring — Fragebogen',
+    hiddenQuestions:   [],
+    hiddenSubSections: [],
+    requiredQuestions: ['q1', 'q6', 'q10']
+  },
+  group: {
+    badge:             'Gruppen-Session',
+    title:             'KI-Session — Kurzfragebogen',
+    hiddenQuestions:   ['q2', 'q4', 'q5', 'q11', 'q12'],
+    hiddenSubSections: ['q8c-section'],
+    requiredQuestions: ['q6', 'q10']
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(function init() {
+  var params  = new URLSearchParams(window.location.search);
+  var context = params.get('context') || 'website';
+  var anrede  = params.get('anrede')  || 'du';
+  var anlass  = params.get('anlass')  || '';
+
+  if (!CONTEXT_CONFIG[context]) context = 'website';
+  if (anrede !== 'sie') anrede = 'du';
+
+  var cfg = CONTEXT_CONFIG[context];
+  var txt = TEXTS[anrede];
+
+  // Hidden meta fields
+  document.getElementById('field-context').value = context;
+  document.getElementById('field-anrede').value  = anrede;
+  document.getElementById('field-anlass').value  = anlass;
+
+  // E-Mail subject mit Kontext
+  document.getElementById('field-subject').value =
+    'KI-Mentoring Intake [' + context + ']';
+
+  // Badge + Title
+  document.getElementById('context-badge').textContent = cfg.badge;
+  document.getElementById('form-title').textContent    = cfg.title;
+  document.getElementById('form-subtitle').textContent =
+    txt['subtitle_' + context] || txt.subtitle_website;
+
+  // Thank-you
+  document.getElementById('thank-you-view').querySelector('h2').textContent =
+    txt.thankyou_heading;
+  document.getElementById('thankyou-text').textContent =
+    txt['thankyou_' + context] || txt.thankyou_website;
+  document.getElementById('submit-btn').textContent = txt.submit_label;
+
+  // ── Texte einsetzen (Du/Sie) ──
+  applyText('q1-label',   txt.q1_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label',       txt.q1_email_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label-warm',  txt.q1_email_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label-group', txt.q1_email_label + ' (optional, für Kopie)');
+  applyText('q3-label',  txt.q3_label);
+  applyText('q5-label',  txt.q5_label);
+  applyText('q6-label',  txt.q6_label + ' <span class="required-mark">*</span>');
+  applyText('q7-label',  txt.q7_label);
+  applyText('q8a-label', txt.q8a_label);
+  applyText('q8b-label', txt.q8b_label);
+  applyText('dsgvo-text', txt.dsgvo_text);
+
+  // Group-Variante überschreibt Q6 + Q8b Label
+  if (context === 'group') {
+    applyText('q6-label',  txt.q6_group_label + ' <span class="required-mark">*</span>');
+    applyText('q8b-label', txt.q8b_group_label);
+  }
+
+  // ── Q1 Variante einblenden ──
+  var q1Website = document.getElementById('q1-website');
+  var q1Warm    = document.getElementById('q1-warm');
+  var q1Group   = document.getElementById('q1-group');
+
+  if (context === 'warm') {
+    q1Website.style.display = 'none';
+    q1Warm.style.display    = '';
+    q1Group.style.display   = 'none';
+  } else if (context === 'group') {
+    q1Website.style.display = 'none';
+    q1Warm.style.display    = 'none';
+    q1Group.style.display   = '';
+    var anlassEl = document.getElementById('field-anlass-label');
+    anlassEl.value = anlass || 'KI-Session';
+  }
+
+  // ── Fragen ausblenden ──
+  cfg.hiddenQuestions.forEach(function(qId) {
+    var el = document.getElementById(qId);
+    if (el) el.classList.add('hidden');
+  });
+  cfg.hiddenSubSections.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // Cluster-Header ausblenden wenn alle Fragen dahinter hidden sind
+  updateClusterHeaders(cfg.hiddenQuestions);
+
+  // ── Interaktions-Handler ──
+  var cbAndere = document.getElementById('cb-tools-andere');
+  cbAndere.addEventListener('change', function() {
+    document.getElementById('field-tools-andere')
+      .classList.toggle('visible', cbAndere.checked);
+  });
+
+  document.querySelectorAll('input[name="prioritaet"]').forEach(function(rb) {
+    rb.addEventListener('change', function() {
+      document.getElementById('field-prio-andere')
+        .classList.toggle('visible',
+          document.getElementById('rb-prio-andere').checked);
+    });
+  });
+
+  // ── Submit ──
+  document.getElementById('intake-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (validateForm(context, cfg, anrede)) {
+      submitForm(context, anrede);
+    }
+  });
+})();
+
+// ─── Hilfsfunktion: Text in Element setzen ───────────────────
+function applyText(id, html) {
+  var el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+// ─── Cluster-Header ausblenden ───────────────────────────────
+function updateClusterHeaders(hiddenQuestions) {
+  var clusters = {
+    'cluster2-header': ['q3','q4','q5','q6','q7'],
+    'cluster3-header': ['q8','q9'],
+    'cluster4-header': ['q10'],
+    'cluster5-header': ['q11','q12']
+  };
+  Object.keys(clusters).forEach(function(headerId) {
+    var qs = clusters[headerId];
+    if (qs.every(function(q) { return hiddenQuestions.indexOf(q) !== -1; })) {
+      var el = document.getElementById(headerId);
+      if (el) el.style.display = 'none';
+    }
+  });
+}
+
+// ─── Validierung ─────────────────────────────────────────────
+function validateForm(context, cfg, anrede) {
+  var valid = true;
+  var required = cfg.requiredQuestions;
+  var hidden   = cfg.hiddenQuestions;
+
+  // Q1 (Name + E-Mail)
+  if (hidden.indexOf('q1') === -1 && required.indexOf('q1') !== -1) {
+    var nameVal = '';
+    var emailVal = '';
+    if (context === 'website') {
+      nameVal  = (document.getElementById('field-name').value || '').trim();
+      emailVal = (document.getElementById('field-email').value || '').trim();
+    } else if (context === 'warm') {
+      nameVal  = (document.getElementById('field-name-warm').value || '').trim();
+      emailVal = (document.getElementById('field-email-warm').value || '').trim();
+    } else {
+      nameVal = 'group'; // Gruppe: kein Pflichtname
+      emailVal = 'skip';
+    }
+    var q1ok = nameVal.length > 0 && (emailVal === 'skip' || emailVal.length > 0);
+    setError('q1', !q1ok,
+      anrede === 'sie'
+        ? 'Bitte füllen Sie Name und E-Mail-Adresse aus.'
+        : 'Bitte füll Name und E-Mail-Adresse aus.');
+    if (!q1ok) valid = false;
+  }
+
+  // Q6 — Pflichtfreitext
+  if (hidden.indexOf('q6') === -1 && required.indexOf('q6') !== -1) {
+    var v6 = (document.getElementById('field-anwendungsfall').value || '').trim();
+    setError('q6', v6.length === 0,
+      anrede === 'sie' ? 'Bitte füllen Sie dieses Feld aus.' : 'Bitte füll dieses Feld aus.');
+    if (!v6.length) valid = false;
+  }
+
+  // Q10 — Pflichtfreitext
+  if (hidden.indexOf('q10') === -1 && required.indexOf('q10') !== -1) {
+    var v10 = (document.getElementById('field-vertiefung').value || '').trim();
+    setError('q10', v10.length === 0,
+      anrede === 'sie' ? 'Bitte füllen Sie dieses Feld aus.' : 'Bitte füll dieses Feld aus.');
+    if (!v10.length) valid = false;
+  }
+
+  // DSGVO
+  var dsgvo = document.getElementById('dsgvo-consent').checked;
+  document.getElementById('dsgvo-error').style.display = dsgvo ? 'none' : 'block';
+  if (!dsgvo) valid = false;
+
+  return valid;
+}
+
+function setError(qId, show, msg) {
+  var errEl = document.getElementById(qId + '-error');
+  if (errEl) {
+    errEl.textContent = msg || '';
+    errEl.style.display = show ? 'block' : 'none';
+  }
+  var qEl = document.getElementById(qId);
+  if (qEl) qEl.classList.toggle('has-error', show);
+}
+
+// ─── Formulardaten sammeln ────────────────────────────────────
+function collectData(context) {
+  var d = {};
+
+  // Meta
+  d['_context'] = context;
+  d['_anrede']  = document.getElementById('field-anrede').value;
+  d['_anlass']  = document.getElementById('field-anlass').value;
+
+  // E-Mail (für FormSubmit auto-reply: Feld muss "email" heißen)
+  var emailEl;
+  if (context === 'website') emailEl = document.getElementById('field-email');
+  else if (context === 'warm') emailEl = document.getElementById('field-email-warm');
+  else emailEl = document.getElementById('field-email-group');
+  d['email'] = emailEl ? (emailEl.value || '') : '';
+
+  // Q1 — sichtbare Felder
+  var nameEl = context === 'warm'
+    ? document.getElementById('field-name-warm')
+    : document.getElementById('field-name');
+  if (nameEl) d['name'] = nameEl.value;
+  ['field-rolle','field-branche','field-pseudonym','field-anlass-label'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.closest('[style*="display: none"]') === null
+           && el.closest('[style*="display:none"]') === null) {
+      d[id.replace('field-','')] = el.value;
+    }
+  });
+
+  // Radios
+  ['unternehmensgroesse','datenlage','prioritaet','zeithorizont','zeitbudget','format'].forEach(function(n) {
+    var el = document.querySelector('input[name="' + n + '"]:checked');
+    d[n] = el ? el.value : '';
+  });
+
+  // Checkboxes (Tools)
+  var toolsChecked = [];
+  document.querySelectorAll('input[name="tools"]:checked').forEach(function(cb) {
+    toolsChecked.push(cb.value);
+  });
+  d['tools'] = toolsChecked.join(', ');
+  d['tools_andere'] = document.getElementById('field-tools-andere').value;
+  d['prioritaet_andere'] = document.getElementById('field-prio-andere').value;
+
+  // Textareas
+  [
+    ['einschraenkungen',   'field-einschraenkungen'],
+    ['anwendungsfall',     'field-anwendungsfall'],
+    ['erfahrungen',        'field-erfahrungen'],
+    ['ziel_koennen',       'field-ziel-koennen'],
+    ['erfolgsmessung',     'field-erfolgsmessung'],
+    ['vertiefung',         'field-vertiefung'],
+    ['vertiefung_beispiel','field-vertiefung-beispiel']
+  ].forEach(function(pair) {
+    var el = document.getElementById(pair[1]);
+    d[pair[0]] = el ? el.value : '';
+  });
+
+  return d;
+}
+
+// ─── Absenden via FormSubmit ──────────────────────────────────
+function submitForm(context, anrede) {
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+
+  var data = collectData(context);
+
+  // Auto-reply: FormSubmit sendet eine Kopie an data.email wenn gesetzt
+  var autoMsg = anrede === 'sie'
+    ? 'Vielen Dank für Ihre Antworten. Ich melde mich in Kürze bei Ihnen.'
+    : 'Danke für deine Antworten. Ich melde mich in Kürze bei dir.';
+  data['_autoresponse'] = autoMsg;
+
+  fetch('https://formsubmit.co/ajax/' + FORMSUBMIT_EMAIL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(function(res) {
+    return res.json().then(function(json) {
+      if (!res.ok) throw new Error(json.message || 'Fehler ' + res.status);
+      return json;
+    });
+  })
+  .then(function() {
+    document.getElementById('form-view').style.display = 'none';
+    var ty = document.getElementById('thank-you-view');
+    ty.style.display = 'block';
+    window.scrollTo(0, 0);
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = TEXTS[anrede].submit_label;
+    alert('Fehler beim Senden: ' + err.message
+      + '\n\nBitte versuche es erneut oder schreib direkt an info@integri.de');
+  });
+}
+</script>
+</body>
+</html>
