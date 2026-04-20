@@ -115,6 +115,12 @@
     color: #888;
     margin-bottom: 10px;
   }
+  .select-hint {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
 
   /* ── Inputs ── */
   input[type="text"],
@@ -435,6 +441,7 @@
       <!-- Q3: KI-Tools -->
       <div class="question" id="q3">
         <span class="q-label" id="q3-label">Welche KI-Tools nutzt du aktuell?</span>
+        <p class="select-hint">Mehrfachauswahl möglich</p>
         <div class="checkbox-group">
           <label><input type="checkbox" name="tools" value="ChatGPT"> ChatGPT</label>
           <label><input type="checkbox" name="tools" value="Claude"> Claude</label>
@@ -513,17 +520,18 @@
         </div>
       </div>
 
-      <!-- Q9: Priorität (neue Reihenfolge) -->
+      <!-- Q9: Priorität (Mehrfachauswahl) -->
       <div class="question" id="q9">
-        <span class="q-label">Welcher Bereich hat Priorität?</span>
-        <div class="radio-group">
-          <label><input type="radio" name="prioritaet" value="Grundverständnis & Einordnung"> Grundverständnis &amp; Einordnung</label>
-          <label><input type="radio" name="prioritaet" value="Tool-Auswahl & Setup"> Tool-Auswahl &amp; Setup</label>
-          <label><input type="radio" name="prioritaet" value="Prompting-Qualität"> Prompting-Qualität</label>
-          <label><input type="radio" name="prioritaet" value="Workflow & Automatisierung"> Workflow &amp; Automatisierung</label>
-          <label><input type="radio" name="prioritaet" value="Teamintegration"> Teamintegration</label>
+        <span class="q-label" id="q9-label">Welcher Aspekt hat für dich Priorität?</span>
+        <p class="select-hint">Mehrfachauswahl möglich</p>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="prioritaet" value="Grundverständnis & Einordnung"> Grundverständnis &amp; Einordnung</label>
+          <label><input type="checkbox" name="prioritaet" value="Tool-Auswahl & Setup"> Tool-Auswahl &amp; Setup</label>
+          <label><input type="checkbox" name="prioritaet" value="Prompting-Qualität"> Prompting-Qualität</label>
+          <label><input type="checkbox" name="prioritaet" value="Workflow & Automatisierung"> Workflow &amp; Automatisierung</label>
+          <label><input type="checkbox" name="prioritaet" value="Teamintegration"> Teamintegration</label>
           <label>
-            <input type="radio" name="prioritaet" value="Anderes" id="rb-prio-andere">
+            <input type="checkbox" name="prioritaet" value="Anderes" id="cb-prio-andere">
             Anderes
           </label>
         </div>
@@ -590,8 +598,9 @@
   <!-- ── Thank-you view ── -->
   <div class="thank-you" id="thank-you-view">
     <div class="checkmark">✓</div>
-    <h2>Danke für deine Antworten.</h2>
+    <h2 id="thankyou-heading">Danke für deine Antworten.</h2>
     <p id="thankyou-text">Ich melde mich in Kürze bei dir.</p>
+    <p id="thankyou-copy" style="margin-top:10px; font-size:13px; color:#aaa; display:none"></p>
   </div>
 
 </div><!-- /page-wrap -->
@@ -607,9 +616,9 @@
 // KONFIGURATION
 // ═══════════════════════════════════════════════════════════════
 
-// FormSubmit: Ersetze mit deiner E-Mail-Adresse.
-// Beim ersten Einsatz kommt eine Bestätigungsmail an diese Adresse.
-var FORMSUBMIT_EMAIL = 'info@integri.de';
+// FormSubmit: Hash schützt die E-Mail vor Spam-Bots.
+// Generiert beim Aktivieren des Formulars (einmalig).
+var FORMSUBMIT_EMAIL = '9a04b2edc972041da2b3277b9d8d2085';
 
 // ═══════════════════════════════════════════════════════════════
 // TEXTE — Du / Sie
@@ -628,6 +637,8 @@ var TEXTS = {
     q8a_label:        'Was willst du mit KI können, was heute nicht möglich ist?',
     q8b_label:        'Woran erkennst du, dass du es erreicht hast?',
     q8b_group_label:  'Was wäre für dich nach der Session ein gutes Ergebnis?',
+    q9_label:         'Welcher Aspekt hat für dich Priorität?',
+    thankyou_copy:    'Eine Kopie deiner Antworten wurde an {email} gesendet.',
     dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen findest du in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
     subtitle_website: 'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
     subtitle_warm:    'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
@@ -649,6 +660,8 @@ var TEXTS = {
     q8a_label:        'Was möchten Sie mit KI können, was heute nicht möglich ist?',
     q8b_label:        'Woran erkennen Sie, dass Sie es erreicht haben?',
     q8b_group_label:  'Was wäre für Sie nach der Session ein gutes Ergebnis?',
+    q9_label:         'Welcher Aspekt hat für Sie Priorität?',
+    thankyou_copy:    'Eine Kopie Ihrer Antworten wurde an {email} gesendet.',
     dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen finden Sie in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
     subtitle_website: 'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
     subtitle_warm:    'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
@@ -719,7 +732,7 @@ var CONTEXT_CONFIG = {
     txt['subtitle_' + context] || txt.subtitle_website;
 
   // Thank-you
-  document.getElementById('thank-you-view').querySelector('h2').textContent =
+  document.getElementById('thankyou-heading').textContent =
     txt.thankyou_heading;
   document.getElementById('thankyou-text').textContent =
     txt['thankyou_' + context] || txt.thankyou_website;
@@ -736,6 +749,7 @@ var CONTEXT_CONFIG = {
   applyText('q7-label',  txt.q7_label);
   applyText('q8a-label', txt.q8a_label);
   applyText('q8b-label', txt.q8b_label);
+  applyText('q9-label',  txt.q9_label);
   applyText('dsgvo-text', txt.dsgvo_text);
 
   // Group-Variante überschreibt Q6 + Q8b Label
@@ -781,12 +795,9 @@ var CONTEXT_CONFIG = {
       .classList.toggle('visible', cbAndere.checked);
   });
 
-  document.querySelectorAll('input[name="prioritaet"]').forEach(function(rb) {
-    rb.addEventListener('change', function() {
-      document.getElementById('field-prio-andere')
-        .classList.toggle('visible',
-          document.getElementById('rb-prio-andere').checked);
-    });
+  document.getElementById('cb-prio-andere').addEventListener('change', function() {
+    document.getElementById('field-prio-andere')
+      .classList.toggle('visible', this.checked);
   });
 
   // ── Submit ──
@@ -912,19 +923,26 @@ function collectData(context) {
     }
   });
 
-  // Radios
-  ['unternehmensgroesse','datenlage','prioritaet','zeithorizont','zeitbudget','format'].forEach(function(n) {
+  // Radios (Einfachauswahl)
+  ['unternehmensgroesse','datenlage','zeithorizont','zeitbudget','format'].forEach(function(n) {
     var el = document.querySelector('input[name="' + n + '"]:checked');
     d[n] = el ? el.value : '';
   });
 
-  // Checkboxes (Tools)
+  // Checkboxes — Tools (Mehrfachauswahl)
   var toolsChecked = [];
   document.querySelectorAll('input[name="tools"]:checked').forEach(function(cb) {
     toolsChecked.push(cb.value);
   });
   d['tools'] = toolsChecked.join(', ');
   d['tools_andere'] = document.getElementById('field-tools-andere').value;
+
+  // Checkboxes — Priorität (Mehrfachauswahl)
+  var prioChecked = [];
+  document.querySelectorAll('input[name="prioritaet"]:checked').forEach(function(cb) {
+    prioChecked.push(cb.value);
+  });
+  d['prioritaet'] = prioChecked.join(', ');
   d['prioritaet_andere'] = document.getElementById('field-prio-andere').value;
 
   // Textareas
@@ -952,11 +970,12 @@ function submitForm(context, anrede) {
 
   var data = collectData(context);
 
-  // Auto-reply: FormSubmit sendet eine Kopie an data.email wenn gesetzt
-  var autoMsg = anrede === 'sie'
-    ? 'Vielen Dank für Ihre Antworten. Ich melde mich in Kürze bei Ihnen.'
-    : 'Danke für deine Antworten. Ich melde mich in Kürze bei dir.';
-  data['_autoresponse'] = autoMsg;
+  // _cc: FormSubmit schickt dem Absender eine Kopie der vollständigen Submission
+  if (data['email']) {
+    data['_cc'] = data['email'];
+  }
+
+  var submittedEmail = data['email'];
 
   fetch('https://formsubmit.co/ajax/' + FORMSUBMIT_EMAIL, {
     method: 'POST',
@@ -976,6 +995,13 @@ function submitForm(context, anrede) {
     document.getElementById('form-view').style.display = 'none';
     var ty = document.getElementById('thank-you-view');
     ty.style.display = 'block';
+    // Kopie-Hinweis einblenden wenn E-Mail vorhanden
+    if (submittedEmail) {
+      var copyEl = document.getElementById('thankyou-copy');
+      var copyTmpl = TEXTS[anrede].thankyou_copy || '';
+      copyEl.textContent = copyTmpl.replace('{email}', submittedEmail);
+      copyEl.style.display = 'block';
+    }
     window.scrollTo(0, 0);
   })
   .catch(function(err) {
