@@ -454,6 +454,15 @@
           <label><input type="checkbox" name="tools" value="Noch keine"> Noch keine</label>
         </div>
         <input type="text" name="tools_andere_text" id="field-tools-andere" class="other-text" placeholder="Welche Tools?">
+
+        <div class="sub-section" id="q3-nutzungsart-section">
+          <span class="sub-section-label" id="q3-nutzungsart-label">Nutzt du die kostenlose oder Bezahl-Version?</span>
+          <div class="radio-group" style="margin-top:8px">
+            <label><input type="radio" name="tools_nutzungsart" value="Kostenlose Versionen"> Kostenlose Versionen</label>
+            <label><input type="radio" name="tools_nutzungsart" value="Bezahlte Versionen"> Bezahlte Versionen (z.B. ChatGPT Plus, Claude Pro)</label>
+            <label><input type="radio" name="tools_nutzungsart" value="Gemischt"> Gemischt — je nach Tool</label>
+          </div>
+        </div>
       </div>
 
       <!-- Q4: Einschränkungen -->
@@ -625,6 +634,7 @@ var TEXTS = {
     q1_label:         'Zu deiner Person',
     q1_email_label:   'Deine E-Mail-Adresse',
     q3_label:         'Welche KI-Tools nutzt du aktuell?',
+    q3_nutzungsart:   'Nutzt du die kostenlose oder Bezahl-Version?',
     q5_label:         'Wo liegen deine Daten und Prozesse aktuell?',
     q6_label:         'Nenne stichwortartig Anwendungsfälle, bei denen du KI heute schon einsetzt',
     q6_group_label:   'Nenne eine konkrete Situation aus Studium, Job oder Alltag, in der KI dir helfen könnte oder schon hilft.',
@@ -648,6 +658,7 @@ var TEXTS = {
     q1_label:         'Zu Ihrer Person',
     q1_email_label:   'Ihre E-Mail-Adresse',
     q3_label:         'Welche KI-Tools nutzen Sie aktuell?',
+    q3_nutzungsart:   'Nutzen Sie die kostenlose oder Bezahl-Version?',
     q5_label:         'Wo liegen Ihre Daten und Prozesse aktuell?',
     q6_label:         'Nennen Sie stichwortartig Anwendungsfälle, bei denen Sie KI heute schon einsetzen',
     q6_group_label:   'Nennen Sie eine konkrete Situation aus Studium, Job oder Alltag, in der KI Ihnen helfen könnte oder schon hilft.',
@@ -735,6 +746,7 @@ var CONTEXT_CONFIG = {
   applyText('q1-email-label-warm',  txt.q1_email_label + ' <span class="required-mark">*</span>');
   applyText('q1-email-label-group', txt.q1_email_label + ' (optional, für Kopie)');
   applyText('q3-label',  txt.q3_label);
+  applyText('q3-nutzungsart-label', txt.q3_nutzungsart);
   applyText('q5-label',  txt.q5_label);
   applyText('q6-label',  txt.q6_label + ' <span class="required-mark">*</span>');
   applyText('q7-label',  txt.q7_label);
@@ -927,6 +939,10 @@ function collectData(context) {
   });
   d['tools'] = toolsChecked.join(', ');
   d['tools_andere'] = document.getElementById('field-tools-andere').value;
+
+  // Tools — Free/Paid
+  var nutzungsartEl = document.querySelector('input[name="tools_nutzungsart"]:checked');
+  d['tools_nutzungsart'] = nutzungsartEl ? nutzungsartEl.value : '';
 
   // Checkboxes — Priorität (Mehrfachauswahl)
   var prioChecked = [];
