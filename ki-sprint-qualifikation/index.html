@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KI-Sprint — Erstcall Qualifikation (intern)</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --petrol:      #033132;
+      --off-white:   #F7F7F5;
+      --white:       #FFFFFF;
+      --green:       #2D7D3E;
+      --terracotta:  #F08972;
+      --text:        #2C3E50;
+      --text-dim:    #5A6B7A;
+      --border:      #D1D5D8;
+      --apricot:     #FFF5F2;
+      --placeholder: #8090A0;
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      /* Semantic mappings für bestehende Klassen */
+      --accent:      #033132;
+      --accent-light:#e8f0f0;
+      --muted:       #5A6B7A;
+      --bg:          #F7F7F5;
+      --green-bg:    #e8f3ea;
+      --red:         #b5451b;
+      --red-bg:      #fdf0eb;
+      --yellow:      #7a5c00;
+      --yellow-bg:   #fdf8e6;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--off-white);
+      padding: 40px 20px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper { max-width: 760px; margin: 0 auto; }
+
+    /* Tool Header */
+    .tool-header {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border-top: 4px solid var(--petrol);
+      padding: 28px 32px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(3,49,50,0.06);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .brand-mark {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--petrol);
+    }
+    .header-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 3px;
+      background: #1a1a1a;
+      color: var(--white);
+    }
+    .tool-header h1 { font-size: 22px; font-weight: 600; color: var(--petrol); letter-spacing: -0.01em; margin-bottom: 8px; }
+    .tool-header p { font-size: 14px; color: var(--text); line-height: 1.65; max-width: 620px; }
+
+    .meta-row { display: flex; gap: 24px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+    .meta-field { flex: 1; min-width: 0; }
+    .meta-field label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+    .meta-field input[type="text"] {
+      border: none; border-bottom: 2px solid var(--border);
+      padding: 4px 0; font-size: 15px; font-weight: 500; width: 100%; background: transparent; color: var(--text); outline: none;
+      transition: border-color 0.15s;
+    }
+    .meta-field input[type="text"]:focus { border-bottom-color: var(--petrol); }
+
+    /* Score display */
+    .score-bar {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(3,49,50,0.05);
+    }
+    .score-number {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--petrol);
+      line-height: 1;
+      min-width: 60px;
+    }
+    .score-label { font-size: 12px; color: var(--text-dim); }
+    .score-verdict {
+      margin-left: auto;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .verdict-go { background: var(--green-bg); color: var(--green); }
+    .verdict-maybe { background: var(--yellow-bg); color: var(--yellow); }
+    .verdict-nogo { background: var(--red-bg); color: var(--red); }
+
+    /* Block */
+    .block {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(3,49,50,0.05);
+    }
+    .block-header {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--green);
+      color: var(--white);
+    }
+    .block-num { font-size: 15px; font-weight: 600; color: var(--white); flex-shrink: 0; }
+    .block-title { font-size: 15px; font-weight: 600; color: var(--white); }
+    .block-tag {
+      margin-left: auto;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--white);
+      opacity: 0.85;
+    }
+    .tag-ko { }
+    .tag-soft { }
+
+    .block-body { padding: 22px 24px; }
+
+    /* Question rows */
+    .q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .q-row:last-child { border-bottom: none; }
+
+    .q-controls {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .q-btn {
+      width: 30px;
+      height: 26px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      background: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .q-btn.active-ja { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .q-btn.active-nein { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+    .q-btn.active-unklar { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow); }
+    .q-btn:hover { border-color: var(--petrol); }
+
+    .q-content { flex: 1; }
+    .q-text { font-size: 13px; font-weight: 600; line-height: 1.4; margin-bottom: 3px; }
+    .q-signal { font-size: 11px; color: var(--muted); font-style: italic; line-height: 1.4; }
+    .q-ko-signal { font-size: 11px; color: var(--red); font-style: italic; line-height: 1.4; }
+
+    .q-note {
+      margin-top: 6px;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      background: #fafafa;
+      display: none;
+    }
+    .q-note.visible { display: block; }
+    .q-note:focus { border-color: var(--petrol); background: var(--white); }
+
+    /* Notes area */
+    .notes-area {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .notes-area label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .notes-area textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+      background: #fafafa;
+      line-height: 1.5;
+    }
+    .notes-area textarea:focus { border-color: var(--petrol); background: var(--white); }
+
+    /* Recommendation box */
+    .rec-box {
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      border: 2px solid var(--border);
+    }
+    .rec-box h3 { font-size: 14px; margin-bottom: 6px; }
+    .rec-box p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .rec-go { border-color: var(--green); background: var(--green-bg); }
+    .rec-go h3 { color: var(--green); }
+    .rec-maybe { border-color: #d4a700; background: var(--yellow-bg); }
+    .rec-maybe h3 { color: var(--yellow); }
+    .rec-nogo { border-color: var(--red); background: var(--red-bg); }
+    .rec-nogo h3 { color: var(--red); }
+
+    /* Actions */
+    .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+    button {
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary { background: var(--petrol); color: var(--white); }
+    .btn-primary:hover { background: #022426; }
+    .btn-secondary { background: var(--white); color: var(--petrol); border-color: var(--petrol); }
+    .btn-secondary:hover { background: var(--accent-light); }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .actions { display: none; }
+      .q-btn { border: 1px solid #ccc; }
+    }
+  </style>
+  <script>window.INTEGRI_CHROME = { docname: 'KI-Sprint' };</script>
+  <script src="../assets/tool-chrome.js"></script>
+</head>
+<body>
+<div class="wrapper">
+
+  <header class="tool-header">
+    <div class="header-top">
+      <span class="brand-mark">KI-Sprint</span>
+      <div class="header-divider"></div>
+      <span class="badge">Intern</span>
+    </div>
+    <h1>Erstcall — Qualifikationsbogen</h1>
+    <p>Strukturierte Fragen für das Erstgespräch nach dem Intake. Ziel: herausfinden, ob der Case des Kunden zum KI-Sprint-Format passt — bevor eine Entscheidung zur Zusammenarbeit fällt.</p>
+    <div class="meta-row">
+      <div class="meta-field">
+        <label>Kunde</label>
+        <input type="text" placeholder="Name" id="meta-name" />
+      </div>
+      <div class="meta-field">
+        <label>Datum</label>
+        <input type="text" id="meta-date" />
+      </div>
+      <div class="meta-field">
+        <label>Branche / Unternehmen</label>
+        <input type="text" placeholder="aus Intake" id="meta-company" />
+      </div>
+    </div>
+  </header>
+
+  <!-- Score -->
+  <div class="score-bar">
+    <div>
+      <div class="score-number" id="score-display">–</div>
+      <div class="score-label">Ja-Antworten (von <span id="total-qs">12</span> Fragen)</div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">KO-Kriterien: <span id="ko-count" style="font-weight:700;color:var(--red)">0</span> ausgelöst</div>
+      <div style="font-size:12px;color:var(--muted)">Antworten gesetzt: <span id="answered-count">0</span></div>
+    </div>
+    <div class="score-verdict" id="verdict-badge">noch offen</div>
+  </div>
+
+  <!-- Block 1: Format-Passung -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">01</span>
+      <span class="block-title">Format-Passung</span>
+      <span class="block-tag tag-ko">KO-Kriterien enthalten</span>
+    </div>
+    <div class="block-body">
+
+      <div class="q-row" data-weight="ko">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Hat der Kunde einen konkreten, wiederholbaren Workflow — oder sucht er noch?</div>
+          <div class="q-ko-signal">KO wenn nein: "Ich will generell KI lernen" ist kein Sprint-Case. Sprint braucht einen definierten Prozess.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="ko">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Ist der Workflow wiederholbar — gleiche Struktur, unterschiedliche Inhalte?</div>
+          <div class="q-ko-signal">KO wenn nein: Einmalige Projekte oder hochindividuelle Einzelfälle sind in 4 Sessions nicht sinnvoll systematisierbar.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Hat der Kunde eine Vorstellung davon, was "fertig" heißt?</div>
+          <div class="q-signal">Nicht zwingend präzise — aber er sollte einen Zielzustand beschreiben können. Wenn nicht: S1 klärt das, kostet aber Zeit.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Block 2: Technische Voraussetzungen -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">02</span>
+      <span class="block-title">Technische Voraussetzungen</span>
+      <span class="block-tag tag-ko">KO-Kriterien enthalten</span>
+    </div>
+    <div class="block-body">
+
+      <div class="q-row" data-weight="ko">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Nutzt der Kunde aktiv ein LLM (mindestens Pro-Version)?</div>
+          <div class="q-ko-signal">KO wenn nein: Kein Einsteiger-Format. Ohne laufendes Tool kein Setup, kein Sprint.</div>
+          <textarea class="q-note" rows="2" placeholder="Welches Tool, wie lange, wie regelmäßig?"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Sind Beispiel-Inputs verfügbar — oder lassen sie sich beschaffen / anonymisieren?</div>
+          <div class="q-signal">Ohne Testmaterial kein Setup in Session 2. Datenschutz-Constraints prüfen.</div>
+          <textarea class="q-note" rows="2" placeholder="Was für Daten, welche Einschränkungen?"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Gibt es Datenschutz- oder Compliance-Constraints — und sind sie lösbar?</div>
+          <div class="q-signal">Nicht blockierend, wenn lösbar (z.B. Anonymisierung, lokales Modell). Blockierend, wenn kein Workaround möglich.</div>
+          <textarea class="q-note" rows="2" placeholder="Art der Daten, bekannte Einschränkungen, möglicher Umgang?"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Block 3: Erwartungsmanagement -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">03</span>
+      <span class="block-title">Erwartungsmanagement</span>
+      <span class="block-tag tag-ko">KO-Kriterien enthalten</span>
+    </div>
+    <div class="block-body">
+
+      <div class="q-row" data-weight="ko">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Versteht der Kunde, dass am Ende er selbst den Workflow bedient — nicht ich?</div>
+          <div class="q-ko-signal">KO wenn nein: Wenn der Kunde dauerhaften Support erwartet, ist das ein anderes Produkt.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Ist klar, dass das Ergebnis ein Workflow ist — kein KI-Konzept, keine Strategie?</div>
+          <div class="q-signal">Sprint = konkreter Output, direkt einsetzbar. Wer ein Whitepaper oder eine Roadmap erwartet, hat das falsche Produkt gewählt.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Hat der Kunde realistische Vorstellungen, was KI in diesem Bereich kann und was nicht?</div>
+          <div class="q-signal">Überschätzung ("KI macht alles automatisch") und Unterschätzung ("KI kann das nicht") sind beide problematisch. Wo liegt er?</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Block 4: Commitment -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-num">04</span>
+      <span class="block-title">Commitment &amp; Ressourcen</span>
+      <span class="block-tag tag-soft">Soft-Kriterien</span>
+    </div>
+    <div class="block-body">
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Hat der Kunde realistisch 1–3 Stunden pro Woche für Testen und Hausaufgaben?</div>
+          <div class="q-signal">Weniger ist möglich, verzögert aber den Sprint oder reduziert die Tiefe.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Ist der Entscheider selbst dabei — oder soll eine dritte Person den Sprint durchführen?</div>
+          <div class="q-signal">Proxy-Situationen (jemand macht den Sprint "für den Chef") funktionieren selten. Wer entscheidet, muss im Sprint sein.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+      <div class="q-row" data-weight="standard">
+        <div class="q-controls">
+          <button class="q-btn" data-val="ja" title="Ja">J</button>
+          <button class="q-btn" data-val="nein" title="Nein">N</button>
+          <button class="q-btn" data-val="unklar" title="Unklar">?</button>
+        </div>
+        <div class="q-content">
+          <div class="q-text">Gibt es einen konkreten Zeitrahmen / Druck — oder ist es "irgendwann"?</div>
+          <div class="q-signal">Kein Muss, aber: Kunden mit konkretem Druck liefern bessere Hausaufgaben und setzen um. "Irgendwann" verlängert den Sprint faktisch.</div>
+          <textarea class="q-note" rows="2" placeholder="Notiz…"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Recommendation -->
+  <div class="rec-box" id="rec-box">
+    <h3 id="rec-title">Auswertung ausstehend</h3>
+    <p id="rec-text">Beantworte die Fragen, um eine Einschätzung zu erhalten.</p>
+  </div>
+
+  <!-- Notes -->
+  <div class="notes-area">
+    <label>Gesamtnotizen / Bauchgefühl</label>
+    <textarea rows="4" placeholder="Was ist dir im Gespräch aufgefallen, das nicht in die Fragen passt? Ton, Motivation, Erwartungshaltung, offene Fragen für die Entscheidung…"></textarea>
+  </div>
+
+  <div class="notes-area" style="margin-bottom:16px">
+    <label>Empfohlene nächste Schritte</label>
+    <textarea rows="3" placeholder="Zusagen, Offerte, Klärungsbedarf, Follow-up-Termin…"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" onclick="window.print()">Drucken / PDF</button>
+    <button class="btn-primary" onclick="exportNotes()">Notizen exportieren</button>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('meta-date').value = new Date().toLocaleDateString('de-DE');
+
+  const KO_THRESHOLD = 1; // any KO answer = nogo signal
+
+  function getState() {
+    const rows = document.querySelectorAll('.q-row');
+    let ja = 0, nein = 0, unklar = 0, ko_nein = 0, answered = 0;
+    rows.forEach(row => {
+      const active = row.querySelector('.q-btn.active-ja, .q-btn.active-nein, .q-btn.active-unklar');
+      if (!active) return;
+      answered++;
+      const weight = row.dataset.weight;
+      const val = active.dataset.val;
+      if (val === 'ja') ja++;
+      if (val === 'nein') { nein++; if (weight === 'ko') ko_nein++; }
+      if (val === 'unklar') unklar++;
+    });
+    return { ja, nein, unklar, ko_nein, answered, total: rows.length };
+  }
+
+  function updateUI() {
+    const s = getState();
+    document.getElementById('score-display').textContent = s.answered > 0 ? s.ja : '–';
+    document.getElementById('total-qs').textContent = s.total;
+    document.getElementById('ko-count').textContent = s.ko_nein;
+    document.getElementById('answered-count').textContent = s.answered;
+
+    const verdict = document.getElementById('verdict-badge');
+    const rec = document.getElementById('rec-box');
+    const recTitle = document.getElementById('rec-title');
+    const recText = document.getElementById('rec-text');
+
+    if (s.answered < 6) {
+      verdict.className = 'score-verdict';
+      verdict.textContent = 'noch offen';
+      rec.className = 'rec-box';
+      recTitle.textContent = 'Auswertung ausstehend';
+      recText.textContent = 'Beantworte mindestens 6 Fragen für eine erste Einschätzung.';
+      return;
+    }
+
+    if (s.ko_nein >= 1) {
+      verdict.className = 'score-verdict verdict-nogo';
+      verdict.textContent = 'Kein Sprint-Case';
+      rec.className = 'rec-box rec-nogo';
+      recTitle.textContent = 'KO-Kriterium ausgelöst — kein Sprint empfohlen';
+      recText.textContent = 'Mindestens ein KO-Kriterium ist nicht erfüllt. Bevor ein Sprint gebucht wird, muss diese Grundvoraussetzung geklärt sein. Mögliche Alternativen besprechen: anderes Format, Vorgespräch, geänderte Erwartungen.';
+    } else if (s.ja >= 9) {
+      verdict.className = 'score-verdict verdict-go';
+      verdict.textContent = 'Guter Sprint-Case';
+      rec.className = 'rec-box rec-go';
+      recTitle.textContent = 'Klare Passung — Sprint empfehlenswert';
+      recText.textContent = 'Der Case erfüllt die wesentlichen Kriterien. Nächster Schritt: Vorarbeit (Workflow-Checkliste) verschicken und Session 1 terminieren.';
+    } else if (s.ja >= 6) {
+      verdict.className = 'score-verdict verdict-maybe';
+      verdict.textContent = 'Mit Klärungsbedarf';
+      rec.className = 'rec-box rec-maybe';
+      recTitle.textContent = 'Grundsätzlich passend — offene Punkte klären';
+      recText.textContent = 'Einige Fragen sind unklar oder negativ. Das muss kein KO sein, braucht aber eine explizite Absprache vor Buchung. Welche Punkte sind kritisch — welche akzeptierst du?';
+    } else {
+      verdict.className = 'score-verdict verdict-nogo';
+      verdict.textContent = 'Schlechte Passung';
+      rec.className = 'rec-box rec-nogo';
+      recTitle.textContent = 'Zu viele offene Kriterien — Sprint nicht empfohlen';
+      recText.textContent = 'Zu viele Grundvoraussetzungen sind nicht erfüllt. Ein Sprint unter diesen Bedingungen liefert kein verwertbares Ergebnis. Alternative: erst Grundlagen schaffen, dann Sprint.';
+    }
+  }
+
+  // Button logic
+  document.querySelectorAll('.q-row').forEach(row => {
+    const btns = row.querySelectorAll('.q-btn');
+    const note = row.querySelector('.q-note');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        const already = btn.classList.contains('active-' + val);
+        btns.forEach(b => b.className = 'q-btn');
+        if (!already) {
+          btn.classList.add('active-' + val);
+          if (note && (val === 'nein' || val === 'unklar')) {
+            note.classList.add('visible');
+          } else if (note) {
+            note.classList.remove('visible');
+          }
+        }
+        updateUI();
+      });
+    });
+  });
+
+  function exportNotes() {
+    let out = 'KI-Sprint — Erstcall-Qualifikation (intern)\n';
+    out += '============================================\n\n';
+    out += 'Kunde: ' + (document.getElementById('meta-name').value || '—') + '\n';
+    out += 'Datum: ' + (document.getElementById('meta-date').value || '—') + '\n';
+    out += 'Unternehmen: ' + (document.getElementById('meta-company').value || '—') + '\n\n';
+
+    const s = getState();
+    out += 'Ja: ' + s.ja + ' | Nein: ' + s.nein + ' | Unklar: ' + s.unklar + ' | KO ausgelöst: ' + s.ko_nein + '\n\n';
+
+    document.querySelectorAll('.q-row').forEach(row => {
+      const text = row.querySelector('.q-text')?.textContent.trim();
+      const active = row.querySelector('.q-btn.active-ja, .q-btn.active-nein, .q-btn.active-unklar');
+      const note = row.querySelector('.q-note')?.value.trim();
+      const val = active ? active.dataset.val.toUpperCase() : '—';
+      out += '[' + val + '] ' + text + '\n';
+      if (note) out += '    → ' + note + '\n';
+    });
+
+    out += '\n--- Gesamtnotizen ---\n';
+    const textareas = document.querySelectorAll('.notes-area textarea');
+    textareas.forEach(ta => { if (ta.value.trim()) out += ta.value.trim() + '\n\n'; });
+
+    const blob = new Blob([out], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ki-sprint-erstcall-' + (document.getElementById('meta-name').value || 'kunde').replace(/\s+/g, '-').toLowerCase() + '.txt';
+    a.click();
+  }
+</script>
+</body>
+</html>
