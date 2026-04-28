@@ -3367,8 +3367,47 @@ function loadColors() {
     }
 }
 
+// ——————————————————————————————————————
+// BRIEFING URL-HASH IMPORT
+// Erkennt #briefing=<base64> beim Seitenaufruf und importiert automatisch
+// ——————————————————————————————————————
+function checkBriefingHashImport() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#briefing=')) return;
+
+    const encoded = hash.slice(10);
+    if (!encoded) return;
+
+    try {
+        const json = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        // Hash sofort aus URL entfernen (kein Reload)
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+
+        // Briefing importieren
+        mapBriefingToContent(json);
+        renderAllSections();
+
+        // Kurze Rückmeldung
+        const notice = document.createElement('div');
+        notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#00A896;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+        notice.textContent = '✓ Briefing importiert';
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+    } catch(e) {
+        console.error('Briefing Hash Import Fehler:', e);
+        const notice = document.createElement('div');
+        notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#c0392b;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;';
+        notice.textContent = 'Fehler beim Importieren des Briefings: ' + e.message;
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 5000);
+    }
+}
+
 // Initialize on load
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', function() {
+    init();
+    checkBriefingHashImport();
+});
 </script>
 
 </body>
