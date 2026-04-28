@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Review Tool - Integri</title>
+    <title>Content Review Tool v7 - Integri</title>
     <style>
         :root {
             --header-color: #165965;
@@ -764,22 +764,42 @@
         
         .problem-list,
         .solution-list {
-            list-style: disc;
-            padding-left: 20px;
+            list-style: none;
+            padding: 0;
             margin: 0;
         }
-
+        
         .problem-list li,
         .solution-list li {
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
             line-height: 1.7;
             font-size: 1rem;
         }
-
+        
         .problem-list li:last-child,
         .solution-list li:last-child {
             border-bottom: none;
+        }
+        
+        .problem-list li::before {
+            content: "✗";
+            margin-right: 12px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            color: #E53E3E;
+            font-weight: bold;
+        }
+        
+        .solution-list li::before {
+            content: "✓";
+            margin-right: 12px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            color: #28a745;
+            font-weight: bold;
         }
         
         .benefits-box {
@@ -852,6 +872,28 @@
             color: #333;
         }
         
+        /* Testimonial Cards */
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .testimonial-card .testimonial-quote {
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 14px;
+        }
+
+        .testimonial-card .testimonial-author {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 0.9em;
+        }
+
         /* CTA Buttons */
         .cta-section {
             max-width: 1200px;
@@ -1008,18 +1050,7 @@
 </head>
 <body>
 
-<!-- Loading Overlay -->
-<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:white; padding:40px 50px; text-align:center; border-radius:0; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-        <div style="font-size:18px; font-weight:600; color:#165965;">KI generiert Content …</div>
-        <div style="font-size:13px; color:#666; margin-top:10px;">Ca. 10–20 Sekunden</div>
-    </div>
-</div>
-
-<!-- Error Message -->
-<div id="errorMessage" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#c0392b; color:white; padding:14px 24px; z-index:9998; font-weight:600; box-shadow:0 2px 10px rgba(0,0,0,0.3);"></div>
-
-<div class="save-indicator" id="saveIndicator">&#10003; Automatisch gespeichert</div>
+<div class="save-indicator" id="saveIndicator">✓ Automatisch gespeichert</div>
 
 <div class="container">
     <div class="app-header">
@@ -1581,8 +1612,9 @@ function renderBlock(container, section, blockId, label, original, type, blockDa
             `;
         }
         
-        const inputType = original && original.length > 100 ? 'textarea' : 'input';
-        const size = !original || original.length < 100 ? 'small' : original.length < 300 ? 'medium' : 'large';
+        const effectiveText = value || original || '';
+        const inputType = effectiveText.length > 100 ? 'textarea' : 'input';
+        const size = effectiveText.length < 100 ? 'small' : effectiveText.length < 300 ? 'medium' : 'large';
         
         html += `
             <div class="edit-label">Ihre Änderung${original ? ' (kompletter Text)' : ''}:</div>
@@ -1689,7 +1721,19 @@ function processImageFile(blockId, file) {
         if (block) {
             block.dataset.fileData = base64;
             block.dataset.filename = file.name;
-            
+
+            // Directly update contentData so preview works immediately
+            const alt = block.querySelector('[name="image_alt"]')?.value || '';
+            const caption = block.querySelector('[name="image_caption"]')?.value || '';
+            contentData[blockId] = {
+                type: 'image',
+                filename: file.name,
+                base64: base64,
+                alt: alt,
+                caption: caption,
+                deleted: false
+            };
+
             // Update preview
             let preview = block.querySelector('.image-preview');
             if (!preview) {
@@ -1871,8 +1915,37 @@ function switchMode(mode) {
         previewMode.classList.add('active');
         editBtn.classList.remove('active');
         previewBtn.classList.add('active');
+        saveAllData();
         generatePreview();
     }
+}
+
+
+// Render custom (user-added) blocks for a section in preview
+function renderCustomBlocksInPreview(section) {
+    let html = '';
+    const keys = Object.keys(contentData)
+        .filter(key => key.startsWith(section + '_new_'))
+        .sort();
+    keys.forEach(key => {
+        const data = contentData[key];
+        if (!data || data.deleted) return;
+        // DOM fallback for image base64
+        let base64 = data.base64 || '';
+        if (!base64 && data.type === 'image') {
+            const block = document.querySelector('[data-block-id="' + key + '"]');
+            if (block && block.dataset.fileData) base64 = block.dataset.fileData;
+        }
+        if (data.type === 'image' && base64) {
+            html += '<div class="preview-section"><div class="preview-image">';
+            html += '<img src="' + base64 + '" alt="' + escapeHtml(data.alt || '') + '">';
+            if (data.caption) html += '<div class="caption">' + escapeHtml(data.caption) + '</div>';
+            html += '</div></div>';
+        } else if (data.type !== 'image' && data.value) {
+            html += '<div class="preview-section"><p style="margin:1rem 0;">' + escapeHtml(data.value) + '</p></div>';
+        }
+    });
+    return html;
 }
 
 // Generate preview
@@ -1882,39 +1955,54 @@ function generatePreview() {
     
     // Hero
     html += generateHeroPreview();
+    html += renderCustomBlocksInPreview('hero');
     
     // Intro
     html += generateIntroPreview();
+    html += renderCustomBlocksInPreview('intro');
     
     // Stats
     html += generateStatsPreview();
+    html += renderCustomBlocksInPreview('stats');
     
     // Problems/Solutions
     html += generateProblemsPreview();
+    html += renderCustomBlocksInPreview('problems');
     
     // USPs
     html += generateUSPsPreview();
+    html += renderCustomBlocksInPreview('usps');
     
     // Trust
     html += generateTrustPreview();
+    html += renderCustomBlocksInPreview('trust');
     
     // Services
     html += generateServicesPreview();
+    html += renderCustomBlocksInPreview('services');
     
     // CTA1
     html += generateCTA1Preview();
+    html += renderCustomBlocksInPreview('cta1');
     
     // Pricing
     html += generatePricingPreview();
+    html += renderCustomBlocksInPreview('pricing');
     
     // Cases
     html += generateCasesPreview();
+    html += renderCustomBlocksInPreview('cases');
     
+    html += generateTestimonialsPreview();
+    html += renderCustomBlocksInPreview('testimonials');
+
     // FAQ
     html += generateFAQPreview();
+    html += renderCustomBlocksInPreview('faq');
     
     // CTA2
     html += generateCTA2Preview();
+    html += renderCustomBlocksInPreview('cta2');
     
     previewMode.innerHTML = html;
 }
@@ -1923,8 +2011,18 @@ function generatePreview() {
 function generateHeroPreview() {
     const h1 = getContent('hero_h1', originalContent.hero.h1);
     
-    // Check if there's a hero image
-    const heroImageData = contentData['hero_image'];
+    // Check if there's a hero image — read from DOM as fallback
+    let heroImageData = contentData['hero_image'];
+    if (heroImageData && !heroImageData.base64) {
+        const heroBlock = document.querySelector('[data-block-id="hero_image"]');
+        if (heroBlock && heroBlock.dataset.fileData) {
+            heroImageData = {
+                ...heroImageData,
+                base64: heroBlock.dataset.fileData,
+                filename: heroBlock.dataset.filename || ''
+            };
+        }
+    }
     const hasImage = heroImageData && heroImageData.base64 && !heroImageData.deleted;
     
     if (isDeleted('hero_h1') && !hasImage) return '';
@@ -2019,11 +2117,9 @@ function generateProblemsPreview() {
     html += '<div class="transformation-grid">';
     
     // Problems column
-    const probKeyMap = { 'problems_p1': 'problem1', 'problems_p2': 'problem2', 'problems_p3': 'problem3', 'problems_s1': 'solution1', 'problems_s2': 'solution2', 'problems_s3': 'solution3' };
-
     let problemsHtml = '<div class="problem-box"><h3>❌ Vorher: Typische Probleme</h3><ul class="problem-list">';
     ['problems_p1', 'problems_p2', 'problems_p3'].forEach(key => {
-        const content = getContent(key, originalContent.problems[probKeyMap[key]]);
+        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
         if (!isDeleted(key) && content) {
             const cleanContent = content.replace(/^[❌✓]\s*/, '');
             problemsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
@@ -2031,11 +2127,11 @@ function generateProblemsPreview() {
         }
     });
     problemsHtml += '</ul></div>';
-
+    
     // Solutions column
     let solutionsHtml = '<div class="solution-box"><h3>✓ Nachher: Mit Ihrer Lösung</h3><ul class="solution-list">';
     ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
-        const content = getContent(key, originalContent.problems[probKeyMap[key]]);
+        const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
         if (!isDeleted(key) && content) {
             const cleanContent = content.replace(/^[❌✓]\s*/, '');
             solutionsHtml += `<li>${escapeHtml(cleanContent)}</li>`;
@@ -2055,7 +2151,7 @@ function generateProblemsPreview() {
         html += '<h3>Messbare Vorteile für Sie:</h3>';
         
         ['problems_s1', 'problems_s2', 'problems_s3'].forEach(key => {
-            const content = getContent(key, originalContent.problems[probKeyMap[key]]);
+            const content = getContent(key, originalContent.problems[key.replace('problems_', '')]);
             if (!isDeleted(key) && content) {
                 const cleanContent = content.replace(/^[❌✓]\s*/, '');
                 // Extract title and detail from "Title - Detail" format
@@ -2247,6 +2343,37 @@ function generateCasesPreview() {
     return hasContent ? html : '';
 }
 
+// Generate Testimonials preview
+function generateTestimonialsPreview() {
+    const title = getContent('testimonials_title', originalContent.testimonials.title);
+
+    let html = '<div class="preview-section alt">';
+    if (!isDeleted('testimonials_title') && title) html += `<h2>${escapeHtml(title)}</h2>`;
+
+    let hasContent = title && !isDeleted('testimonials_title');
+
+    for (let i = 1; i <= 3; i++) {
+        const quote = getContent(`testimonials_q${i}`, originalContent.testimonials[`quote${i}`]);
+        const author = getContent(`testimonials_a${i}`, originalContent.testimonials[`author${i}`]);
+
+        if ((quote || author) && (!isDeleted(`testimonials_q${i}`) || !isDeleted(`testimonials_a${i}`))) {
+            html += '<div class="testimonial-card">';
+            if (quote && !isDeleted(`testimonials_q${i}`)) {
+                html += `<div class="testimonial-quote">&bdquo;${escapeHtml(quote)}&ldquo;</div>`;
+            }
+            if (author && !isDeleted(`testimonials_a${i}`)) {
+                html += `<div class="testimonial-author">&mdash; ${escapeHtml(author)}</div>`;
+            }
+            html += '</div>';
+            hasContent = true;
+        }
+    }
+
+    html += '</div>';
+
+    return hasContent ? html : '';
+}
+
 // Generate FAQ preview
 function generateFAQPreview() {
     const title = getContent('faq_title', originalContent.faq.title);
@@ -2328,7 +2455,14 @@ function generateCTA2Preview() {
 
 // Render image if exists in contentData
 function renderImageIfExists(key) {
-    const imageData = contentData[key];
+    let imageData = contentData[key];
+    // DOM fallback: check block's dataset.fileData if contentData has no base64
+    if (imageData && !imageData.base64) {
+        const block = document.querySelector(`[data-block-id="${key}"]`);
+        if (block && block.dataset.fileData) {
+            imageData = { ...imageData, base64: block.dataset.fileData };
+        }
+    }
     if (!imageData || imageData.type !== 'image' || !imageData.base64 || imageData.deleted) {
         return '';
     }
@@ -2387,7 +2521,12 @@ function exportJSON() {
     Object.keys(contentData).forEach(key => {
         const data = contentData[key];
         if (data.type === 'text') {
-            exportData[key] = data.value || '';
+            // Preserve deleted status in export so roundtrip is lossless
+            if (data.deleted) {
+                exportData[key] = { value: data.value || '', deleted: true };
+            } else {
+                exportData[key] = data.value || '';
+            }
         } else if (data.type === 'image') {
             exportData[key] = {
                 filename: data.filename || '',
@@ -2454,7 +2593,8 @@ function importJSON() {
                             value: value,
                             deleted: false
                         };
-                    } else if (typeof value === 'object' && value.base64) {
+                    } else if (typeof value === 'object' && value !== null && value.base64 !== undefined) {
+                        // image block
                         contentData[key] = {
                             type: 'image',
                             filename: value.filename || '',
@@ -2462,6 +2602,13 @@ function importJSON() {
                             alt: value.alt || '',
                             caption: value.caption || '',
                             deleted: false
+                        };
+                    } else if (typeof value === 'object' && value !== null && value.value !== undefined) {
+                        // deleted text block (exported as {value, deleted: true})
+                        contentData[key] = {
+                            type: 'text',
+                            value: value.value || '',
+                            deleted: value.deleted || false
                         };
                     }
                 });
@@ -2520,13 +2667,21 @@ function importBriefing() {
     input.onchange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
+        
         const reader = new FileReader();
         reader.onload = (event) => {
             try {
                 const briefing = JSON.parse(event.target.result);
+                
+                // Clear existing data
                 contentData = {};
-                generateWithClaude(briefing);
+                
+                // Apply intelligent mapping
+                mapBriefingToContent(briefing);
+                
+                saveToLocalStorage();
+                renderAllSections();
+                alert('Briefing erfolgreich importiert und intelligent gemappt!');
             } catch (error) {
                 alert('Fehler beim Import: Ungültige JSON-Datei');
                 console.error(error);
@@ -2536,72 +2691,499 @@ function importBriefing() {
     };
     input.click();
 }
-// ============================================================
-// Claude API Integration
-// ============================================================
 
-async function generateWithClaude(briefingData) {
-    showLoadingState(true);
-    try {
-        const response = await fetch('https://integri.de/claude-proxy.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ briefing: briefingData })
-        });
-
-        if (!response.ok) {
-            let errMsg = `HTTP ${response.status}`;
-            try { const err = await response.json(); errMsg = err.error || errMsg; } catch {}
-            throw new Error(errMsg);
+// Intelligent mapping from Briefing JSON to Content structure
+function mapBriefingToContent(b) {
+    // Helper: Clean text
+    const clean = (text) => {
+        if (!text) return '';
+        return text.trim();
+    };
+    
+    // === HERO ===
+    const topic = clean(b['integri-topic']) || 'Dienstleistungen';
+    originalContent.hero.h1 = topic;
+    
+    // === INTRO ===
+    const company = clean(b['integri-company']) || 'Unternehmen';
+    const targetGroup = clean(b['integri-target-primary']) || 'Kunden';
+    const situation = clean(b['integri-situation']) || '';
+    const wishes = clean(b['integri-wishes']) || '';
+    const problems = clean(b['integri-problems']) || '';
+    const results = clean(b['integri-results']) || '';
+    const services = clean(b['integri-services']) || '';
+    const trust = clean(b['integri-trust']) || '';
+    
+    // H2: Drei Schlagworte aus Wishes
+    let introH2 = 'Zuverlässig, professionell, aus einer Hand';
+    if (wishes) {
+        const wishList = wishes.split('\n').filter(w => w.trim()).map(w => w.replace(/^[>\-\*]\s*/, '').trim());
+        if (wishList.length >= 3) {
+            const w1 = wishList[0].split(' ')[0] || wishList[0].substring(0, 15);
+            const w2 = wishList[1].split(' ')[0] || wishList[1].substring(0, 15);
+            const w3 = wishList[2].split(' ')[0] || wishList[2].substring(0, 15);
+            introH2 = `${w1}, ${w2}, ${w3}`;
         }
-
-        const content = await response.json();
-        applyGeneratedContent(content);
-
-    } catch (error) {
-        showError('KI-Generierung fehlgeschlagen: ' + error.message);
-    } finally {
-        showLoadingState(false);
     }
-}
-
-function applyGeneratedContent(content) {
-    // Reset originalContent
-    Object.keys(originalContent).forEach(section => {
-        if (typeof originalContent[section] === 'object') {
-            Object.keys(originalContent[section]).forEach(key => {
-                originalContent[section][key] = '';
-            });
+    originalContent.intro.h2 = introH2;
+    
+    // Intro Text: 2 Absätze
+    let introText = '';
+    
+    // Absatz 1: Probleme als rhetorische Fragen
+    const problemsList = problems.split('\n').filter(p => p.trim()).map(p => p.replace(/^[>\-\*]\s*/, '').trim());
+    if (problemsList.length > 0) {
+        const p1 = problemsList[0];
+        const p2 = problemsList[1] || '';
+        
+        introText += p1;
+        if (!p1.endsWith('?')) introText += '?';
+        if (p2) {
+            introText += ' ' + p2;
+            if (!p2.endsWith('?')) introText += '?';
         }
-    });
-
-    // Fill from Claude response
-    Object.keys(content).forEach(section => {
-        if (originalContent[section] && typeof originalContent[section] === 'object') {
-            Object.assign(originalContent[section], content[section]);
+        
+        introText += ` Als ${targetGroup} kennen Sie das Problem: `;
+        
+        if (situation) {
+            const sitParts = situation.split('\n').filter(s => s.trim()).map(s => s.replace(/^[>\-\*]\s*/, '').trim());
+            introText += sitParts.slice(0, 2).join(', ');
+        } else {
+            introText += problemsList.slice(0, 2).join(', ').toLowerCase();
         }
-    });
-
-    contentData = {};
-    renderAllSections();
-}
-
-function showLoadingState(show) {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.style.display = show ? 'flex' : 'none';
-}
-
-function showError(msg) {
-    const el = document.getElementById('errorMessage');
-    if (el) {
-        el.textContent = msg;
-        el.style.display = 'block';
-        setTimeout(() => { el.style.display = 'none'; }, 8000);
+        if (!introText.endsWith('.')) introText += '.';
+    }
+    
+    // Absatz 2: Firmenstory
+    introText += `\n\n${company} sorgt für `;
+    const resultsList = results.split('\n').filter(r => r.trim()).map(r => r.replace(/^[>\-\*]\s*/, '').trim());
+    if (resultsList.length > 0) {
+        introText += resultsList[0].toLowerCase();
+    } else if (wishes) {
+        const firstWish = wishes.split('\n')[0].replace(/^[>\-\*]\s*/, '').trim().toLowerCase();
+        introText += firstWish;
     } else {
-        alert(msg);
+        introText += 'die Lösung';
+    }
+    introText += '. ';
+    
+    // Historie
+    if (trust.toLowerCase().includes('jahr')) {
+        const yearMatch = trust.match(/(\d+)\s*\+?\s*jahr/i);
+        if (yearMatch) {
+            introText += `Seit über ${yearMatch[1]} Jahren `;
+        } else {
+            introText += 'Seit vielen Jahren ';
+        }
+    } else {
+        introText += 'Wir ';
+    }
+    
+    // Leistungen
+    if (services) {
+        const svcList = services.split('\n\n')[0].split('\n').filter(s => s.trim()).map(s => s.replace(/^[>\-\*]\s*/, '').trim()).slice(0, 3);
+        introText += 'betreuen wir mit ' + svcList.join(', ').toLowerCase();
+    } else {
+        introText += 'bieten wir professionelle Dienstleistungen';
+    }
+    
+    // Abschluss
+    const advantages = clean(b['integri-advantages']) || '';
+    if (advantages) {
+        const advLines = advantages.split('\n').filter(l => l.trim());
+        const firstAdv = advLines[0].split(':')[0].replace(/^[>\-\*]\s*/, '').trim();
+        introText += ` - ${firstAdv.toLowerCase()}, nur professioneller.`;
+    } else {
+        introText += ' - zuverlässig und professionell.';
+    }
+    
+    originalContent.intro.text = introText;
+    
+    // === STATS ===
+    originalContent.stats.stat1 = '30+ Jahre\nErfahrung und Kompetenz';
+    originalContent.stats.stat2 = '24/7\nErreichbarkeit bei Bedarf';
+    originalContent.stats.stat3 = '100%\nTransparente Preisgestaltung';
+    
+    // === PROBLEMS ===
+    originalContent.problems.title = 'Ihre Herausforderung - Unsere Lösung';
+    
+    // Problems: Detailliert mit " - " Zusatzinfo
+    const wishesArray = wishes.split('\n').filter(w => w.trim()).map(w => w.replace(/^[>\-\*]\s*/, '').trim()).slice(0, 3);
+    wishesArray.forEach((wish, i) => {
+        let problem = '';
+        let detail = '';
+        
+        const wishLower = wish.toLowerCase();
+        if (wishLower.includes('kommunikation') || wishLower.includes('erreichbar')) {
+            problem = 'Bisheriger Anbieter unzuverlässig';
+            detail = 'Termine werden nicht eingehalten, Rückrufe dauern Tage';
+        } else if (wishLower.includes('personal') || wishLower.includes('qualität')) {
+            problem = 'Mangelnde Servicequalität';
+            detail = 'Personal nicht passend qualifiziert oder motiviert';
+        } else if (wishLower.includes('preis') || wishLower.includes('transparent')) {
+            problem = 'Intransparente Kosten';
+            detail = 'Versteckte Gebühren, unklare Abrechnungen';
+        } else {
+            problem = `Mangel an ${wish.split(' ')[0]}`;
+            detail = 'Bisherige Lösungen erfüllen nicht die Anforderungen';
+        }
+        
+        originalContent.problems[`problem${i + 1}`] = `${problem} - ${detail}`;
+    });
+    
+    // Solutions: Konkrete Benefits aus Wishes
+    wishesArray.forEach((wish, i) => {
+        const wishLower = wish.toLowerCase();
+        let solution = '';
+        let detail = '';
+        
+        if (wishLower.includes('kommunikation') || wishLower.includes('erreichbar')) {
+            solution = 'Bessere Sichtbarkeit im Quartier';
+            detail = 'regelmäßige Begehungen, präsent und ansprechbar';
+        } else if (wishLower.includes('personal') || wishLower.includes('qualität')) {
+            solution = 'Schnelle Reaktionszeiten bei allen Anliegen';
+            detail = 'Sie und Ihre Kunden erreichen uns verlässlich';
+        } else if (wishLower.includes('preis') || wishLower.includes('transparent')) {
+            solution = 'Transparente Preisgestaltung';
+            detail = 'Sie zahlen nur für tatsächlich erbrachte Leistungen';
+        } else {
+            solution = wish;
+            detail = 'Professionelle Umsetzung Ihrer Anforderungen';
+        }
+        
+        originalContent.problems[`solution${i + 1}`] = `${solution} - ${detail}`;
+    });
+    
+    // === USPS ===
+    const topicShort = topic.split(' ')[0] || 'Service';
+    originalContent.usps.title = `Warum ${company} als ${topicShort}-Partner?\nWas uns von anderen Anbietern unterscheidet`;
+    
+    const uspBlocks = advantages.split('\n\n').filter(u => u.trim()).slice(0, 3);
+    uspBlocks.forEach((block, i) => {
+        const lines = block.split('\n').filter(l => l.trim());
+        const title = lines[0].replace(/^[>\-\*]\s*/, '').split(':')[0].trim() || `USP ${i + 1}`;
+        
+        // Vorteilstext extrahieren oder zusammenbauen
+        let benefitText = '';
+        const restLines = lines.slice(1).map(l => l.replace(/^[>\-\*]\s*/, '').trim());
+        
+        // Suche nach "Ihre Vorteile:" Block
+        const vorteileIdx = restLines.findIndex(l => l.toLowerCase().includes('ihre vorteile'));
+        if (vorteileIdx >= 0) {
+            benefitText = restLines.slice(vorteileIdx + 1).join(' ').replace(/^:\s*/, '').trim();
+        } else {
+            benefitText = restLines.join(' ').trim();
+        }
+        
+        if (!benefitText) {
+            benefitText = 'Profitieren Sie von unserer langjährigen Expertise und zuverlässigen Umsetzung.';
+        }
+        
+        // "Ihre Vorteile:" HINZUFÜGEN
+        originalContent.usps[`usp${i + 1}_title`] = title;
+        originalContent.usps[`usp${i + 1}_text`] = `Ihre Vorteile: ${benefitText}`;
+    });
+    
+    // === TRUST ===
+    if (trust) {
+        const trustItems = trust.split('\n').filter(t => t.trim()).slice(0, 3);
+        trustItems.forEach((item, i) => {
+            originalContent.trust[`trust${i + 1}`] = item.replace(/^[>\-\*]\s*/, '').trim();
+        });
+    } else {
+        originalContent.trust.trust1 = 'Langjährige Erfahrung\nÜber 30 Jahre am Markt';
+        originalContent.trust.trust2 = 'Zertifiziert\nGeprüfte Qualität';
+        originalContent.trust.trust3 = '24/7 Service\nImmer erreichbar';
+    }
+    
+    // === SERVICES ===
+    originalContent.services.title = 'Unsere Leistungen für Sie';
+    if (services) {
+        const serviceBlocks = services.split('\n\n').filter(s => s.trim()).slice(0, 2);
+        serviceBlocks.forEach((block, i) => {
+            originalContent.services[`service${i + 1}`] = block.replace(/^[>\-\*]\s*/gm, '').trim();
+        });
+    }
+    
+    // === CTA1 ===
+    const ctaLow = clean(b['integri-cta-low']) || 'Unverbindliches Erstgespräch';
+    
+    // Frage-Format
+    let ctaQuestion = 'Bessere Ergebnisse gewünscht? Erste Einschätzung gefällig?';
+    if (wishesArray.length > 0) {
+        const firstWish = wishesArray[0].split(' ')[0];
+        ctaQuestion = `${firstWish} gewünscht? Erste Einschätzung gefällig?`;
+    }
+    
+    originalContent.cta1.title = `${ctaQuestion}\nLernen Sie uns kennen - unverbindlich und kostenfrei`;
+    
+    // Features als Checkboxen
+    const ctaFeatures = wishesArray.slice(0, 3).map(w => {
+        const parts = w.split(' ');
+        return `Bedarfsanalyse zu ${parts[0].toLowerCase()}`;
+    });
+    
+    if (ctaFeatures.length === 0) {
+        originalContent.cta1.features = '✓ Bedarfsanalyse vor Ort\n✓ Erste Einschätzung zu Leistungsumfang\n✓ Unverbindlich & kostenfrei';
+    } else {
+        originalContent.cta1.features = '✓ ' + ctaFeatures.join('\n✓ ') + '\n✓ Unverbindlich & kostenfrei';
+    }
+    
+    // === PRICING ===
+    const calculation = clean(b['integri-calculation']) || '';
+    originalContent.pricing.title = 'Transparente Preisgestaltung & klarer Ablauf';
+    
+    let pricingInfo = 'Unsere Preise richten sich nach:\n';
+    if (calculation) {
+        const calcItems = calculation.split('\n').filter(c => c.trim()).map(c => c.replace(/^[>\-\*]\s*/, '').trim());
+        pricingInfo += calcItems.join('\n');
+    } else {
+        pricingInfo += 'Leistungsumfang und Einsatzzeiten';
+    }
+    pricingInfo += '\n\nBei einer ersten Besichtigung können wir Ihnen meist direkt eine Größenordnung nennen.';
+    originalContent.pricing.info = pricingInfo;
+    
+    // === CASES ===
+    const references = clean(b['integri-references']) || '';
+    if (references) {
+        const caseBlocks = references.split('\n').filter(r => r.trim()).slice(0, 2);
+        caseBlocks.forEach((caseText, i) => {
+            const parts = caseText.split(',').map(p => p.trim());
+            originalContent.cases[`case${i + 1}_title`] = parts[0] || `Referenz ${i + 1}`;
+            originalContent.cases[`case${i + 1}_challenge`] = 'Herausforderung: ' + (parts[1] || 'Anspruchsvolles Projekt');
+            originalContent.cases[`case${i + 1}_solution`] = 'Lösung: Professionelle Betreuung und zuverlässige Umsetzung';
+            originalContent.cases[`case${i + 1}_result`] = 'Ergebnis: ' + (parts[2] || 'Erfolgreich umgesetzt');
+        });
+    }
+    
+    // === FAQ ===
+    const faq = clean(b['integri-faq']) || '';
+    originalContent.faq.title = 'Häufig gestellte Fragen';
+    if (faq) {
+        const faqParts = faq.split('\n\n');
+        let questionIndex = 1;
+        faqParts.forEach(part => {
+            const lines = part.split('\n').filter(l => l.trim());
+            lines.forEach(line => {
+                if (questionIndex > 6) return;
+                if (line.includes('–')) {
+                    const [q, a] = line.split('–').map(s => s.trim());
+                    originalContent.faq[`q${questionIndex}`] = q;
+                    originalContent.faq[`a${questionIndex}`] = a;
+                    questionIndex++;
+                } else if (line.trim()) {
+                    originalContent.faq[`q${questionIndex}`] = line.trim();
+                    originalContent.faq[`a${questionIndex}`] = 'Diese Information stellen wir Ihnen gerne in einem persönlichen Gespräch zur Verfügung.';
+                    questionIndex++;
+                }
+            });
+        });
+    }
+    
+    // === CTA2 ===
+    const ctaMain = clean(b['integri-cta-main']) || 'Kontakt aufnehmen';
+    
+    // Resultat-basierter Title
+    let cta2Title = 'Bereit für den nächsten Schritt?';
+    if (resultsList.length > 0) {
+        const r1 = resultsList[0];
+        const r2 = resultsList[1] || 'reibungslose Abläufe';
+        cta2Title = `${r1} & ${r2} - jetzt starten`;
+    }
+    
+    originalContent.cta2.title = `${cta2Title}\nWählen Sie den passenden Einstieg für Ihre Situation`;
+    originalContent.cta2.btn1 = ctaLow;
+    originalContent.cta2.btn2 = ctaMain;
+    
+    // ========================================
+    // STRATEGISCHE ERWEITERUNGEN (CONDITIONAL)
+    // ========================================
+    
+    // 1. KEYWORDS IN HERO (SEO-Optimierung)
+    enhanceHeroWithKeywords(b, clean);
+    
+    // 2. AWARENESS-STUFEN IN INTRO (wenn gesetzt)
+    if (hasAwarenessLevel(b)) {
+        enhanceIntroWithAwareness(b, clean);
+    }
+    
+    // 3. TESTIMONIALS (wenn vorhanden)
+    if (b['integri-testimonials']) {
+        addTestimonialsSection(b, clean);
+    }
+    
+    // 4. ALTERNATIVES IN FAQ (wenn vorhanden)
+    if (b['integri-alternatives']) {
+        enhanceFAQWithAlternatives(b, clean);
+    }
+    
+    // 5. GOAL-BASIERTE CTAs (wenn gesetzt)
+    if (hasGoal(b)) {
+        enhanceCTAsWithGoal(b, clean);
     }
 }
 
+// ========================================
+// HELPER FUNCTIONS (MODULAR)
+// ========================================
+
+function hasAwarenessLevel(b) {
+    return b['integri-aware-unaware'] || 
+           b['integri-aware-problem'] || 
+           b['integri-aware-solution'];
+}
+
+function hasGoal(b) {
+    return b['integri-goal-meeting'] || 
+           b['integri-goal-quote'] || 
+           b['integri-goal-visit'] ||
+           b['integri-goal-other'];
+}
+
+// 1. Keywords in Hero
+function enhanceHeroWithKeywords(b, clean) {
+    const keyword = clean(b['integri-keyword-main']) || '';
+    const intent = clean(b['integri-search-intent']) || '';
+    const topic = clean(b['integri-topic']) || 'Dienstleistungen';
+    
+    if (!keyword) return; // Kein Keyword → kein SEO-Enhancement
+    
+    // Intent-basierte H1-Optimierung
+    if (intent.toLowerCase().includes('kosten') || intent.toLowerCase().includes('preis')) {
+        originalContent.hero.h1 = `${keyword} – Transparente Preise und Leistungen`;
+    } else if (intent.toLowerCase().includes('vergleich') || intent.toLowerCase().includes('anbieter')) {
+        originalContent.hero.h1 = `${keyword} – Ihr erfahrener Partner`;
+    } else if (intent.toLowerCase().includes('region') || intent.toLowerCase().includes('ort')) {
+        originalContent.hero.h1 = keyword; // Keyword enthält bereits Ortsangabe
+    } else {
+        originalContent.hero.h1 = `${keyword} – ${topic}`;
+    }
+}
+
+// 2. Awareness-Stufen in Intro
+function enhanceIntroWithAwareness(b, clean) {
+    const targetGroup = clean(b['integri-target-primary']) || 'Kunden';
+    const problems = clean(b['integri-problems']) || '';
+    const problemsList = problems.split('\n').filter(p => p.trim()).slice(0, 2);
+    const results = clean(b['integri-results']) || '';
+    
+    let awarenessOpener = '';
+    
+    if (b['integri-aware-unaware']) {
+        // Problem-Unaware → Bewusstsein schaffen
+        if (problemsList.length > 0) {
+            awarenessOpener = `Viele ${targetGroup} bemerken erst zu spät: ${problemsList[0]}. `;
+        }
+    } else if (b['integri-aware-problem']) {
+        // Problem-Aware → Lösungsweg zeigen
+        if (problemsList.length > 0) {
+            awarenessOpener = `Sie kennen das Problem: ${problemsList.join(' und ')}. `;
+        }
+    } else if (b['integri-aware-solution']) {
+        // Solution-Aware → Differenzierung
+        awarenessOpener = `Sie wissen, was Sie brauchen. Jetzt kommt es auf die richtige Umsetzung an. `;
+    }
+    
+    // Results (Zielzustand) integrieren
+    const outcomeText = results ? `\n\nDas Ergebnis: ${results.split('\n')[0].trim()}` : '';
+    
+    // Intro-Text neu zusammensetzen (nur wenn awarenessOpener existiert)
+    if (awarenessOpener) {
+        originalContent.intro.text = awarenessOpener + originalContent.intro.text + outcomeText;
+    }
+}
+
+// 3. Testimonials-Sektion
+function addTestimonialsSection(b, clean) {
+    const testimonials = clean(b['integri-testimonials']) || '';
+    if (!testimonials) return;
+    
+    originalContent.testimonials.title = 'Das sagen unsere Kunden';
+    
+    // Format: "Zitat, Autor, Firma" ODER "Zitat\n\nZitat2" (mehrere Blocks)
+    const quoteBlocks = testimonials.split('\n\n').filter(t => t.trim()).slice(0, 3);
+    
+    quoteBlocks.forEach((block, i) => {
+        // Versuch 1: Komma-getrennt (Zitat, Autor, Firma)
+        const parts = block.split(',').map(p => p.trim());
+        
+        if (parts.length >= 2) {
+            // Format: Zitat, Autor[, Firma]
+            originalContent.testimonials[`quote${i + 1}`] = parts[0].replace(/^["„]|[""]$/g, '');
+            const author = parts[1];
+            const company = parts[2] || '';
+            originalContent.testimonials[`author${i + 1}`] = company ? `${author}, ${company}` : author;
+        } else {
+            // Format: Nur Zitat (kein Autor)
+            const lines = block.split('\n').filter(l => l.trim());
+            originalContent.testimonials[`quote${i + 1}`] = lines[0].replace(/^["„]|[""]$/g, '');
+            originalContent.testimonials[`author${i + 1}`] = lines[1] || 'Zufriedener Kunde';
+        }
+    });
+}
+
+// 4. Alternatives in FAQ
+function enhanceFAQWithAlternatives(b, clean) {
+    const alternatives = clean(b['integri-alternatives']) || '';
+    if (!alternatives) return;
+    
+    // Alternatives als FAQ-Frage 7+ hinzufügen
+    const altBlocks = alternatives.split('\n\n').filter(a => a.trim());
+    let questionIndex = 7; // Start nach den 6 Standard-FAQs
+    
+    altBlocks.forEach((block, i) => {
+        if (questionIndex > 10) return; // Max 10 FAQs gesamt
+        
+        const lines = block.split('\n').filter(l => l.trim());
+        if (lines.length === 0) return;
+        
+        // Zeile 1: Alternative (z.B. "Selbst machen:", "Billiganbieter:")
+        const altName = lines[0].split(':')[0].replace(/^[>\-\*]\s*/, '').trim();
+        
+        // Zeile 2+: Abgrenzung
+        const abgrenzung = lines.slice(1).join(' ').replace(/^[>\-\*]\s*/, '').trim() || 'Höhere Qualität und Service';
+        
+        originalContent.faq[`q${questionIndex}`] = `Warum nicht ${altName}?`;
+        originalContent.faq[`a${questionIndex}`] = abgrenzung;
+        questionIndex++;
+    });
+}
+
+// 5. Goal-basierte CTAs
+function enhanceCTAsWithGoal(b, clean) {
+    const ctaLow = clean(b['integri-cta-low']) || 'Unverbindliches Erstgespräch';
+    const ctaMain = clean(b['integri-cta-main']) || 'Kontakt aufnehmen';
+    const urgency = clean(b['integri-urgency']) || '';
+    
+    let ctaPrimary = ctaMain;
+    let ctaSecondary = ctaLow;
+    
+    if (b['integri-goal-meeting']) {
+        ctaPrimary = 'Beratungstermin vereinbaren';
+        ctaSecondary = 'Kostenlose Erstberatung';
+    } else if (b['integri-goal-quote']) {
+        ctaPrimary = 'Angebot anfordern';
+        ctaSecondary = 'Kostenvoranschlag anfordern';
+    } else if (b['integri-goal-visit']) {
+        ctaPrimary = 'Vor-Ort-Termin buchen';
+        ctaSecondary = 'Unverbindliche Besichtigung';
+    } else if (b['integri-goal-other']) {
+        const otherGoal = clean(b['integri-goal-other-text']) || '';
+        if (otherGoal) {
+            ctaPrimary = otherGoal;
+        }
+    }
+    
+    // CTAs aktualisieren
+    originalContent.cta2.btn1 = ctaSecondary;
+    originalContent.cta2.btn2 = ctaPrimary;
+    
+    // Urgency in CTA1 integrieren (wenn vorhanden)
+    if (urgency) {
+        const urgencyLine = urgency.split('\n')[0].trim();
+        originalContent.cta1.title += ` – ${urgencyLine}`;
+    }
+}
 function syncColorInput(type) {
     const hex = document.getElementById(`color${type}Hex`).value;
     if (/^#[0-9A-F]{6}$/i.test(hex)) {
