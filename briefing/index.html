@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INTEGRI Briefing – Marketing / Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTEGRI Briefing – Marketing / Online</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --petrol:      #033132;
-      --off-white:   #F7F7F5;
-      --white:       #FFFFFF;
-      --text:        #2C3E50;
-      --border:      #D1D5D8;
-      --text-dim:    #5A6B7A;
-      --radius-sm:   4px;
-      --radius-md:   8px;
-      --terracotta:  #c1603a;
-      --apricot:     #fdf3ee;
+      --petrol:     #033132;
+      --white:      #ffffff;
+      --off-white:  #F7F7F5;
+      --text:       #2C3E50;
+      --text-dim:   #5A6B7A;
+      --border:     #D1D5D8;
+      --apricot:    #fdf3ee;
+      --terracotta: #c1603a;
+      --radius-sm:  4px;
+      --radius-md:  8px;
+    }
+
+    body {
+      background: var(--off-white);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
     .wrapper {
@@ -24,781 +33,853 @@
       margin: 0 auto;
       padding: 24px 20px 60px;
     }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--off-white);
-            color: var(--text);
-            line-height: 1.65;
-            -webkit-font-smoothing: antialiased;
-        }
+    /* ── Admin-Link ─────────────────────────────── */
+    .admin-link {
+      text-align: right;
+      margin-bottom: 6px;
+    }
+    .admin-link a {
+      font-size: 11px;
+      color: var(--border);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .admin-link a:hover { color: var(--text-dim); }
 
-
-        #integri-briefing-container {
-            padding: 0 20px 60px;
-        }
-
-        .briefing-box {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .briefing-header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid var(--petrol);
-        }
-        .briefing-header h1 {
-            color: var(--petrol);
-            font-size: 26px;
-            font-weight: 700;
-        }
-        .briefing-header p {
-            margin-top: 8px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        h2 {
-            color: var(--petrol);
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .briefing-section {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background: #fafafa;
-        }
-
-        label {
-            display: block;
-            margin: 15px 0 4px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-        label:first-child { margin-top: 0; }
-
-        .example-text {
-            display: block;
-            font-size: 12px;
-            color: #6c757d;
-            font-style: italic;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-        input[type="text"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--petrol);
-        }
-
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        textarea.large {
-            min-height: 120px;
-        }
-
-        input[type="checkbox"] { margin-right: 8px; cursor: pointer; }
-
-        .checkbox-group {
-            margin: 8px 0;
-            padding: 12px 15px;
-            background: var(--apricot);
-            border-radius: 4px;
-            border: 1px solid var(--border);
-        }
-        .checkbox-item {
-            margin: 6px 0;
-            display: flex;
-            align-items: flex-start;
-        }
-        .checkbox-item input { margin-top: 3px; flex-shrink: 0; }
-        .checkbox-item label {
-            display: inline;
-            font-weight: normal;
-            margin: 0 0 0 4px;
-            color: #444;
-        }
-
-        .awareness-box {
-            background: var(--apricot);
-            border-left: 3px solid var(--petrol);
-            padding: 12px 15px;
-            margin: 8px 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .info-box {
-            background: #fff8e1;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            border-radius: 4px;
-            margin-top: 15px;
-            font-size: 13px;
-        }
-
-        .completion-notice {
-            text-align: center;
-            margin: 40px 0 20px;
-            padding: 20px 0;
-        }
-        .completion-notice p {
-            font-size: 18px;
-            color: var(--petrol);
-            font-weight: 600;
-        }
-
-        .button-group {
-            margin: 20px 0 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        button {
-            background: var(--petrol);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
-        }
-        button:hover { background: var(--petrol); }
-
-        .btn-secondary { background: var(--petrol); }
-        .btn-secondary:hover { background: #0d3d46; }
-
-        .btn-review {
-            background: #c0392b;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 14px 28px;
-        }
-        .btn-review:hover { background: #a93226; }
-
-        .auto-save-indicator {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--petrol);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 13px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .auto-save-indicator.show { opacity: 1; }
-
-        .restore-banner {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            border-radius: 6px;
-            text-align: center;
-            display: none;
-        }
-        .restore-banner .restore-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .top-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-
-        @media print {
-            .button-group,
-            .auto-save-indicator,
-            .restore-banner,
-            .top-actions { display: none !important; }
-            body { background: white; }
-            .briefing-box { box-shadow: none; padding: 0; }
-        }
-
-        @media (max-width: 600px) {
-            .briefing-box { padding: 20px; }
-            .button-group { flex-direction: column; }
-            button { width: 100%; }
-        }
-
-    /* ── Global Header ── */
-    .global-header {
+    /* ── Karten ────────────────────────────────── */
+    .card {
       background: var(--white);
+      border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      border-top: 4px solid var(--petrol);
-      padding: 14px 32px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 4px rgba(3,49,50,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+      margin-bottom: 16px;
+      overflow: hidden;
     }
-    .global-header-logo {
-      height: 40px;
-      width: auto;
-      display: block;
-    }
-    .global-header-docname {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+
+    .card-header {
+      background: var(--petrol);
+      color: var(--white);
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--petrol);
     }
-    /* ── Global Footer ── */
-    .global-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+
+    .card-body {
+      padding: 20px 24px 24px;
+    }
+
+    /* ── Felder ────────────────────────────────── */
+    .field {
+      margin-bottom: 18px;
+    }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .field .hint {
       font-size: 12px;
       color: var(--text-dim);
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+      font-style: italic;
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
-    .global-footer-note { font-style: italic; }
-    .global-footer a { color: var(--text-dim); text-decoration: none; }
-    .global-footer a:hover { color: var(--text); }
-    </style>
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--petrol);
+    }
+    textarea         { min-height: 80px;  resize: vertical; }
+    textarea.large   { min-height: 120px; }
+
+    /* ── Checkboxen ─────────────────────────────── */
+    .check-group {
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-top: 4px;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .check-item:last-child { margin-bottom: 0; }
+    .check-item input[type="checkbox"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--petrol);
+    }
+    .check-item label {
+      font-weight: normal;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      margin: 0;
+    }
+
+    /* Awareness-Variante */
+    .awareness-group {
+      background: #eaf3f3;
+      border-left: 3px solid var(--petrol);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 12px 16px;
+      margin-top: 4px;
+    }
+
+    /* Inline-Textfeld nach Checkbox */
+    .check-item .inline-input {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+    }
+
+    /* ── Info-Box ───────────────────────────────── */
+    .info-box {
+      background: #fffbf0;
+      border: 1px solid #f0d080;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+      margin-top: 16px;
+    }
+
+    /* ── Zweispaltig ───────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── Restore-Banner ────────────────────────── */
+    .restore-banner {
+      background: #fffbf0;
+      border: 1px solid #f0d080;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .restore-banner p { font-size: 14px; color: var(--text); }
+    .restore-actions { display: flex; gap: 8px; }
+    .restore-actions button {
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: inherit;
+      background: var(--white);
+      color: var(--text);
+    }
+    .restore-actions button:hover { border-color: var(--petrol); }
+
+    /* ── Autosave-Indicator ────────────────────── */
+    .autosave-indicator {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: var(--petrol);
+      color: var(--white);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    .autosave-indicator.show { opacity: 1; }
+
+    /* ── Submit-Section ─────────────────────────── */
+    .submit-section {
+      margin-top: 8px;
+    }
+    .submit-hint {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .btn-primary {
+      background: var(--terracotta);
+      color: var(--white);
+      box-shadow: 0 2px 6px rgba(3,49,50,0.12);
+    }
+    .btn-primary:hover {
+      filter: brightness(0.92);
+      box-shadow: 0 4px 10px rgba(3,49,50,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { filter: brightness(0.82); transform: scale(0.98); }
+    .btn-outline {
+      background: transparent;
+      color: var(--petrol);
+      border-color: var(--petrol);
+    }
+    .btn-outline:hover { background: var(--petrol); color: var(--white); }
+
+    /* ── Thank-you ──────────────────────────────── */
+    #thank-you-view { display: none; text-align: center; padding: 48px 24px; }
+    #thank-you-view h2 { color: var(--petrol); margin-bottom: 8px; }
+    #thank-you-view p  { color: var(--text-dim); }
+
+    /* ── Print ──────────────────────────────────── */
+    @media print {
+      body { background: white; }
+      .admin-link, .restore-banner, .autosave-indicator,
+      .submit-section { display: none !important; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+
+    /* ── Mobile ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .actions { flex-direction: column-reverse; }
+      .btn { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
-<script>window.INTEGRI_CHROME = { docname: 'Briefing Marketing' };</script>
+
+<script>window.INTEGRI_CHROME = { docname: 'Briefing' };</script>
 <script src="../assets/tool-chrome.js"></script>
 
 <div class="wrapper">
-<div id="integri-briefing-container">
 
-    <div class="auto-save-indicator" id="integriBriefingAutoSaveIndicator">Automatisch gespeichert</div>
+  <!-- Interner Admin-Link ───────────────────────── -->
+  <div class="admin-link">
+    <a href="#" onclick="integriBriefingLoadData(); return false;">json importieren</a>
+  </div>
 
-    <div class="restore-banner" id="integriBriefingRestoreBanner">
-        <strong>Gespeicherte Daten gefunden!</strong><br>
-        Möchten Sie Ihre vorherige Eingabe wiederherstellen?
-        <div class="restore-actions">
-            <button onclick="integriBriefingRestoreData()">Ja, wiederherstellen</button>
-            <button onclick="integriBriefingDismissRestore()" style="background: #6c757d;">Nein, neu beginnen</button>
-        </div>
+  <!-- Autosave-Indikator & Restore-Banner ─────────── -->
+  <div class="autosave-indicator" id="autosaveIndicator">Gespeichert</div>
+
+  <div class="restore-banner" id="restoreBanner">
+    <p><strong>Gespeicherte Eingaben gefunden.</strong> Möchten Sie weitermachen wo Sie aufgehört haben?</p>
+    <div class="restore-actions">
+      <button onclick="restoreData()">Wiederherstellen</button>
+      <button onclick="dismissRestore()">Neu beginnen</button>
     </div>
+  </div>
 
-    <div class="top-actions">
-        <button onclick="integriBriefingLoadData()" class="btn-secondary">JSON importieren</button>
+  <!-- ══════════════════════════════════════════════
+       ANGABEN
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Angaben zum Unternehmen</div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="field">
+          <label for="integri-company">Firma / Kunde</label>
+          <input type="text" id="integri-company">
+        </div>
+        <div class="field">
+          <label for="integri-contact">Ansprechpartner</label>
+          <input type="text" id="integri-contact">
+        </div>
+        <div class="field">
+          <label for="integri-email">Ihre E-Mail-Adresse <span style="color:var(--terracotta)">*</span></label>
+          <span class="hint">Sie erhalten eine Kopie Ihrer Eingaben an diese Adresse.</span>
+          <input type="email" id="integri-email" placeholder="name@firma.de">
+        </div>
+        <div class="field">
+          <label for="integri-topic">Thema / Leistung</label>
+          <span class="hint">Service, Produkt oder spezifisches Thema</span>
+          <input type="text" id="integri-topic">
+        </div>
+        <div class="field">
+          <label for="integri-pagetype">Seitentyp</label>
+          <span class="hint">Infoseite, Landingpage, Produktseite …</span>
+          <input type="text" id="integri-pagetype">
+        </div>
+        <div class="field">
+          <label for="integri-length">Soll-Textlänge</label>
+          <span class="hint">Wortanzahl ca. (1 A4-Seite ≈ 300 Wörter)</span>
+          <input type="text" id="integri-length">
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:4px;">
+        <label>Geschäftsmodell</label>
+        <div class="check-group">
+          <div class="check-item">
+            <input type="checkbox" id="integri-b2b">
+            <label for="integri-b2b">B2B – Angebot an Unternehmen / Organisationen</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-b2c">
+            <label for="integri-b2c">B2C – Angebot an Privatpersonen</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="integri-existing">Vorhandene Inhalte / Links</label>
+        <span class="hint">Link zur aktuellen Seite, Verweis auf Dokumente</span>
+        <textarea id="integri-existing"></textarea>
+        <div class="info-box">Relevante Dokumente (Word, PDF, Bilder) bitte als Anhang zur Bestätigungs-E-Mail beifügen.</div>
+      </div>
     </div>
+  </div>
 
-    <div class="briefing-box">
-        <div class="briefing-header">
-            <h1>INTEGRI Fragen / Briefing für Marketing / Online</h1>
-            <p>Füllen Sie alle relevanten Felder aus. Autosave ist aktiv. Am Ende direkt ins Review-Tool übertragen.</p>
-        </div>
-
-        <!-- ============ ANGABEN ============ -->
-        <h2>Angaben zum Anbietenden</h2>
-        <div class="briefing-section">
-            <label for="integri-company">Firma / Kunde:</label>
-            <span class="example-text">Name des Unternehmens oder der Organisation</span>
-            <input type="text" id="integri-company">
-
-            <label for="integri-date">Datum / Version:</label>
-            <span class="example-text">Heute oder Versionsnummer (z.B. v1, v2)</span>
-            <input type="text" id="integri-date">
-
-            <label for="integri-contact">Kontakt / Ansprechpartner:</label>
-            <span class="example-text">Name und ggf. Rolle der Kontaktperson</span>
-            <input type="text" id="integri-contact">
-
-            <label for="integri-topic">Thema:</label>
-            <span class="example-text">Service, Leistung, Produkt oder spezifisches Thema</span>
-            <input type="text" id="integri-topic">
-
-            <label for="integri-pagetype">Seitentyp:</label>
-            <span class="example-text">Infoseite, Landingpage, Produktseite, anderes</span>
-            <input type="text" id="integri-pagetype">
-
-            <label>Geschäftsmodell:</label>
-            <span class="example-text">Wichtig für Tonalität und Argumentation</span>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-b2b">
-                    <label for="integri-b2b">B2B (Business-to-Business) – Angebot an Unternehmen/Organisationen</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-b2c">
-                    <label for="integri-b2c">B2C (Business-to-Consumer) – Angebot an Privatpersonen</label>
-                </div>
-            </div>
-
-            <label for="integri-length">Soll-Textlänge:</label>
-            <span class="example-text">Wortanzahl ca. (1 DIN A4 Seite = 300 Wörter)</span>
-            <input type="text" id="integri-length">
-
-            <label for="integri-existing">Vorhandene Inhalte:</label>
-            <span class="example-text">Link zur aktuellen Seite, Verweis auf Dokumente</span>
-            <textarea id="integri-existing"></textarea>
-
-            <div class="info-box">
-                <strong>Dokumente/Dateien:</strong> Relevante Dokumente bitte als Anhang zur E-Mail hinzufügen, wenn Sie das Briefing versenden.
-            </div>
-        </div>
-
-        <!-- ============ ZIELGRUPPE ============ -->
-        <h2>Zielgruppe</h2>
-        <div class="briefing-section">
-            <label for="integri-target-primary">Primäre Zielgruppe (konkrete Rollen):</label>
-            <span class="example-text">Beispiel: Entscheider, Bedarfsträger (z.B. Geschäftsführer, Abteilungsleiter, Privatpersonen)</span>
-            <input type="text" id="integri-target-primary">
-
-            <label for="integri-situation">Typische Ausgangssituation:</label>
-            <span class="example-text">Beispiel: Akuter Bedarf, geplantes Vorhaben, konkretes Problem, Wunsch nach Verbesserung</span>
-            <textarea id="integri-situation"></textarea>
-
-            <label for="integri-wishes">Top 3 Wünsche unserer Zielgruppen/Kunden:</label>
-            <span class="example-text">Beispiel: Preistransparenz, schnelle Umsetzung, verlässlicher Service</span>
-            <textarea id="integri-wishes"></textarea>
-        </div>
-
-        <!-- ============ SEO ============ -->
-        <h2>Suchverhalten der Zielgruppe / SEO</h2>
-        <div class="briefing-section">
-            <label>Was ist das Problembewusstsein unserer Zielgruppen, was wird gesucht?</label>
-            <div class="awareness-box">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-aware-unaware">
-                    <label for="integri-aware-unaware">Problem nicht bewusst → wir machen bewusst</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-aware-problem">
-                    <label for="integri-aware-problem">Problem bekannt, Lösungen nicht → wir zeigen Lösungswege</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-aware-solution">
-                    <label for="integri-aware-solution">Lösungen sind bekannt → unsere Lösungsvorteile</label>
-                </div>
-            </div>
-
-            <label for="integri-search-intent">Suchintention:</label>
-            <span class="example-text">Beispiel: "Leistung + Kosten", "Leistung + Anbieter", "Leistung + Region", "Problem + Lösung"</span>
-            <textarea id="integri-search-intent"></textarea>
-
-            <label for="integri-info-sources">Typische Info-Quellen:</label>
-            <span class="example-text">Wo informiert sich die Zielgruppe? (Google, Fachportale, Empfehlungen, Social Media)</span>
-            <textarea id="integri-info-sources"></textarea>
-
-            <label for="integri-keyword-main">Hauptkeyword für SEO:</label>
-            <span class="example-text">Beispiel: [Ihre Leistung] + [Ort/Region] (z.B. "Steuerberatung München")</span>
-            <input type="text" id="integri-keyword-main">
-
-            <label for="integri-keywords-other">Weitere Keywords (durch Komma getrennt):</label>
-            <span class="example-text">Synonyme, Varianten, verwandte Begriffe</span>
-            <input type="text" id="integri-keywords-other">
-        </div>
-
-        <!-- ============ TRANSFORMATION ============ -->
-        <h2>Wie helfen wir dem Kunden? Vorher/Nachher-Vergleich</h2>
-        <div class="briefing-section">
-            <label for="integri-problems">Aktuelle Probleme der Zielgruppe:</label>
-            <span class="example-text">Beispiel: Zeitaufwand zu hoch, Unsicherheit bei Auswahl, fehlendes Fachwissen</span>
-            <textarea id="integri-problems" class="large"></textarea>
-
-            <label for="integri-results">Gewünschter Zielzustand:</label>
-            <span class="example-text">Beispiel: Klare Kostenübersicht, zeitsparende Lösung, langfristige Sicherheit</span>
-            <textarea id="integri-results" class="large"></textarea>
-
-            <label for="integri-metrics">Messbare Vorteile (falls verfügbar):</label>
-            <span class="example-text">Beispiel: 30% Zeitersparnis, 20% Kostenreduktion, ROI nach 12 Monaten</span>
-            <textarea id="integri-metrics"></textarea>
-        </div>
-
-        <!-- ============ LEISTUNGEN / USP ============ -->
-        <h2>Leistungen, USP vs. Wettbewerb</h2>
-        <div class="briefing-section">
-            <label for="integri-services">Unsere Leistungen:</label>
-            <span class="example-text">Beispiel: Beratung, Planung, Umsetzung, Service, Support</span>
-            <textarea id="integri-services" class="large"></textarea>
-
-            <label for="integri-advantages">Unsere besonderen Vorteile vs. Wettbewerb:</label>
-            <span class="example-text">Beispiel: Langjährige Erfahrung, zertifizierte Qualität, persönlicher Service, faire Preise</span>
-            <textarea id="integri-advantages"></textarea>
-
-            <label for="integri-trust">Vertrauensbildende Faktoren:</label>
-            <span class="example-text">Zertifizierungen, Garantien, Versicherungen, Mitgliedschaften</span>
-            <textarea id="integri-trust"></textarea>
-        </div>
-
-        <!-- ============ BEAUFTRAGUNG ============ -->
-        <h2>Beauftragungskriterien</h2>
-        <div class="briefing-section">
-            <label for="integri-reasons">Hauptfaktoren / Kriterien für Beauftragung (mindestens 3):</label>
-            <span class="example-text">Beispiel: Kompetenz, Preis-Leistung, Verfügbarkeit</span>
-            <textarea id="integri-reasons"></textarea>
-
-            <label for="integri-urgency">Dringlichkeit / Zeitdruck:</label>
-            <span class="example-text">Saisonale Aspekte, Fristen, zeitkritische Faktoren</span>
-            <textarea id="integri-urgency"></textarea>
-        </div>
-
-        <!-- ============ PREISE ============ -->
-        <h2>Zahlen und Preise</h2>
-        <div class="briefing-section">
-            <label>Preistransparenz:</label>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-price-concrete">
-                    <label for="integri-price-concrete">Ja, konkrete Preise nennen</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-price-partial">
-                    <label for="integri-price-partial">Teilweise (ab X Euro, Kalkulationshinweise)</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-price-request">
-                    <label for="integri-price-request">Nein, nur auf Anfrage</label>
-                </div>
-            </div>
-
-            <label for="integri-calculation">Kalkulationsgrundlage:</label>
-            <span class="example-text">Hauptfaktoren (Stunden, Einheiten, Komplexität), typische Projektgrößen, Durchschnittsinvestment</span>
-            <textarea id="integri-calculation"></textarea>
-        </div>
-
-        <!-- ============ REFERENZEN ============ -->
-        <h2>Referenzen / Beweise</h2>
-        <div class="briefing-section">
-            <label for="integri-references">Konkrete Referenzprojekte:</label>
-            <span class="example-text">Format pro Zeile: Kunde, Herausforderung, Lösung, messbares Ergebnis</span>
-            <textarea id="integri-references" class="large"></textarea>
-
-            <label for="integri-testimonials">Verfügbare Kundenstimmen:</label>
-            <span class="example-text">Format pro Absatz: Zeile 1 = Zitat, Zeile 2 = Name, Zeile 3 = Firma (optional)</span>
-            <textarea id="integri-testimonials"></textarea>
-        </div>
-
-        <!-- ============ CTA ============ -->
-        <h2>Handlungsaufforderung / Call-to-Action</h2>
-        <div class="briefing-section">
-            <label>Hauptziel der Seite:</label>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-goal-meeting">
-                    <label for="integri-goal-meeting">Beratungstermin vereinbaren</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-goal-quote">
-                    <label for="integri-goal-quote">Angebot / Kostenvoranschlag anfordern</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-goal-visit">
-                    <label for="integri-goal-visit">Vor-Ort-Besichtigung / Analyse</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="integri-goal-other">
-                    <label for="integri-goal-other">Anderes:</label>
-                    <input type="text" id="integri-goal-other-text" style="width: 280px; margin-left: 10px;">
-                </div>
-            </div>
-
-            <label for="integri-cta-low">Niedrigschwelliger CTA (erster Schritt):</label>
-            <span class="example-text">Beispiel: Kostenloses Erstgespräch, unverbindliche Beratung</span>
-            <textarea id="integri-cta-low"></textarea>
-
-            <label for="integri-cta-main">Direkter CTA (Hauptziel):</label>
-            <span class="example-text">Beispiel: Termin vereinbaren, Angebot anfordern, direkt buchen</span>
-            <textarea id="integri-cta-main"></textarea>
-        </div>
-
-        <!-- ============ FAQ ============ -->
-        <h2>FAQ &amp; Einwände</h2>
-        <div class="briefing-section">
-            <label for="integri-faq">5–7 häufigste Kundenfragen mit Antworten:</label>
-            <span class="example-text">Format: Frage – Antwort (Trennung mit „–"), eine Frage pro Zeile</span>
-            <textarea id="integri-faq" class="large"></textarea>
-
-            <label for="integri-alternatives">Abgrenzung zu Alternativen:</label>
-            <span class="example-text">Alternative (z.B. Selbermachen, günstigere Anbieter) + Ihre Abgrenzung</span>
-            <textarea id="integri-alternatives" class="large"></textarea>
-        </div>
-
-        <!-- ============ MEDIEN ============ -->
-        <h2>Bilder / Medien</h2>
-        <div class="briefing-section">
-            <label for="integri-media">Was wollen wir zeigen?</label>
-            <span class="example-text">Vorhandene Medien, zu beschaffende Bilder/Videos, Hero Image</span>
-            <textarea id="integri-media" class="large"></textarea>
-        </div>
-
-        <!-- ============ ZUSATZ ============ -->
-        <h2>Ggf. zusätzlich wichtig</h2>
-        <div class="briefing-section">
-            <label for="integri-additional">Besonderheiten, Hinweise, zu beachten:</label>
-            <textarea id="integri-additional" class="large"></textarea>
-        </div>
-
-        <div class="completion-notice">
-            <p>Sind alle Eingaben vollständig und stimmen so? Prima.</p>
-        </div>
-
-        <div class="button-group">
-            <button class="btn-review" onclick="integriBriefingOpenReviewTool()">
-                → Im Review-Tool öffnen
-            </button>
-            <button onclick="integriBriefingSaveDataAsJSON()">JSON speichern</button>
-            <button onclick="window.print()" style="background: #555;">Als PDF drucken</button>
-            <button onclick="integriBriefingSendEmail()" style="background: var(--petrol); color: white;">Per E-Mail senden</button>
-        </div>
+  <!-- ══════════════════════════════════════════════
+       ZIELGRUPPE
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Zielgruppe</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-target-primary">Primäre Zielgruppe</label>
+        <span class="hint">Konkrete Rollen: z.B. Geschäftsführer mittelständischer Betriebe, Privatpersonen 40–65</span>
+        <input type="text" id="integri-target-primary">
+      </div>
+      <div class="field">
+        <label for="integri-situation">Typische Ausgangssituation</label>
+        <span class="hint">Akuter Bedarf, geplantes Vorhaben, konkretes Problem, Wunsch nach Verbesserung</span>
+        <textarea id="integri-situation"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-wishes">Top 3 Wünsche der Zielgruppe</label>
+        <span class="hint">z.B. Preistransparenz, schnelle Umsetzung, verlässlicher Service</span>
+        <textarea id="integri-wishes"></textarea>
+      </div>
     </div>
-</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEO / SUCHVERHALTEN
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Suchverhalten der Zielgruppe / SEO</div>
+    <div class="card-body">
+      <div class="field">
+        <label>Problembewusstsein der Zielgruppe</label>
+        <div class="awareness-group">
+          <div class="check-item">
+            <input type="checkbox" id="integri-aware-unaware">
+            <label for="integri-aware-unaware">Problem nicht bewusst → wir machen bewusst</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-aware-problem">
+            <label for="integri-aware-problem">Problem bekannt, Lösungen nicht → wir zeigen Lösungswege</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-aware-solution">
+            <label for="integri-aware-solution">Lösungen bekannt → unsere Lösungsvorteile</label>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="integri-keyword-main">Hauptkeyword</label>
+          <span class="hint">z.B. „Hausmeisterservice Hamburg"</span>
+          <input type="text" id="integri-keyword-main">
+        </div>
+        <div class="field">
+          <label for="integri-keywords-other">Weitere Keywords</label>
+          <span class="hint">Komma-getrennt</span>
+          <input type="text" id="integri-keywords-other">
+        </div>
+      </div>
+      <div class="field">
+        <label for="integri-search-intent">Suchintention</label>
+        <span class="hint">z.B. „Leistung + Kosten", „Leistung + Region", „Problem + Lösung"</span>
+        <textarea id="integri-search-intent"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-info-sources">Typische Info-Quellen der Zielgruppe</label>
+        <span class="hint">Google, Fachportale, Empfehlungen, Social Media …</span>
+        <textarea id="integri-info-sources"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TRANSFORMATION
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Wie helfen Sie dem Kunden? Vorher / Nachher</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-problems">Aktuelle Probleme der Zielgruppe</label>
+        <span class="hint">z.B. Zeitaufwand zu hoch, Unsicherheit bei Auswahl, fehlendes Fachwissen</span>
+        <textarea id="integri-problems" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-results">Gewünschter Zielzustand</label>
+        <span class="hint">z.B. klare Kostenübersicht, zeitsparende Lösung, langfristige Sicherheit</span>
+        <textarea id="integri-results" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-metrics">Messbare Vorteile (falls verfügbar)</label>
+        <span class="hint">z.B. 30 % Zeitersparnis, ROI nach 12 Monaten</span>
+        <textarea id="integri-metrics"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       LEISTUNGEN / USP
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Leistungen, USP &amp; Vertrauen</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-services">Unsere Leistungen</label>
+        <span class="hint">Beratung, Planung, Umsetzung, Service, Support</span>
+        <textarea id="integri-services" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-advantages">Unsere besonderen Vorteile vs. Wettbewerb</label>
+        <span class="hint">Langjährige Erfahrung, Zertifizierungen, persönlicher Service …</span>
+        <textarea id="integri-advantages"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-trust">Vertrauensbildende Faktoren</label>
+        <span class="hint">Zertifizierungen, Garantien, Versicherungen, Mitgliedschaften</span>
+        <textarea id="integri-trust"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BEAUFTRAGUNG
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Beauftragungskriterien</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-reasons">Hauptfaktoren für eine Beauftragung (mind. 3)</label>
+        <span class="hint">z.B. Kompetenz, Preis-Leistung, Verfügbarkeit, Referenzen</span>
+        <textarea id="integri-reasons"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-urgency">Dringlichkeit / Zeitdruck</label>
+        <span class="hint">Saisonale Aspekte, Fristen, zeitkritische Faktoren</span>
+        <textarea id="integri-urgency"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PREISE
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Zahlen und Preise</div>
+    <div class="card-body">
+      <div class="field">
+        <label>Preistransparenz</label>
+        <div class="check-group">
+          <div class="check-item">
+            <input type="checkbox" id="integri-price-concrete">
+            <label for="integri-price-concrete">Ja, konkrete Preise nennen</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-price-partial">
+            <label for="integri-price-partial">Teilweise (ab X Euro, Kalkulationshinweise)</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-price-request">
+            <label for="integri-price-request">Nein, nur auf Anfrage</label>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="integri-calculation">Kalkulationsgrundlage</label>
+        <span class="hint">Hauptfaktoren (Stunden, Einheiten, Komplexität), typische Projektgrößen</span>
+        <textarea id="integri-calculation"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       REFERENZEN
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Referenzen &amp; Kundenstimmen</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-references">Konkrete Referenzprojekte</label>
+        <span class="hint">Pro Zeile: Kunde, Herausforderung, Lösung, messbares Ergebnis</span>
+        <textarea id="integri-references" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-testimonials">Kundenstimmen</label>
+        <span class="hint">Pro Absatz: Zeile 1 = Zitat, Zeile 2 = Name, Zeile 3 = Firma (optional)</span>
+        <textarea id="integri-testimonials"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CTA
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Handlungsaufforderung / Call-to-Action</div>
+    <div class="card-body">
+      <div class="field">
+        <label>Hauptziel der Seite</label>
+        <div class="check-group">
+          <div class="check-item">
+            <input type="checkbox" id="integri-goal-meeting">
+            <label for="integri-goal-meeting">Beratungstermin vereinbaren</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-goal-quote">
+            <label for="integri-goal-quote">Angebot / Kostenvoranschlag anfordern</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-goal-visit">
+            <label for="integri-goal-visit">Vor-Ort-Besichtigung / Analyse</label>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" id="integri-goal-other">
+            <label for="integri-goal-other">Anderes:</label>
+            <input type="text" id="integri-goal-other-text" class="inline-input" placeholder="Freitext">
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="integri-cta-low">Niedrigschwelliger erster Schritt</label>
+          <span class="hint">z.B. kostenloses Erstgespräch, unverbindliche Beratung</span>
+          <textarea id="integri-cta-low"></textarea>
+        </div>
+        <div class="field">
+          <label for="integri-cta-main">Direkter Haupt-CTA</label>
+          <span class="hint">z.B. Termin vereinbaren, Angebot anfordern</span>
+          <textarea id="integri-cta-main"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       FAQ
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">FAQ &amp; Einwände</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-faq">5–7 häufigste Kundenfragen mit Antworten</label>
+        <span class="hint">Format: Frage – Antwort (Trennung mit „–"), eine Frage pro Zeile</span>
+        <textarea id="integri-faq" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-alternatives">Abgrenzung zu Alternativen</label>
+        <span class="hint">z.B. Selbermachen, günstigere Anbieter + Ihre Abgrenzung dazu</span>
+        <textarea id="integri-alternatives" class="large"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MEDIEN / ZUSATZ
+  ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">Bilder / Medien &amp; Sonstiges</div>
+    <div class="card-body">
+      <div class="field">
+        <label for="integri-media">Was wollen Sie zeigen?</label>
+        <span class="hint">Vorhandene Medien, Hero Image, zu beschaffende Bilder/Videos</span>
+        <textarea id="integri-media" class="large"></textarea>
+      </div>
+      <div class="field">
+        <label for="integri-additional">Besonderheiten / Hinweise</label>
+        <span class="hint">Alles was noch wichtig ist und oben keinen Platz hatte</span>
+        <textarea id="integri-additional" class="large"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       AKTIONEN
+  ══════════════════════════════════════════════════ -->
+  <div class="submit-section">
+    <p class="submit-hint">Sind alle Eingaben vollständig? Sie erhalten eine Kopie an Ihre E-Mail-Adresse.</p>
+    <div class="actions">
+      <button class="btn btn-outline" onclick="saveLocally()">Herunterladen</button>
+      <button class="btn btn-primary" onclick="submitForm()">Eingaben absenden</button>
+    </div>
+  </div>
+
+  <!-- Thank-you ───────────────────────────────────── -->
+  <div id="thank-you-view">
+    <div style="font-size:2rem; margin-bottom:16px;">✓</div>
+    <h2>Vielen Dank!</h2>
+    <p style="margin-top:8px;">Ihre Eingaben wurden erfolgreich übermittelt. Wir melden uns bei Ihnen.</p>
+    <p id="thankyou-copy" style="display:none; margin-top:8px;"></p>
+  </div>
+
+</div><!-- /.wrapper -->
 
 <script>
-const INTEGRI_STORAGE_KEY = 'integri_briefing_autosave';
-const REVIEW_TOOL_URL = 'https://tools.integri.de/content-review/';
+  var STORAGE_KEY  = 'integri_briefing_autosave';
+  var WORKER_URL   = 'https://integri-email.empty-unit-c43c.workers.dev';
+  var saveDebounce;
 
-let integriBriefingAutoSaveTimer;
-let integriBriefingSaveDebounce;
+  // ── Alle Felder einsammeln ──────────────────────
+  function collectData() {
+    var data = {};
+    document.querySelectorAll('#integri-company, #integri-contact, #integri-email, #integri-topic, #integri-pagetype, #integri-length, #integri-existing, #integri-target-primary, #integri-situation, #integri-wishes, #integri-keyword-main, #integri-keywords-other, #integri-search-intent, #integri-info-sources, #integri-problems, #integri-results, #integri-metrics, #integri-services, #integri-advantages, #integri-trust, #integri-reasons, #integri-urgency, #integri-calculation, #integri-references, #integri-testimonials, #integri-cta-low, #integri-cta-main, #integri-faq, #integri-alternatives, #integri-media, #integri-additional, #integri-goal-other-text').forEach(function(el) {
+      if (el.id) data[el.id] = el.value;
+    });
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      if (cb.id) data[cb.id] = cb.checked;
+    });
+    return data;
+  }
 
-// ——————————————————————————————————————
-// AUTOSAVE
-// ——————————————————————————————————————
-function integriBriefingStartAutoSave() {
-    integriBriefingAutoSaveTimer = setInterval(() => {
-        integriBriefingSaveToLocalStorage();
-        integriBriefingShowAutoSaveIndicator();
-    }, 10000);
-}
+  function populateForm(data) {
+    Object.keys(data).forEach(function(key) {
+      var el = document.getElementById(key);
+      if (!el) return;
+      if (el.type === 'checkbox') { el.checked = !!data[key]; }
+      else { el.value = data[key]; }
+    });
+  }
 
-document.addEventListener('input', function(e) {
-    if (e.target.closest('#integri-briefing-container') && e.target.matches('input, textarea')) {
-        clearTimeout(integriBriefingSaveDebounce);
-        integriBriefingSaveDebounce = setTimeout(() => {
-            integriBriefingSaveToLocalStorage();
-        }, 2000);
+  // ── Autosave ────────────────────────────────────
+  function saveToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+  }
+  function showSaved() {
+    var ind = document.getElementById('autosaveIndicator');
+    ind.classList.add('show');
+    setTimeout(function() { ind.classList.remove('show'); }, 2000);
+  }
+
+  document.addEventListener('input', function(e) {
+    if (e.target.matches('input, textarea')) {
+      clearTimeout(saveDebounce);
+      saveDebounce = setTimeout(function() { saveToStorage(); }, 1500);
     }
-});
+  });
+  document.addEventListener('change', function(e) {
+    if (e.target.matches('input[type="checkbox"]')) { saveToStorage(); showSaved(); }
+  });
+  setInterval(function() { saveToStorage(); showSaved(); }, 15000);
 
-document.addEventListener('change', function(e) {
-    if (e.target.closest('#integri-briefing-container') && e.target.matches('input[type="checkbox"]')) {
-        integriBriefingSaveToLocalStorage();
-    }
-});
-
-function integriBriefingShowAutoSaveIndicator() {
-    const el = document.getElementById('integriBriefingAutoSaveIndicator');
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2000);
-}
-
-// ——————————————————————————————————————
-// SERIALIZE / DESERIALIZE
-// ——————————————————————————————————————
-function integriBriefingCollectData() {
-    const formData = {};
-    document.querySelectorAll('#integri-briefing-container input[type="text"], #integri-briefing-container textarea').forEach(input => {
-        if (input.id) formData[input.id] = input.value;
-    });
-    document.querySelectorAll('#integri-briefing-container input[type="checkbox"]').forEach(cb => {
-        if (cb.id) formData[cb.id] = cb.checked;
-    });
-    return formData;
-}
-
-function integriBriefingPopulateForm(formData) {
-    Object.keys(formData).forEach(key => {
-        const el = document.getElementById(key);
-        if (!el) return;
-        if (el.type === 'checkbox') {
-            el.checked = !!formData[key];
-        } else {
-            el.value = formData[key];
-        }
-    });
-}
-
-// ——————————————————————————————————————
-// LOCALSTORAGE
-// ——————————————————————————————————————
-function integriBriefingSaveToLocalStorage() {
-    localStorage.setItem(INTEGRI_STORAGE_KEY, JSON.stringify(integriBriefingCollectData()));
-}
-
-function integriBriefingLoadFromLocalStorage() {
-    const saved = localStorage.getItem(INTEGRI_STORAGE_KEY);
-    if (saved) integriBriefingPopulateForm(JSON.parse(saved));
-}
-
-// ——————————————————————————————————————
-// ON LOAD
-// ——————————————————————————————————————
-window.addEventListener('DOMContentLoaded', function() {
-    const saved = localStorage.getItem(INTEGRI_STORAGE_KEY);
+  // ── Restore ─────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', function() {
+    var saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-        const formData = JSON.parse(saved);
-        const hasData = Object.values(formData).some(v =>
-            (typeof v === 'boolean' && v) || (typeof v === 'string' && v.trim().length > 0)
-        );
-        if (hasData) {
-            document.getElementById('integriBriefingRestoreBanner').style.display = 'block';
-        }
+      var data = JSON.parse(saved);
+      var hasData = Object.values(data).some(function(v) {
+        return (typeof v === 'boolean' && v) || (typeof v === 'string' && v.trim().length > 0);
+      });
+      if (hasData) {
+        var banner = document.getElementById('restoreBanner');
+        banner.style.display = 'flex';
+      }
     }
-    integriBriefingStartAutoSave();
-});
+  });
 
-function integriBriefingRestoreData() {
-    integriBriefingLoadFromLocalStorage();
-    document.getElementById('integriBriefingRestoreBanner').style.display = 'none';
-}
+  function restoreData() {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { populateForm(JSON.parse(saved)); }
+    document.getElementById('restoreBanner').style.display = 'none';
+  }
+  function dismissRestore() {
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('restoreBanner').style.display = 'none';
+  }
 
-function integriBriefingDismissRestore() {
-    localStorage.removeItem(INTEGRI_STORAGE_KEY);
-    document.getElementById('integriBriefingRestoreBanner').style.display = 'none';
-}
-
-// ——————————————————————————————————————
-// REVIEW-TOOL BRIDGE (URL Hash)
-// ——————————————————————————————————————
-function integriBriefingOpenReviewTool() {
-    const formData = integriBriefingCollectData();
-
-    // Pflichtfeld-Check
-    const company = formData['integri-company'] || '';
-    const topic = formData['integri-topic'] || '';
-    if (!company.trim() || !topic.trim()) {
-        alert('Bitte mindestens "Firma / Kunde" und "Thema" ausfüllen, bevor Sie das Review-Tool öffnen.');
-        document.getElementById('integri-company').focus();
-        return;
+  // ── Formatierter Text-Output ────────────────────
+  function formatAsText(data) {
+    function val(id)  { return (data[id] || '').trim() || '—'; }
+    function chk(ids) {
+      var labels = { 'integri-b2b': 'B2B', 'integri-b2c': 'B2C', 'integri-aware-unaware': 'Problem nicht bewusst', 'integri-aware-problem': 'Problem bekannt, Lösungen nicht', 'integri-aware-solution': 'Lösungen bekannt', 'integri-price-concrete': 'Ja, konkrete Preise', 'integri-price-partial': 'Teilweise', 'integri-price-request': 'Nur auf Anfrage', 'integri-goal-meeting': 'Beratungstermin', 'integri-goal-quote': 'Angebot anfordern', 'integri-goal-visit': 'Vor-Ort-Besichtigung', 'integri-goal-other': 'Anderes' };
+      return ids.filter(function(id) { return data[id]; }).map(function(id) { return labels[id] || id; }).join(', ') || '—';
     }
+    var t = '';
+    t += 'INTEGRI BRIEFING – MARKETING / ONLINE\n';
+    t += '======================================\n\n';
+    t += '[ ANGABEN ]\n';
+    t += 'Firma:           ' + val('integri-company') + '\n';
+    t += 'Ansprechpartner: ' + val('integri-contact') + '\n';
+    t += 'E-Mail:          ' + val('integri-email') + '\n';
+    t += 'Thema:           ' + val('integri-topic') + '\n';
+    t += 'Seitentyp:       ' + val('integri-pagetype') + '\n';
+    t += 'Textlänge:       ' + val('integri-length') + '\n';
+    t += 'Modell:          ' + chk(['integri-b2b','integri-b2c']) + '\n';
+    t += 'Vorhandenes:     ' + val('integri-existing') + '\n\n';
+    t += '[ ZIELGRUPPE ]\n';
+    t += 'Zielgruppe:      ' + val('integri-target-primary') + '\n';
+    t += 'Situation:\n' + val('integri-situation') + '\n';
+    t += 'Wünsche:\n' + val('integri-wishes') + '\n\n';
+    t += '[ SEO / SUCHVERHALTEN ]\n';
+    t += 'Bewusstsein:     ' + chk(['integri-aware-unaware','integri-aware-problem','integri-aware-solution']) + '\n';
+    t += 'Hauptkeyword:    ' + val('integri-keyword-main') + '\n';
+    t += 'Weitere KW:      ' + val('integri-keywords-other') + '\n';
+    t += 'Suchintention:\n' + val('integri-search-intent') + '\n';
+    t += 'Info-Quellen:\n' + val('integri-info-sources') + '\n\n';
+    t += '[ TRANSFORMATION ]\n';
+    t += 'Aktuelle Probleme:\n' + val('integri-problems') + '\n';
+    t += 'Zielzustand:\n' + val('integri-results') + '\n';
+    t += 'Messbare Vorteile:\n' + val('integri-metrics') + '\n\n';
+    t += '[ LEISTUNGEN / USP ]\n';
+    t += 'Leistungen:\n' + val('integri-services') + '\n';
+    t += 'Vorteile vs. Wettbewerb:\n' + val('integri-advantages') + '\n';
+    t += 'Vertrauen:\n' + val('integri-trust') + '\n\n';
+    t += '[ BEAUFTRAGUNG ]\n';
+    t += 'Kriterien:\n' + val('integri-reasons') + '\n';
+    t += 'Dringlichkeit:\n' + val('integri-urgency') + '\n\n';
+    t += '[ PREISE ]\n';
+    t += 'Transparenz:     ' + chk(['integri-price-concrete','integri-price-partial','integri-price-request']) + '\n';
+    t += 'Kalkulation:\n' + val('integri-calculation') + '\n\n';
+    t += '[ REFERENZEN ]\n';
+    t += 'Projekte:\n' + val('integri-references') + '\n';
+    t += 'Kundenstimmen:\n' + val('integri-testimonials') + '\n\n';
+    t += '[ CALL-TO-ACTION ]\n';
+    t += 'Hauptziel:       ' + chk(['integri-goal-meeting','integri-goal-quote','integri-goal-visit','integri-goal-other']) + (data['integri-goal-other'] ? ' (' + val('integri-goal-other-text') + ')' : '') + '\n';
+    t += 'Niedrigschwellig:\n' + val('integri-cta-low') + '\n';
+    t += 'Haupt-CTA:\n' + val('integri-cta-main') + '\n\n';
+    t += '[ FAQ & EINWÄNDE ]\n';
+    t += 'FAQ:\n' + val('integri-faq') + '\n';
+    t += 'Alternativen:\n' + val('integri-alternatives') + '\n\n';
+    t += '[ MEDIEN / SONSTIGES ]\n';
+    t += 'Medien:\n' + val('integri-media') + '\n';
+    t += 'Hinweise:\n' + val('integri-additional') + '\n\n';
+    t += '======================================\n';
+    return t;
+  }
 
-    let encoded;
-    try {
-        encoded = btoa(unescape(encodeURIComponent(JSON.stringify(formData))));
-    } catch(e) {
-        alert('Fehler beim Kodieren der Daten: ' + e.message);
-        return;
-    }
-
-    const url = REVIEW_TOOL_URL + '#briefing=' + encoded;
-    window.open(url, '_blank');
-}
-
-// ——————————————————————————————————————
-// JSON EXPORT / IMPORT
-// ——————————————————————————————————————
-function integriBriefingSaveDataAsJSON() {
-    const formData = integriBriefingCollectData();
-    const company = (formData['integri-company'] || 'kunde').replace(/[^a-z0-9]/gi, '-').toLowerCase();
-    const date = new Date().toISOString().split('T')[0];
-    const filename = `briefing-${company}-${date}.json`;
-
-    const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
+  // ── Herunterladen ───────────────────────────────
+  function saveLocally() {
+    var data = collectData();
+    var text = formatAsText(data);
+    var company = (data['integri-company'] || 'briefing').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    var date = new Date().toISOString().split('T')[0];
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'briefing-' + company + '-' + date + '.txt';
     a.click();
-    URL.revokeObjectURL(url);
-    return filename;
-}
+    URL.revokeObjectURL(a.href);
+  }
 
-function integriBriefingLoadData() {
-    const input = document.createElement('input');
+  // ── Absenden ────────────────────────────────────
+  function submitForm() {
+    var data  = collectData();
+    var email = (data['integri-email'] || '').trim();
+
+    if (!email) {
+      alert('Bitte tragen Sie Ihre E-Mail-Adresse ein, damit Sie eine Kopie erhalten.');
+      document.getElementById('integri-email').focus();
+      return;
+    }
+    if (!data['integri-company'] || !data['integri-topic']) {
+      alert('Bitte füllen Sie mindestens „Firma" und „Thema / Leistung" aus.');
+      return;
+    }
+
+    var btn = document.querySelector('.btn-primary');
+    if (btn) { btn.disabled = true; btn.textContent = 'Wird gesendet…'; }
+
+    var payload = {
+      email:   email,
+      _tool:   'briefing',
+      content: formatAsText(data)
+    };
+
+    fetch(WORKER_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body:    JSON.stringify(payload)
+    })
+    .then(function(res) {
+      return res.json().then(function(json) {
+        if (!res.ok) throw new Error(json.message || 'Fehler ' + res.status);
+        return json;
+      });
+    })
+    .then(function() {
+      var section = document.querySelector('.submit-section');
+      if (section) section.style.display = 'none';
+      var ty = document.getElementById('thank-you-view');
+      if (ty) {
+        var copyEl = document.getElementById('thankyou-copy');
+        if (copyEl) { copyEl.textContent = 'Eine Kopie wurde an ' + email + ' gesendet.'; copyEl.style.display = 'block'; }
+        ty.style.display = 'block';
+        ty.scrollIntoView({ behavior: 'smooth' });
+      }
+      localStorage.removeItem(STORAGE_KEY);
+    })
+    .catch(function(err) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Eingaben absenden'; }
+      alert('Fehler beim Senden: ' + err.message + '\n\nBitte versuchen Sie es erneut oder schreiben Sie direkt an info@integri.de');
+    });
+  }
+
+  // ── Interner JSON-Import ─────────────────────────
+  function integriBriefingLoadData() {
+    var input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    input.onchange = e => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = event => {
-            try {
-                const formData = JSON.parse(event.target.result);
-                integriBriefingPopulateForm(formData);
-                integriBriefingSaveToLocalStorage();
-                integriBriefingShowAutoSaveIndicator();
-            } catch(err) {
-                alert('Fehler beim Laden der JSON-Datei: ' + err.message);
-            }
-        };
-        reader.readAsText(file);
+    input.onchange = function(e) {
+      var file = e.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          populateForm(JSON.parse(ev.target.result));
+          saveToStorage(); showSaved();
+        } catch(err) { alert('JSON-Fehler: ' + err.message); }
+      };
+      reader.readAsText(file);
     };
     input.click();
-}
-
-// ——————————————————————————————————————
-// E-MAIL
-// ——————————————————————————————————————
-function integriBriefingSendEmail() {
-    const filename = integriBriefingSaveDataAsJSON();
-
-    setTimeout(() => {
-        const formData = integriBriefingCollectData();
-        const sections = [
-            { title: 'ANGABEN ZUM ANBIETENDEN', ids: ['integri-company','integri-date','integri-contact','integri-topic','integri-pagetype','integri-length','integri-existing'] },
-            { title: 'ZIELGRUPPE', ids: ['integri-target-primary','integri-situation','integri-wishes'] },
-            { title: 'SUCHVERHALTEN / SEO', ids: ['integri-search-intent','integri-info-sources','integri-keyword-main','integri-keywords-other'] },
-            { title: 'TRANSFORMATION', ids: ['integri-problems','integri-results','integri-metrics'] },
-            { title: 'LEISTUNGEN, USP', ids: ['integri-services','integri-advantages','integri-trust'] },
-            { title: 'BEAUFTRAGUNGSKRITERIEN', ids: ['integri-reasons','integri-urgency'] },
-            { title: 'ZAHLEN UND PREISE', ids: ['integri-calculation'] },
-            { title: 'REFERENZEN / BEWEISE', ids: ['integri-references','integri-testimonials'] },
-            { title: 'CALL-TO-ACTIONS', ids: ['integri-cta-low','integri-cta-main'] },
-            { title: 'FAQ & EINWAENDE', ids: ['integri-faq','integri-alternatives'] },
-            { title: 'BILDER / MEDIEN', ids: ['integri-media'] },
-            { title: 'ZUSAETZLICH WICHTIG', ids: ['integri-additional'] }
-        ];
-
-        let body = 'INTEGRI BRIEFING MARKETING / ONLINE\n====================================\n\n';
-
-        sections.forEach(s => {
-            body += `\n${s.title}\n${'—'.repeat(40)}\n`;
-            s.ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    const lbl = (document.querySelector(`label[for="${id}"]`)?.textContent || id).replace(':', '').trim();
-                    body += `\n${lbl}:\n${(formData[id] || '[nicht ausgefuellt]')}\n`;
-                }
-            });
-        });
-
-        body += '\n====================================\n';
-        body += `Bitte JSON-Datei "${filename}" als Anhang beifuegen.\n====================================\n`;
-
-        const company = formData['integri-company'] || 'Neue Anfrage';
-        alert(`Die JSON-Datei "${filename}" wurde heruntergeladen.\nBitte als Anhang zur E-Mail hinzufügen.`);
-        window.location.href = `mailto:info@integri.de?subject=${encodeURIComponent('Briefing Marketing/Online - ' + company)}&body=${encodeURIComponent(body)}`;
-    }, 500);
-}
+  }
 </script>
 
-</div>
 </body>
 </html>
