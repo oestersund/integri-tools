@@ -827,9 +827,10 @@
     if (btn) { btn.disabled = true; btn.textContent = 'Wird gesendet…'; }
 
     var payload = {
-      email:   email,
-      _tool:   'briefing',
-      content: formatAsText(data)
+      email:         email,
+      _tool:         'briefing',
+      content:       formatAsText(data),
+      _briefing_json: JSON.stringify(data)
     };
 
     fetch(WORKER_URL, {
