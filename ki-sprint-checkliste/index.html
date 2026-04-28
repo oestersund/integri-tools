@@ -1057,7 +1057,7 @@
   <!-- AKTIONEN -->
   <div class="submit-section"><p class="submit-hint">Ist alles vollständig? Dann senden Sie Ihre Eingaben hier ab. Sie erhalten eine Kopie Ihrer Eingaben an Ihre oben genannte E-Mail-Adresse.</p>
   <div class="actions">
-    <button class="btn btn-outline" onclick="saveLocally()">Zwischenspeichern</button>
+    <button class="btn btn-outline" onclick="saveLocally()">Herunterladen</button>
     <button class="btn btn-primary" onclick="submitForm()">Eingaben absenden</button>
   </div>
   </div>
@@ -1326,7 +1326,8 @@
         }
         ty.style.display = 'block';
       }
-      window.scrollTo(0, 0);
+      var tyEl = document.getElementById('thank-you-view');
+      if (tyEl) tyEl.scrollIntoView({ behavior: 'smooth' });
     })
     .catch(function(err) {
       if (btn) { btn.disabled = false; btn.textContent = 'Eingaben absenden'; }
