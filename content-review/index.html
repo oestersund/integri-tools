@@ -3340,43 +3340,69 @@ function loadColors() {
 
 // ——————————————————————————————————————
 // BRIEFING URL-HASH IMPORT
-// Erkennt #briefing=<base64> beim Seitenaufruf und importiert automatisch
+// Unterstützt zwei Formate:
+//   ?briefing=briefings/YYYY-MM-DD-slug.json  → lädt JSON von GitHub Raw
+//   ?briefing=<base64>                         → dekodiert direkt (Legacy)
+//   #briefing=<base64>                         → Hash-Fragment (Legacy)
 // ——————————————————————————————————————
-function checkBriefingHashImport() {
-    // Query-Parameter ?briefing= (Email-Links via Brevo-Redirect)
+async function checkBriefingHashImport() {
+    // Query-Parameter ?briefing=
     const params = new URLSearchParams(window.location.search);
-    const qEncoded = params.get('briefing');
+    const qParam = params.get('briefing');
 
-    // Hash-Fragment #briefing= (Direktlinks)
+    // Hash-Fragment #briefing= (Legacy)
     const hash = window.location.hash;
     const hEncoded = hash.startsWith('#briefing=') ? hash.slice(10) : null;
 
-    const encoded = qEncoded || hEncoded;
-    if (!encoded) return;
+    const param = qParam || hEncoded;
+    if (!param) return;
 
-    try {
-        const json = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-        // URL bereinigen (kein Reload)
-        history.replaceState(null, '', window.location.pathname);
+    let json;
 
-        // Briefing importieren
-        mapBriefingToContent(json);
-        renderAllSections();
-
-        // Kurze Rückmeldung
-        const notice = document.createElement('div');
-        notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#00A896;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
-        notice.textContent = '✓ Briefing importiert';
-        document.body.appendChild(notice);
-        setTimeout(() => notice.remove(), 3000);
-    } catch(e) {
-        console.error('Briefing Hash Import Fehler:', e);
-        const notice = document.createElement('div');
-        notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#c0392b;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;';
-        notice.textContent = 'Fehler beim Importieren des Briefings: ' + e.message;
-        document.body.appendChild(notice);
-        setTimeout(() => notice.remove(), 5000);
+    // Pfad-Format: "briefings/YYYY-MM-DD-slug.json" → GitHub Raw fetch
+    if (param.startsWith('briefings/') || param.endsWith('.json')) {
+        const rawUrl = `https://raw.githubusercontent.com/oestersund/integri-tools/main/${param}`;
+        try {
+            const res = await fetch(rawUrl);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            json = await res.json();
+        } catch(e) {
+            console.error('Briefing GitHub-Fetch Fehler:', e);
+            const notice = document.createElement('div');
+            notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#c0392b;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;';
+            notice.textContent = 'Briefing konnte nicht geladen werden: ' + e.message;
+            document.body.appendChild(notice);
+            setTimeout(() => notice.remove(), 5000);
+            return;
+        }
+    } else {
+        // Fallback: base64 (Legacy — direkter JSON-Import via URL)
+        try {
+            json = JSON.parse(decodeURIComponent(escape(atob(param))));
+        } catch(e) {
+            console.error('Briefing base64-Decode Fehler:', e);
+            const notice = document.createElement('div');
+            notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#c0392b;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;';
+            notice.textContent = 'Briefing-Daten ungültig.';
+            document.body.appendChild(notice);
+            setTimeout(() => notice.remove(), 5000);
+            return;
+        }
     }
+
+    // URL bereinigen (kein Reload)
+    history.replaceState(null, '', window.location.pathname);
+
+    // Briefing importieren
+    mapBriefingToContent(json);
+    renderAllSections();
+
+    // Rückmeldung
+    const notice = document.createElement('div');
+    notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#00A896;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+    notice.textContent = '✓ Briefing importiert';
+    document.body.appendChild(notice);
+    setTimeout(() => notice.remove(), 3000);
 }
 
 // Initialize on load
