@@ -2974,37 +2974,73 @@ function mapBriefingToContent(b) {
     // === CASES ===
     const references = clean(b['integri-references']) || '';
     if (references) {
-        const caseBlocks = references.split('\n').filter(r => r.trim()).slice(0, 2);
-        caseBlocks.forEach((caseText, i) => {
-            const parts = caseText.split(',').map(p => p.trim());
-            originalContent.cases[`case${i + 1}_title`] = parts[0] || `Referenz ${i + 1}`;
-            originalContent.cases[`case${i + 1}_challenge`] = 'Herausforderung: ' + (parts[1] || 'Anspruchsvolles Projekt');
-            originalContent.cases[`case${i + 1}_solution`] = 'Lösung: Professionelle Betreuung und zuverlässige Umsetzung';
-            originalContent.cases[`case${i + 1}_result`] = 'Ergebnis: ' + (parts[2] || 'Erfolgreich umgesetzt');
+        // Format: \n\n-separierte Blöcke — Titel-Blöcke enthalten keine bekannten Labels,
+        // Label-Blöcke beginnen mit Herausforderung/Lösung/Ergebnis (auch inline "Titel:\nLabel:")
+        const LABEL_KEYS = ['herausforderung', 'lösung', 'loesung', 'solution', 'ergebnis', 'result'];
+        const isLabelBlock = s => LABEL_KEYS.some(k => s.toLowerCase().trimStart().startsWith(k));
+
+        // Blöcke nach \n\n trennen, dann in Cases gruppieren
+        const rawBlocks = references.split(/\n{2,}/).map(b => b.trim()).filter(b => b);
+        const cases = [];
+        let current = null;
+
+        rawBlocks.forEach(block => {
+            const firstLine = block.split('\n')[0].toLowerCase();
+            const startsWithLabel = LABEL_KEYS.some(k => firstLine.startsWith(k));
+
+            if (!startsWithLabel) {
+                // Neuer Case-Titel (evtl. mit Label auf Folgezeile in gleichem Block)
+                // z.B. "Steinfeldstraße:\nHerausforderung: ..."
+                const lines = block.split('\n');
+                const titleLine = lines[0].replace(/:$/, '').trim();
+                current = { title: titleLine, challenge: '', solution: '', result: '' };
+                cases.push(current);
+                // Rest des Blocks verarbeiten (falls Label auf nächster Zeile)
+                const rest = lines.slice(1).join('\n').trim();
+                if (rest) rawBlocks.splice(rawBlocks.indexOf(block) + 1, 0, rest); // Inline-Rest nachlegen
+            } else if (current) {
+                // Label-Block dem aktuellen Case zuweisen
+                const text = block.replace(/^[^:]+:\s*/i, '').trim();
+                const lower = block.toLowerCase();
+                if (lower.startsWith('herausforderung')) current.challenge = text;
+                else if (lower.startsWith('lösung') || lower.startsWith('loesung') || lower.startsWith('solution')) current.solution = text;
+                else if (lower.startsWith('ergebnis') || lower.startsWith('result')) current.result = text;
+            }
+        });
+
+        cases.slice(0, 2).forEach((c, i) => {
+            originalContent.cases[`case${i + 1}_title`]    = c.title;
+            originalContent.cases[`case${i + 1}_challenge`] = c.challenge || 'Anspruchsvolles Projekt';
+            originalContent.cases[`case${i + 1}_solution`]  = c.solution  || 'Professionelle Betreuung und zuverlässige Umsetzung';
+            originalContent.cases[`case${i + 1}_result`]    = c.result    || 'Erfolgreich umgesetzt';
         });
     }
-    
+
     // === FAQ ===
     const faq = clean(b['integri-faq']) || '';
     originalContent.faq.title = 'Häufig gestellte Fragen';
     if (faq) {
-        const faqParts = faq.split('\n\n');
+        // Format A: "Frage – Antwort" auf einer Zeile (Inline-Trennung)
+        // Format B: "Frage\nAntwort\n\nFrage2\nAntwort2" (Zeilenblöcke, unser Standard)
+        const faqBlocks = faq.split(/\n{2,}/).filter(p => p.trim());
         let questionIndex = 1;
-        faqParts.forEach(part => {
-            const lines = part.split('\n').filter(l => l.trim());
-            lines.forEach(line => {
-                if (questionIndex > 6) return;
-                if (line.includes('–')) {
-                    const [q, a] = line.split('–').map(s => s.trim());
-                    originalContent.faq[`q${questionIndex}`] = q;
-                    originalContent.faq[`a${questionIndex}`] = a;
-                    questionIndex++;
-                } else if (line.trim()) {
-                    originalContent.faq[`q${questionIndex}`] = line.trim();
-                    originalContent.faq[`a${questionIndex}`] = 'Diese Information stellen wir Ihnen gerne in einem persönlichen Gespräch zur Verfügung.';
-                    questionIndex++;
-                }
-            });
+        faqBlocks.forEach(block => {
+            if (questionIndex > 6) return;
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) return;
+
+            if (lines[0].includes('–') && lines.length === 1) {
+                // Format A: "Frage – Antwort"
+                const [q, a] = lines[0].split('–').map(s => s.trim());
+                originalContent.faq[`q${questionIndex}`] = q;
+                originalContent.faq[`a${questionIndex}`] = a || '';
+            } else {
+                // Format B: erste Zeile = Frage, Rest = Antwort
+                originalContent.faq[`q${questionIndex}`] = lines[0];
+                originalContent.faq[`a${questionIndex}`] = lines.slice(1).join(' ').trim()
+                    || 'Diese Information stellen wir Ihnen gerne in einem persönlichen Gespräch zur Verfügung.';
+            }
+            questionIndex++;
         });
     }
     
