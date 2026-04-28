@@ -3372,16 +3372,21 @@ function loadColors() {
 // Erkennt #briefing=<base64> beim Seitenaufruf und importiert automatisch
 // ——————————————————————————————————————
 function checkBriefingHashImport() {
-    const hash = window.location.hash;
-    if (!hash.startsWith('#briefing=')) return;
+    // Query-Parameter ?briefing= (Email-Links via Brevo-Redirect)
+    const params = new URLSearchParams(window.location.search);
+    const qEncoded = params.get('briefing');
 
-    const encoded = hash.slice(10);
+    // Hash-Fragment #briefing= (Direktlinks)
+    const hash = window.location.hash;
+    const hEncoded = hash.startsWith('#briefing=') ? hash.slice(10) : null;
+
+    const encoded = qEncoded || hEncoded;
     if (!encoded) return;
 
     try {
         const json = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-        // Hash sofort aus URL entfernen (kein Reload)
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        // URL bereinigen (kein Reload)
+        history.replaceState(null, '', window.location.pathname);
 
         // Briefing importieren
         mapBriefingToContent(json);
