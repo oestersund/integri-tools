@@ -45,10 +45,10 @@
         .briefing-header {
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #00A896;
+            border-bottom: 3px solid var(--petrol);
         }
         .briefing-header h1 {
-            color: #00A896;
+            color: var(--petrol);
             font-size: 26px;
             font-weight: 700;
         }
@@ -59,7 +59,7 @@
         }
 
         h2 {
-            color: #00A896;
+            color: var(--petrol);
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 18px;
@@ -105,7 +105,7 @@
         input[type="text"]:focus,
         textarea:focus {
             outline: none;
-            border-color: #00A896;
+            border-color: var(--petrol);
         }
 
         textarea {
@@ -121,9 +121,9 @@
         .checkbox-group {
             margin: 8px 0;
             padding: 12px 15px;
-            background: #f0f7f6;
+            background: var(--apricot);
             border-radius: 4px;
-            border: 1px solid #d0ebe8;
+            border: 1px solid var(--border);
         }
         .checkbox-item {
             margin: 6px 0;
@@ -139,8 +139,8 @@
         }
 
         .awareness-box {
-            background: #f0f7f6;
-            border-left: 3px solid #00A896;
+            background: var(--apricot);
+            border-left: 3px solid var(--petrol);
             padding: 12px 15px;
             margin: 8px 0;
             border-radius: 0 4px 4px 0;
@@ -162,7 +162,7 @@
         }
         .completion-notice p {
             font-size: 18px;
-            color: #00A896;
+            color: var(--petrol);
             font-weight: 600;
         }
 
@@ -175,7 +175,7 @@
         }
 
         button {
-            background: #00A896;
+            background: var(--petrol);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -185,9 +185,9 @@
             transition: background 0.2s;
             font-family: inherit;
         }
-        button:hover { background: #008B7D; }
+        button:hover { background: var(--petrol); }
 
-        .btn-secondary { background: #165965; }
+        .btn-secondary { background: var(--petrol); }
         .btn-secondary:hover { background: #0d3d46; }
 
         .btn-review {
@@ -202,7 +202,7 @@
             position: fixed;
             top: 80px;
             right: 20px;
-            background: #00A896;
+            background: var(--petrol);
             color: white;
             padding: 8px 15px;
             border-radius: 5px;
@@ -255,7 +255,6 @@
 <body>
 <script>window.INTEGRI_CHROME = { docname: 'Briefing Marketing' };</script>
 <script src="../assets/tool-chrome.js"></script>
-<script src="../assets/tool-chrome.js" data-tool-name="Briefing Marketing/Online"></script>
 
 
 <div id="integri-briefing-container">
@@ -532,7 +531,7 @@
             </button>
             <button onclick="integriBriefingSaveDataAsJSON()">JSON speichern</button>
             <button onclick="window.print()" style="background: #555;">Als PDF drucken</button>
-            <button onclick="integriBriefingSendEmail()" style="background: #165965;">Per E-Mail senden</button>
+            <button onclick="integriBriefingSendEmail()" style="background: var(--petrol); color: white;">Per E-Mail senden</button>
         </div>
     </div>
 </div>
