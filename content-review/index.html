@@ -894,63 +894,93 @@
             font-size: 0.9em;
         }
 
-        /* CTA Buttons */
+        /* CTA Section — roter Hintergrund wie Finale Site */
         .cta-section {
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            background: #f8f9fa;
-            padding: 50px 40px;
-            text-align: center;
-            border-radius: 0;
-            margin: 30px 0;
+            background: var(--accent-color);
+            padding: 60px 40px;
+            text-align: left;
+            margin: 0;
         }
-        
+
         .cta-section h2 {
-            color: var(--accent-color);
-            font-size: 2rem;
-            margin-bottom: 20px;
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 40px;
             font-weight: 700;
         }
-        
+
+        /* CTA1: zentriert, single button */
+        .cta-section.cta1-style {
+            text-align: center;
+        }
+
+        .cta-section.cta1-style h2 {
+            font-size: 1.6rem;
+        }
+
+        .cta-section.cta1-style .cta-btn {
+            margin-top: 20px;
+        }
+
+        /* CTA2: zwei Spalten */
+        .cta2-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .cta2-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cta2-column-header {
+            background: var(--secondary-color);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 16px 20px;
+            margin-bottom: 0;
+        }
+
+        .cta2-column-btn {
+            background: white;
+            color: #333;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 18px 20px;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* CTA generic buttons (CTA1) */
         .cta-buttons {
             display: flex;
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 30px;
+            margin-top: 10px;
         }
-        
+
         .cta-btn {
             padding: 15px 35px;
             font-size: 1.1rem;
             font-weight: 600;
             border: none;
-            border-radius: 0;
             cursor: pointer;
-            transition: all 0.3s;
         }
-        
+
         .cta-btn.primary {
-            background: var(--accent-color);
-            color: white;
-        }
-        
-        .cta-btn.primary:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(193,39,45,0.3);
-        }
-        
-        .cta-btn.secondary {
             background: white;
             color: var(--accent-color);
-            border: 2px solid var(--accent-color);
         }
-        
-        .cta-btn.secondary:hover {
-            background: var(--accent-color);
+
+        .cta-btn.secondary {
+            background: transparent;
             color: white;
+            border: 2px solid white;
         }
         
         /* Action Buttons */
@@ -2266,31 +2296,22 @@ function generateServicesPreview() {
 function generateCTA1Preview() {
     const title = getContent('cta1_title', originalContent.cta1.title);
     const features = getContent('cta1_features', originalContent.cta1.features);
-    
+
     if ((isDeleted('cta1_title') || !title) && (isDeleted('cta1_features') || !features)) return '';
-    
-    let html = '<div class="cta-section">';
-    
-    // Title can be multiline (Question + Subtext)
+
+    let html = '<div class="cta-section cta1-style">';
+
     if (!isDeleted('cta1_title') && title) {
-        const titleLines = title.split('\n');
-        if (titleLines.length > 1) {
-            html += `<h2>${escapeHtml(titleLines[0])}</h2>`;
-            html += `<p>${escapeHtml(titleLines.slice(1).join(' '))}</p>`;
-        } else {
-            html += `<h2>${escapeHtml(title)}</h2>`;
-        }
+        html += `<h2>${escapeHtml(title)}</h2>`;
     }
-    
+
     html += '<div class="cta-buttons"><button class="cta-btn primary">Kostenlose Machbarkeitsprüfung</button></div>';
-    
-    // Features as subtext
+
     if (!isDeleted('cta1_features') && features) {
-        html += `<p class="cta-subtext" style="font-size: 1rem; line-height: 1.8; margin-top: 20px;">${escapeHtml(features).replace(/\n/g, '<br>')}</p>`;
+        html += `<p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-top: 14px;">${escapeHtml(features).replace(/\n/g, '<br>')}</p>`;
     }
-    
+
     html += '</div>';
-    
     return html;
 }
 
@@ -2422,41 +2443,39 @@ function generateFAQPreview() {
     return hasContent ? html : '';
 }
 
-// Generate CTA2 preview
+// Generate CTA2 preview — zwei Spalten auf rotem Hintergrund (wie Finale Site)
 function generateCTA2Preview() {
     const title = getContent('cta2_title', originalContent.cta2.title);
     const btn1 = getContent('cta2_btn1', originalContent.cta2.btn1);
     const btn2 = getContent('cta2_btn2', originalContent.cta2.btn2);
-    
+
     if ((isDeleted('cta2_title') || !title) && (isDeleted('cta2_btn1') || !btn1) && (isDeleted('cta2_btn2') || !btn2)) return '';
-    
+
     let html = '<div class="cta-section">';
-    
-    // Title can be multiline
+
     if (!isDeleted('cta2_title') && title) {
-        const titleLines = title.split('\n');
-        titleLines.forEach((line, idx) => {
-            if (idx === 0) {
-                html += `<h2>${escapeHtml(line)}</h2>`;
-            } else {
-                html += `<p style="font-size: 1.1rem; margin-bottom: 10px;">${escapeHtml(line)}</p>`;
-            }
-        });
+        html += `<h2>${escapeHtml(title)}:</h2>`;
     }
-    
-    html += '<div class="cta-buttons">';
-    if (!isDeleted('cta2_btn1') && btn1) html += `<button class="cta-btn secondary">${escapeHtml(btn1)}</button>`;
-    if (!isDeleted('cta2_btn2') && btn2) html += `<button class="cta-btn primary">${escapeHtml(btn2)}</button>`;
-    html += '</div>';
-    
-    // Option explanations
-    html += '<p class="cta-options" style="font-size: 0.95rem; color: #6c757d; margin-top: 20px; line-height: 1.8;">';
-    html += 'Option 1: Erst kennenlernen, dann entscheiden<br>';
-    html += 'Option 2: Sie wissen schon was Sie brauchen? Direkt Angebot anfordern';
-    html += '</p>';
-    
-    html += '</div>';
-    
+
+    html += '<div class="cta2-columns">';
+
+    // Spalte 1
+    if (!isDeleted('cta2_btn1') && btn1) {
+        html += '<div class="cta2-column">';
+        html += '<div class="cta2-column-header">Sie möchten mehr Infos?</div>';
+        html += `<button class="cta2-column-btn">${escapeHtml(btn1)}</button>`;
+        html += '</div>';
+    }
+
+    // Spalte 2
+    if (!isDeleted('cta2_btn2') && btn2) {
+        html += '<div class="cta2-column">';
+        html += '<div class="cta2-column-header">Sie wissen schon was Sie brauchen?</div>';
+        html += `<button class="cta2-column-btn">${escapeHtml(btn2)}</button>`;
+        html += '</div>';
+    }
+
+    html += '</div></div>';
     return html;
 }
 
