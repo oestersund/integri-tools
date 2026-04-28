@@ -808,14 +808,18 @@
           <li><input type="checkbox" /><span class="check-item-text">Als zweite Meinung / Gegenkontrolle dienen<span class="check-item-hint">Ich entscheide weiterhin, KI prüft mit</span></span></li>
           <li><input type="checkbox" /><span class="check-item-text">Dokumentation / Aufbereitung übernehmen<span class="check-item-hint">Ich liefere den Input, KI erstellt den fertigen Text</span></span></li>
           <li><input type="checkbox" /><span class="check-item-text">Recherche und Zusammenfassung<span class="check-item-hint">KI sucht, filtert, verdichtet</span></span></li>
+          <li id="ki-andere-li"><input type="checkbox" id="ki-andere-cb" /><span class="check-item-text">Etwas anderes, und zwar:<span class="check-item-hint"></span></span></li>
         </ul>
+        <div id="ki-andere-wrap" style="display:none; margin-top:8px;">
+          <input type="text" id="ki-andere-text" placeholder="Kurz beschreiben …" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;color:var(--text);" />
+        </div>
       </div>
 
       <hr class="q-sep" />
 
       <div class="question">
         <label class="q-label">Was ist der konkret messbare Unterschied, wenn es funktioniert?</label>
-        <div class="q-hint">Zeitersparnis? Weniger Fehler? Weniger kognitive Last? Seien Sie konkret — "30 Minuten auf 5 Minuten" ist besser als "schneller".</div>
+        <div class="q-hint">Beziehen Sie sich auf die Aspekte, die Sie oben markiert haben. Zeitersparnis? Weniger Fehler? Weniger kognitive Last? Seien Sie konkret — „30 Minuten auf 5 Minuten" ist besser als „schneller".</div>
         <textarea rows="3" placeholder="z.B. Von 15 Minuten auf unter 3 Minuten pro Vorgang — bei gleicher Qualität."></textarea>
       </div>
 
@@ -1080,6 +1084,19 @@
 <script>
   /* ── Auto-Datum ── */
   /* ── Chip-Logik ── */
+
+  /* ── "Etwas anderes" Freitextfeld ── */
+  var kiAndereCb = document.getElementById('ki-andere-cb');
+  var kiAndereWrap = document.getElementById('ki-andere-wrap');
+  if (kiAndereCb && kiAndereWrap) {
+    kiAndereCb.closest('li').addEventListener('click', function() {
+      setTimeout(function() {
+        kiAndereWrap.style.display = kiAndereCb.checked ? 'block' : 'none';
+      }, 0);
+    });
+    document.getElementById('ki-andere-text').addEventListener('input', updateProgress);
+  }
+
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const input = chip.querySelector('input');
