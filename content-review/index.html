@@ -2884,7 +2884,7 @@ function mapBriefingToContent(b) {
     
     // === USPS ===
     const topicShort = topic.split(' ')[0] || 'Service';
-    originalContent.usps.title = `Warum ${company} als ${topicShort}-Partner?\nWas uns von anderen Anbietern unterscheidet`;
+    originalContent.usps.title = `Warum ${company} als ${topicShort}-Partner?`;
     
     const uspBlocks = advantages.split('\n\n').filter(u => u.trim()).slice(0, 3);
     uspBlocks.forEach((block, i) => {
@@ -2943,7 +2943,7 @@ function mapBriefingToContent(b) {
         ctaQuestion = `${firstWish} gewünscht? Erste Einschätzung gefällig?`;
     }
     
-    originalContent.cta1.title = `${ctaQuestion}\nLernen Sie uns kennen - unverbindlich und kostenfrei`;
+    originalContent.cta1.title = ctaQuestion;
     
     // Features als Checkboxen
     const ctaFeatures = wishesArray.slice(0, 3).map(w => {
@@ -3014,12 +3014,13 @@ function mapBriefingToContent(b) {
     // Resultat-basierter Title
     let cta2Title = 'Bereit für den nächsten Schritt?';
     if (resultsList.length > 0) {
-        const r1 = resultsList[0];
-        const r2 = resultsList[1] || 'reibungslose Abläufe';
-        cta2Title = `${r1} & ${r2} - jetzt starten`;
+        // Nur den kurzen Teil vor " - " nehmen, nicht den ganzen Satz
+        const r1Short = resultsList[0].split(' - ')[0].trim();
+        const r2Short = (resultsList[1] || 'reibungslose Abläufe').split(' - ')[0].trim();
+        cta2Title = `${r1Short} & ${r2Short} – jetzt starten`;
     }
-    
-    originalContent.cta2.title = `${cta2Title}\nWählen Sie den passenden Einstieg für Ihre Situation`;
+
+    originalContent.cta2.title = cta2Title;
     originalContent.cta2.btn1 = ctaLow;
     originalContent.cta2.btn2 = ctaMain;
     
@@ -3132,21 +3133,15 @@ function addTestimonialsSection(b, clean) {
     const quoteBlocks = testimonials.split('\n\n').filter(t => t.trim()).slice(0, 3);
     
     quoteBlocks.forEach((block, i) => {
-        // Versuch 1: Komma-getrennt (Zitat, Autor, Firma)
-        const parts = block.split(',').map(p => p.trim());
-        
-        if (parts.length >= 2) {
-            // Format: Zitat, Autor[, Firma]
-            originalContent.testimonials[`quote${i + 1}`] = parts[0].replace(/^["„]|[""]$/g, '');
-            const author = parts[1];
-            const company = parts[2] || '';
-            originalContent.testimonials[`author${i + 1}`] = company ? `${author}, ${company}` : author;
-        } else {
-            // Format: Nur Zitat (kein Autor)
-            const lines = block.split('\n').filter(l => l.trim());
-            originalContent.testimonials[`quote${i + 1}`] = lines[0].replace(/^["„]|[""]$/g, '');
-            originalContent.testimonials[`author${i + 1}`] = lines[1] || 'Zufriedener Kunde';
-        }
+        // Format pro Block: Zeile 1 = Zitat, Zeile 2 = Autor, Zeile 3 = Firma (optional)
+        const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+
+        const quote = (lines[0] || '').replace(/^["„»]|["«"]$/g, '').trim();
+        const author = (lines[1] || '').replace(/^[-–]\s*/, '').trim();
+        const company = (lines[2] || '').replace(/^[-–]\s*/, '').trim();
+
+        originalContent.testimonials[`quote${i + 1}`] = quote;
+        originalContent.testimonials[`author${i + 1}`] = company ? `${author}, ${company}` : (author || 'Zufriedener Kunde');
     });
 }
 
@@ -3186,20 +3181,20 @@ function enhanceCTAsWithGoal(b, clean) {
     let ctaPrimary = ctaMain;
     let ctaSecondary = ctaLow;
     
+    // Briefing-Werte haben Vorrang — hardcoded Strings nur als Fallback wenn Briefing leer
     if (b['integri-goal-meeting']) {
-        ctaPrimary = 'Beratungstermin vereinbaren';
-        ctaSecondary = 'Kostenlose Erstberatung';
+        ctaPrimary = ctaMain || 'Beratungstermin vereinbaren';
+        ctaSecondary = ctaLow || 'Kostenlose Erstberatung';
     } else if (b['integri-goal-quote']) {
-        ctaPrimary = 'Angebot anfordern';
-        ctaSecondary = 'Kostenvoranschlag anfordern';
+        ctaPrimary = ctaMain || 'Angebot anfordern';
+        ctaSecondary = ctaLow || 'Kostenvoranschlag anfordern';
     } else if (b['integri-goal-visit']) {
-        ctaPrimary = 'Vor-Ort-Termin buchen';
-        ctaSecondary = 'Unverbindliche Besichtigung';
+        ctaPrimary = ctaMain || 'Vor-Ort-Termin buchen';
+        ctaSecondary = ctaLow || 'Unverbindliche Besichtigung';
     } else if (b['integri-goal-other']) {
         const otherGoal = clean(b['integri-goal-other-text']) || '';
-        if (otherGoal) {
-            ctaPrimary = otherGoal;
-        }
+        ctaPrimary = ctaMain || otherGoal || 'Kontakt aufnehmen';
+        ctaSecondary = ctaLow;
     }
     
     // CTAs aktualisieren
