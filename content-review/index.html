@@ -502,8 +502,10 @@
             display: none;
         }
         
-        #previewMode.active { 
+        #previewMode.active {
             display: block;
+            overflow-x: hidden;
+            max-width: 100%;
         }
         
         /* Hero Section with Image */
@@ -939,19 +941,18 @@
         }
 
         .cta2-column-header {
-            background: var(--secondary-color);
             color: white;
             font-weight: 700;
-            font-size: 1.05rem;
-            padding: 14px 20px;
+            font-size: 1.1rem;
+            padding: 0 0 4px 0;
         }
 
         .cta2-column-btn {
             background: white;
             color: #222;
-            font-size: 1.05rem;
-            font-weight: 400;
-            padding: 26px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 22px 20px;
             border: none;
             text-align: center;
             cursor: pointer;
@@ -2309,10 +2310,6 @@ function generateCTA1Preview() {
     }
 
     html += '<div class="cta-buttons"><button class="cta-btn primary">Kostenlose Machbarkeitsprüfung</button></div>';
-
-    if (!isDeleted('cta1_features') && features) {
-        html += `<p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-top: 14px;">${escapeHtml(features).replace(/\n/g, '<br>')}</p>`;
-    }
 
     html += '</div>';
     return html;
