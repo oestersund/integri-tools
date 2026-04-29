@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Review Tool v7 - Integri</title>
+    <title>Content Review Tool – Integri</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --header-color: #165965;
-            --primary-color: #C1272D;     /* Rot - Hauptfarbe */
-            --secondary-color: #9A1F24;   /* Dunkelrot */
-            --accent-color: #C1272D;      /* Alias für primary */
-            --accent-dark: #9A1F24;       /* Alias für secondary */
-            --action-color: #d51226;      /* CTA Buttons */
-            --action-dark: #a30e1d;
+            --header-color: #033132;       /* INTEGRI Petrol – konstant */
+            --primary-color: #033132;      /* Primärfarbe Kunde (via Config) */
+            --accent-color: #033132;       /* Alias für primary */
+            --accent-dark: #022829;        /* Auto-darkened primary */
+            --action-color: #F08972;       /* Aktionsfarbe Kunde (via Config) */
+            --action-dark: #c06e5b;        /* Auto-darkened action */
             --text-dark: #333333;
             --text-light: #6C757D;
-            --bg-light: #F5F5F5;
+            --bg-light: #F7F7F5;
             --bg-white: #FFFFFF;
             --border-color: #E1E8ED;
         }
-        
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6; 
-            color: #333; 
-            background: #f5f5f5;
+
+        body {
+            font-family: 'IBM Plex Sans', 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #F7F7F5;
         }
         
         .container { 
@@ -74,16 +74,16 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
         
-        .mode-toggle button { 
-            padding: 12px 30px; 
-            border: 2px solid var(--header-color); 
-            border-radius: 0; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            background: white; 
-            color: var(--header-color); 
+        .mode-toggle button {
+            padding: 12px 30px;
+            border: 2px solid var(--header-color);
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--header-color);
             margin: 0 5px;
         }
         
@@ -978,8 +978,8 @@
         }
 
         .cta-btn.primary {
-            background: white;
-            color: var(--accent-color);
+            background: var(--action-color);
+            color: white;
         }
 
         .cta-btn.secondary {
@@ -1089,7 +1089,7 @@
 
 <div class="container">
     <div class="app-header">
-        <h1>Integri Content Review Tool v6</h1>
+        <h1>Integri · Content Review</h1>
         <p>Inhalte bearbeiten, prüfen und freigeben</p>
     </div>
 
@@ -1112,52 +1112,41 @@
         </div>
 
         <!-- Corporate Colors Configuration -->
-        <div class="section-group" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
-            <h2 class="section-title" style="color: #495057; font-size: 18px;">Corporate Colors Konfiguration</h2>
-            <p style="color: #6c757d; margin-bottom: 15px; font-size: 14px;">
-                Farben an Corporate Identity anpassen. Header-Farbe bleibt konstant.
+        <div class="section-group" style="background: #F7F7F5; border: 2px dashed #D1D5D8;">
+            <h2 class="section-title" style="color: #033132; font-size: 18px;">Corporate Colors</h2>
+            <p style="color: #5A6B7A; margin-bottom: 15px; font-size: 14px;">
+                Primärfarbe steuert Überschriften, Hero und CTA-Bereiche. Aktionsfarbe steuert Buttons. Dunklere Varianten werden automatisch berechnet.
             </p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;">
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 8px;">Primärfarbe (Hauptfarbe / Akzent)</label>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="color" id="colorPrimary" value="#C1272D" 
-                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
+                        <input type="color" id="colorPrimary" value="#033132"
+                               style="width: 60px; height: 40px; border: 2px solid #D1D5D8; cursor: pointer; border-radius: 4px;"
                                onchange="syncColorPicker('Primary')">
-                        <input type="text" id="colorPrimaryHex" value="#C1272D" 
-                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
+                        <input type="text" id="colorPrimaryHex" value="#033132"
+                               style="width: 100px; padding: 8px; border: 2px solid #D1D5D8; font-family: monospace; border-radius: 4px;"
                                oninput="syncColorInput('Primary')">
-                    </div>
-                </div>
-                <div>
-                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Sekundärfarbe (Dunklere Variante)</label>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="color" id="colorSecondary" value="#9A1F24" 
-                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
-                               onchange="syncColorPicker('Secondary')">
-                        <input type="text" id="colorSecondaryHex" value="#9A1F24" 
-                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
-                               oninput="syncColorInput('Secondary')">
                     </div>
                 </div>
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 8px;">Aktionsfarbe (CTAs, Buttons)</label>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="color" id="colorAction" value="#d51226" 
-                               style="width: 60px; height: 40px; border: 2px solid #dee2e6; cursor: pointer;"
+                        <input type="color" id="colorAction" value="#F08972"
+                               style="width: 60px; height: 40px; border: 2px solid #D1D5D8; cursor: pointer; border-radius: 4px;"
                                onchange="syncColorPicker('Action')">
-                        <input type="text" id="colorActionHex" value="#d51226" 
-                               style="width: 100px; padding: 8px; border: 2px solid #dee2e6; font-family: monospace;"
+                        <input type="text" id="colorActionHex" value="#F08972"
+                               style="width: 100px; padding: 8px; border: 2px solid #D1D5D8; font-family: monospace; border-radius: 4px;"
                                oninput="syncColorInput('Action')">
                     </div>
                 </div>
             </div>
-            <button onclick="applyColors()" 
-                    style="padding: 12px 30px; background: #28a745; color: white; border: none; 
-                           font-size: 16px; font-weight: 600; cursor: pointer;">Farben übernehmen</button>
-            <button onclick="resetColors()" 
-                    style="padding: 12px 30px; background: #6c757d; color: white; border: none; 
-                           font-size: 16px; font-weight: 600; cursor: pointer; margin-left: 10px;">Standard wiederherstellen</button>
+            <button onclick="applyColors()"
+                    style="padding: 10px 24px; background: #033132; color: white; border: none;
+                           font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 4px;">Farben übernehmen</button>
+            <button onclick="resetColors()"
+                    style="padding: 10px 24px; background: transparent; color: #033132; border: 2px solid #033132;
+                           font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 4px; margin-left: 10px;">Standard wiederherstellen</button>
         </div>
 
         <!-- Hero -->
@@ -2834,19 +2823,23 @@ function mapBriefingToContent(b) {
     
     // === PROBLEMS ===
     originalContent.problems.title = 'Ihre Herausforderung - Unsere Lösung';
-    
-    // Problems: direkt aus integri-problems
+
+    // Vorher: direkt aus integri-problems
     const problemsArray = problems.split('\n').filter(p => p.trim()).map(p => p.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
-    problemsArray.forEach((p, i) => { originalContent.problems[`problem${i + 1}`] = p; });
+    problemsArray.forEach((p, i) => {
+        originalContent.problems[`problem${i + 1}`] = p;
+    });
     if (problemsArray.length === 0) {
         originalContent.problems.problem1 = 'Bisheriger Anbieter unzuverlässig';
         originalContent.problems.problem2 = 'Mangelnde Servicequalität';
         originalContent.problems.problem3 = 'Intransparente Kosten';
     }
 
-    // Solutions: direkt aus integri-results
+    // Nachher: direkt aus integri-results
     const resultsArray = results.split('\n').filter(r => r.trim()).map(r => r.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
-    resultsArray.forEach((r, i) => { originalContent.problems[`solution${i + 1}`] = r; });
+    resultsArray.forEach((r, i) => {
+        originalContent.problems[`solution${i + 1}`] = r;
+    });
     if (resultsArray.length === 0) {
         originalContent.problems.solution1 = 'Zuverlässige Kommunikation und Termintreue';
         originalContent.problems.solution2 = 'Qualifiziertes Personal, das Ihre Standards kennt';
@@ -2906,7 +2899,6 @@ function mapBriefingToContent(b) {
     
     // === CTA1 ===
     const ctaLow = clean(b['integri-cta-low']) || 'Unverbindliches Erstgespräch';
-    const wishesArray = wishes.split('\n').filter(w => w.trim()).map(w => w.replace(/^[>\-\*]\s*/, '').trim());
     
     // Frage-Format
     let ctaQuestion = 'Bessere Ergebnisse gewünscht? Erste Einschätzung gefällig?';
@@ -3256,58 +3248,68 @@ function calculateDark(h) {
 }
 function applyColors() {
     const primary = document.getElementById('colorPrimary').value;
-    const secondary = document.getElementById('colorSecondary').value;
-    const action = document.getElementById('colorAction').value;
-    
+    const action  = document.getElementById('colorAction').value;
+
     document.getElementById('colorPrimaryHex').value = primary;
-    document.getElementById('colorSecondaryHex').value = secondary;
-    document.getElementById('colorActionHex').value = action;
-    
-    const actionDark = calculateDark(action);
-    
+    document.getElementById('colorActionHex').value  = action;
+
+    const primaryDark = calculateDark(primary);
+    const actionDark  = calculateDark(action);
+
     document.documentElement.style.setProperty('--primary-color', primary);
-    document.documentElement.style.setProperty('--secondary-color', secondary);
-    document.documentElement.style.setProperty('--accent-color', primary);      // Alias für primary
-    document.documentElement.style.setProperty('--accent-dark', secondary);     // Alias für secondary
-    document.documentElement.style.setProperty('--action-color', action);
-    document.documentElement.style.setProperty('--action-dark', actionDark);
-    
+    document.documentElement.style.setProperty('--accent-color',  primary);   // Alias
+    document.documentElement.style.setProperty('--accent-dark',   primaryDark); // Auto-berechnet
+    document.documentElement.style.setProperty('--action-color',  action);
+    document.documentElement.style.setProperty('--action-dark',   actionDark);
+
     localStorage.setItem('corporateColors', JSON.stringify({
         primary: primary,
-        secondary: secondary,
-        action: action,
-        actionDark: actionDark
+        action:  action
     }));
-    
+
     showSaveIndicator();
     generatePreview();
 }
 function resetColors() {
-    document.getElementById('colorPrimary').value = '#C1272D';
-    document.getElementById('colorPrimaryHex').value = '#C1272D';
-    document.getElementById('colorSecondary').value = '#9A1F24';
-    document.getElementById('colorSecondaryHex').value = '#9A1F24';
-    document.getElementById('colorAction').value = '#d51226';
-    document.getElementById('colorActionHex').value = '#d51226';
+    // INTEGRI Brand-Standard
+    document.getElementById('colorPrimary').value    = '#033132';
+    document.getElementById('colorPrimaryHex').value = '#033132';
+    document.getElementById('colorAction').value     = '#F08972';
+    document.getElementById('colorActionHex').value  = '#F08972';
     applyColors();
 }
 function loadColors() {
     const s = localStorage.getItem('corporateColors');
     if (s) {
         const c = JSON.parse(s);
-        document.getElementById('colorPrimary').value = c.primary;
-        document.getElementById('colorPrimaryHex').value = c.primary;
-        document.getElementById('colorSecondary').value = c.secondary;
-        document.getElementById('colorSecondaryHex').value = c.secondary;
-        document.getElementById('colorAction').value = c.action;
-        document.getElementById('colorActionHex').value = c.action;
-        document.documentElement.style.setProperty('--primary-color', c.primary);
-        document.documentElement.style.setProperty('--secondary-color', c.secondary);
-        document.documentElement.style.setProperty('--accent-color', c.primary);      // Alias
-        document.documentElement.style.setProperty('--accent-dark', c.secondary);     // Alias
-        document.documentElement.style.setProperty('--action-color', c.action);
-        document.documentElement.style.setProperty('--action-dark', c.actionDark);
+        const primary = c.primary || '#033132';
+        const action  = c.action  || '#F08972';
+        document.getElementById('colorPrimary').value    = primary;
+        document.getElementById('colorPrimaryHex').value = primary;
+        document.getElementById('colorAction').value     = action;
+        document.getElementById('colorActionHex').value  = action;
+        const primaryDark = calculateDark(primary);
+        const actionDark  = calculateDark(action);
+        document.documentElement.style.setProperty('--primary-color', primary);
+        document.documentElement.style.setProperty('--accent-color',  primary);
+        document.documentElement.style.setProperty('--accent-dark',   primaryDark);
+        document.documentElement.style.setProperty('--action-color',  action);
+        document.documentElement.style.setProperty('--action-dark',   actionDark);
     }
+}
+
+// ——————————————————————————————————————
+// Befüllt contentData aus originalContent (nach mapBriefingToContent)
+function initContentDataFromOriginal() {
+    const allSections = ['hero','intro','stats','problems','usps','trust','services','cta1','pricing','cases','testimonials','faq','cta2'];
+    allSections.forEach(function(section) {
+        const blocks = getOriginalBlocksForSection(section);
+        blocks.forEach(function(block) {
+            if (block.original && block.type === 'text') {
+                contentData[block.id] = { value: block.original, type: 'text', deleted: false };
+            }
+        });
+    });
 }
 
 // ——————————————————————————————————————
@@ -3365,20 +3367,10 @@ async function checkBriefingHashImport() {
     // URL bereinigen (kein Reload)
     history.replaceState(null, '', window.location.pathname);
 
-    // Briefing importieren
+    // Briefing importieren — contentData aus originalContent befüllen
     contentData = {};
     mapBriefingToContent(json);
-
-    // contentData aus originalContent befüllen (Edit-Mode + Preview)
-    var allSections = ['hero','intro','stats','problems','usps','trust','services','cta1','pricing','cases','testimonials','faq','cta2'];
-    allSections.forEach(function(section) {
-        var blocks = getOriginalBlocksForSection(section);
-        blocks.forEach(function(block) {
-            if (block.original && block.type === 'text') {
-                contentData[block.id] = { value: block.original, type: 'text', deleted: false };
-            }
-        });
-    });
+    initContentDataFromOriginal();
     saveToLocalStorage();
     renderAllSections();
 
