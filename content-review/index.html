@@ -3370,8 +3370,10 @@ async function checkBriefingHashImport() {
     // URL bereinigen (kein Reload)
     history.replaceState(null, '', window.location.pathname);
 
-    // Briefing importieren
+    // Briefing importieren — ContentData leeren damit kein LocalStorage-Cache überlagert
+    contentData = {};
     mapBriefingToContent(json);
+    saveToLocalStorage();
     renderAllSections();
 
     // Rückmeldung
