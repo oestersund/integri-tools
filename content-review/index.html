@@ -1003,51 +1003,48 @@
             flex-wrap: wrap;
         }
         
-        .btn { 
-            padding: 12px 30px; 
-            border: none; 
-            border-radius: 0; 
-            font-size: 16px; 
-            font-weight: 600; 
+        .btn {
+            padding: 10px 22px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            font-family: inherit;
         }
-        
-        .btn-primary { 
-            background: var(--action-color); 
+
+        /* Primär: Petrol-Hintergrund (Briefing importieren) */
+        .btn-briefing {
+            background: #033132;
             color: white;
+            border-color: #033132;
         }
-        
-        .btn-primary:hover { 
-            background: var(--action-dark);
-        }
-        
-        .btn-secondary { 
-            background: #6c757d; 
+        .btn-briefing:hover { filter: brightness(1.15); }
+
+        /* Sekundär: Terrakotta (JSON exportieren) */
+        .btn-primary {
+            background: var(--action-color);
             color: white;
+            border-color: var(--action-color);
         }
-        
-        .btn-secondary:hover { 
-            background: #5a6268;
+        .btn-primary:hover { background: var(--action-dark); border-color: var(--action-dark); }
+
+        /* Outline: JSON importieren */
+        .btn-secondary {
+            background: transparent;
+            color: #033132;
+            border-color: #033132;
         }
-        
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #218838;
-        }
-        
+        .btn-secondary:hover { background: #033132; color: white; }
+
+        /* Danger: Löschen */
         .btn-danger {
-            background: #dc3545;
-            color: white;
+            background: transparent;
+            color: #dc3545;
+            border-color: #dc3545;
         }
-        
-        .btn-danger:hover {
-            background: #c82333;
-        }
+        .btn-danger:hover { background: #dc3545; color: white; }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -1261,8 +1258,7 @@
         </div>
 
         <div class="action-buttons">
-            <button class="btn btn-success" onclick="importBriefing()" style="background: #ff6b35; border-color: #ff6b35;"> Briefing importieren (JSON)</button>
-            <button class="btn btn-success" onclick="loadDemoData()">Demo-Daten laden</button>
+            <button class="btn btn-briefing" onclick="importBriefing()">Briefing importieren</button>
             <button class="btn btn-primary" onclick="exportJSON()">JSON exportieren</button>
             <button class="btn btn-secondary" onclick="importJSON()">JSON importieren</button>
             <button class="btn btn-danger" onclick="clearAllData()">Alle Eingaben löschen</button>
@@ -2528,10 +2524,8 @@ function exportJSON() {
         exportData.colors = JSON.parse(savedColors);
     } else {
         exportData.colors = {
-            primary: '#C1272D',
-            secondary: '#9A1F24',
-            action: '#d51226',
-            actionDark: '#a30e1d'
+            primary: '#033132',
+            action:  '#F08972'
         };
     }
     
@@ -2580,23 +2574,17 @@ function importJSON() {
                 
                 // Import colors if present
                 if (imported.colors) {
-                    localStorage.setItem('corporateColors', JSON.stringify(imported.colors));
-                    
-                    // Apply colors immediately
-                    document.documentElement.style.setProperty('--primary-color', imported.colors.primary);
-                    document.documentElement.style.setProperty('--secondary-color', imported.colors.secondary);
-                    document.documentElement.style.setProperty('--accent-color', imported.colors.primary);      // Alias
-                    document.documentElement.style.setProperty('--accent-dark', imported.colors.secondary);     // Alias
-                    document.documentElement.style.setProperty('--action-color', imported.colors.action);
-                    document.documentElement.style.setProperty('--action-dark', imported.colors.actionDark);
-                    
+                    const primary = imported.colors.primary || '#033132';
+                    const action  = imported.colors.action  || '#F08972';
+
                     // Update UI
-                    document.getElementById('colorPrimary').value = imported.colors.primary;
-                    document.getElementById('colorPrimaryHex').value = imported.colors.primary;
-                    document.getElementById('colorSecondary').value = imported.colors.secondary;
-                    document.getElementById('colorSecondaryHex').value = imported.colors.secondary;
-                    document.getElementById('colorAction').value = imported.colors.action;
-                    document.getElementById('colorActionHex').value = imported.colors.action;
+                    document.getElementById('colorPrimary').value    = primary;
+                    document.getElementById('colorPrimaryHex').value = primary;
+                    document.getElementById('colorAction').value     = action;
+                    document.getElementById('colorActionHex').value  = action;
+
+                    // Apply (berechnet accent-dark und action-dark automatisch)
+                    applyColors();
                 }
                 
                 // Convert imported data to internal format
@@ -3234,13 +3222,17 @@ function calculateDarkVariant(hex) {
 }
 
 // Apply colors to CSS variables
-// COLOR PICKER
+// COLOR PICKER — Live-Sync + Auto-Apply
 function syncColorInput(t) {
     const h = document.getElementById(`color${t}Hex`).value;
-    if (/^#[0-9A-F]{6}$/i.test(h)) document.getElementById(`color${t}`).value = h;
+    if (/^#[0-9A-F]{6}$/i.test(h)) {
+        document.getElementById(`color${t}`).value = h;
+        applyColors();
+    }
 }
 function syncColorPicker(t) {
     document.getElementById(`color${t}Hex`).value = document.getElementById(`color${t}`).value.toUpperCase();
+    applyColors();
 }
 function calculateDark(h) {
     const r=parseInt(h.substr(1,2),16), g=parseInt(h.substr(3,2),16), b=parseInt(h.substr(5,2),16);
