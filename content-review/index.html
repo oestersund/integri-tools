@@ -2906,6 +2906,7 @@ function mapBriefingToContent(b) {
     
     // === CTA1 ===
     const ctaLow = clean(b['integri-cta-low']) || 'Unverbindliches Erstgespräch';
+    const wishesArray = wishes.split('\n').filter(w => w.trim()).map(w => w.replace(/^[>\-\*]\s*/, '').trim());
     
     // Frage-Format
     let ctaQuestion = 'Bessere Ergebnisse gewünscht? Erste Einschätzung gefällig?';
