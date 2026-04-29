@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<!--
+  ETH Solutions — Sperrmüllentsorgung (Entwurf)
+  Stand: 2026-04-29
+  Single-File-Entwurf: HTML + CSS + JS inline.
+  Im Browser per Doppelklick öffnen.
+
+  Funktionalitäten:
+    • PLZ-Check (Mock: Hamburg 20000–22999) mit Smooth-Scroll zum Konfigurator
+    • Paket-Auswahl (4 Pauschalen, single-select)
+    • Add-ons mit +/– Stepper
+    • Live-Summary (sticky, mit Zwischensumme)
+    • Anfrage-Formular mit Bestätigungs-View
+
+  Platzhalter:
+    • Hero-Foto: CSS-Gradient (durch echtes Foto ersetzen)
+    • Logo: SVG-Approximation (durch eth_em_logo_rgb.ai ersetzen)
+    • Form-Submit: console.log (in Production: Backend-Endpoint einsetzen)
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sperrmüllentsorgung Hamburg | ETH Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rot: #d51224;
+    --rot-dark: #a80d1c;
+    --rot-light: rgba(213, 18, 36, 0.08);
+    --anthrazit: #3d4548;
+    --anthrazit-mid: #5a6166;
+    --silbergrau: #d8dada;
+    --grau-bg: #f4f5f5;
+    --weiss: #ffffff;
+    --text: #3d4548;
+    --text-mid: #7a8186;
+    --erfolg: #2c8c4a;
+    --erfolg-bg: #e8f5ec;
+    --warn: #d68a00;
+    --warn-bg: #fdf3e0;
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.14);
+    --radius: 6px;
+    --container: 1240px;
+    --transition: 0.2s ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.6;
+    background: var(--weiss);
+  }
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, h4 { color: var(--anthrazit); font-weight: 700; line-height: 1.2; }
+  a { color: var(--rot); text-decoration: none; }
+  a:hover { color: var(--rot-dark); }
+  button { font-family: inherit; cursor: pointer; }
+  img { max-width: 100%; height: auto; display: block; }
+
+  /* ─────────────────── HEADER ─────────────────── */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--weiss);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark { width: 56px; height: 40px; }
+  .logo-text {
+    color: var(--rot); font-weight: 900; font-size: 28px; letter-spacing: 0.5px; line-height: 1;
+  }
+  .nav { display: flex; align-items: center; gap: 32px; }
+  .nav a {
+    color: var(--rot); font-weight: 700; font-size: 17px;
+    padding: 6px 0; border-bottom: 2px solid transparent;
+    transition: border-color var(--transition);
+  }
+  .nav a:hover, .nav a.active { border-bottom-color: var(--rot); }
+  .nav-search {
+    background: none; border: none; color: var(--rot); padding: 6px;
+    display: flex; align-items: center;
+  }
+
+  /* ─────────────────── HERO ─────────────────── */
+  .hero {
+    position: relative;
+    height: clamp(360px, 50vh, 520px);
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.40) 100%),
+      url('images/csm_entruempelungsservice_5154b5b753.jpg') center/cover no-repeat;
+    overflow: hidden;
+  }
+  .hero-banner {
+    position: absolute; bottom: 0; right: 0;
+    background: rgba(213, 18, 36, 0.92);
+    color: var(--weiss);
+    padding: 22px 56px 22px 80px;
+    clip-path: polygon(40px 0, 100% 0, 100% 100%, 0 100%);
+    font-size: clamp(20px, 3.5vw, 36px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ─────────────────── INTRO ─────────────────── */
+  .intro { padding: 64px 0 48px; }
+  .intro h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    margin-bottom: 32px;
+  }
+  .intro-text {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    color: var(--text-mid); font-size: 17px;
+  }
+  @media (max-width: 720px) { .intro-text { grid-template-columns: 1fr; gap: 20px; } }
+
+  /* ─────────────────── PLZ-CHECK ─────────────────── */
+  .plz-check {
+    background: var(--anthrazit);
+    color: var(--weiss);
+    padding: 56px 0;
+    position: relative;
+  }
+  .plz-check::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+    width: 64px; height: 56px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .plz-check h2 {
+    color: var(--weiss); font-size: 28px; margin-bottom: 8px; text-align: center;
+  }
+  .plz-check .lead {
+    text-align: center; color: var(--silbergrau); font-size: 17px; margin-bottom: 32px;
+  }
+  .plz-form {
+    display: flex; gap: 12px; max-width: 540px; margin: 0 auto;
+  }
+  .plz-input {
+    flex: 1;
+    padding: 18px 24px;
+    border: none; border-radius: var(--radius);
+    font-size: 18px; font-family: inherit; font-weight: 500;
+    color: var(--anthrazit); background: var(--weiss);
+  }
+  .plz-input:focus { outline: 3px solid var(--rot); }
+  .plz-btn {
+    background: var(--rot); color: var(--weiss); border: none;
+    padding: 0 32px; font-size: 17px; font-weight: 700;
+    border-radius: var(--radius);
+    transition: background var(--transition);
+  }
+  .plz-btn:hover { background: var(--rot-dark); }
+  .plz-result {
+    max-width: 540px; margin: 16px auto 0;
+    padding: 16px 20px; border-radius: var(--radius);
+    font-weight: 500;
+    display: none;
+  }
+  .plz-result.show { display: block; animation: slideIn 0.3s ease; }
+  .plz-result.success { background: var(--erfolg-bg); color: var(--erfolg); }
+  .plz-result.warn { background: var(--warn-bg); color: var(--warn); }
+  .plz-result.error { background: rgba(213,18,36,0.15); color: #ff8a92; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 540px) {
+    .plz-form { flex-direction: column; }
+    .plz-btn { padding: 16px 32px; }
+  }
+
+  /* ─────────────────── KONFIGURATOR ─────────────────── */
+  .konfigurator { padding: 80px 0 40px; }
+  .section-head {
+    text-align: center; margin-bottom: 48px;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 3.5vw, 34px);
+    margin-bottom: 12px;
+  }
+  .section-head .kicker {
+    color: var(--rot); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; font-size: 13px; margin-bottom: 12px; display: block;
+  }
+  .section-head p {
+    color: var(--text-mid); font-size: 17px; max-width: 640px; margin: 0 auto;
+  }
+
+  .config-grid {
+    display: grid; grid-template-columns: 1fr 380px; gap: 40px;
+  }
+  @media (max-width: 1024px) { .config-grid { grid-template-columns: 1fr; } }
+
+  .packages {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  @media (max-width: 600px) { .packages { grid-template-columns: 1fr; } }
+
+  .package {
+    background: var(--weiss);
+    border: 2px solid var(--silbergrau);
+    border-radius: 12px;
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .package:hover {
+    border-color: var(--rot);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .package.selected {
+    border-color: var(--rot);
+    background: linear-gradient(180deg, var(--rot-light) 0%, var(--weiss) 60%);
+    box-shadow: var(--shadow-lg);
+  }
+  .package.selected::before {
+    content: '✓';
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    background: var(--rot); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px;
+  }
+  .package-volume {
+    color: var(--rot); font-weight: 900; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .package-name {
+    font-size: 22px; font-weight: 700; color: var(--anthrazit);
+    margin-bottom: 8px;
+  }
+  .package-tagline {
+    font-style: italic; color: var(--text-mid); font-size: 14px;
+    margin-bottom: 20px; min-height: 2.6em;
+  }
+  .package-price {
+    font-size: 32px; font-weight: 900; color: var(--anthrazit);
+    margin-bottom: 4px;
+  }
+  .package-price .small { font-size: 14px; font-weight: 400; color: var(--text-mid); }
+  .package-price.no-price { font-size: 18px; color: var(--rot); font-weight: 700; }
+  .package-features {
+    list-style: none; margin-top: 20px; flex: 1;
+  }
+  .package-features li {
+    padding: 6px 0 6px 24px;
+    position: relative;
+    color: var(--text-mid);
+    font-size: 14px;
+  }
+  .package-features li::before {
+    content: '';
+    position: absolute; left: 0; top: 13px;
+    width: 12px; height: 11px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+
+  /* ─────────────────── ADDONS ─────────────────── */
+  .addons {
+    margin-top: 48px;
+    background: var(--grau-bg);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .addons h3 {
+    font-size: 22px; margin-bottom: 8px;
+  }
+  .addons-sub {
+    color: var(--text-mid); font-size: 15px; margin-bottom: 24px;
+  }
+  .addon-list { list-style: none; }
+  .addon-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--silbergrau);
+  }
+  .addon-row:last-child { border-bottom: none; }
+  .addon-info-name { font-weight: 500; color: var(--anthrazit); font-size: 16px; }
+  .addon-info-desc { color: var(--text-mid); font-size: 13px; margin-top: 2px; }
+  .addon-price { font-weight: 700; color: var(--anthrazit); white-space: nowrap; }
+  .addon-stepper {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--weiss); border-radius: 999px; padding: 4px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stepper-btn {
+    width: 32px; height: 32px;
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: 50%;
+    font-size: 18px; font-weight: 700; line-height: 1;
+    transition: background var(--transition);
+  }
+  .stepper-btn:hover { background: var(--rot-dark); }
+  .stepper-btn:disabled { background: var(--silbergrau); cursor: not-allowed; }
+  .stepper-count {
+    min-width: 24px; text-align: center; font-weight: 700; color: var(--anthrazit);
+  }
+  @media (max-width: 540px) {
+    .addon-row { grid-template-columns: 1fr auto; grid-template-rows: auto auto; }
+    .addon-stepper { grid-column: 2; grid-row: 1 / span 2; }
+    .addon-price { grid-column: 1; }
+  }
+
+  /* ─────────────────── SUMMARY ─────────────────── */
+  .summary-wrap { position: relative; }
+  .summary {
+    position: sticky; top: 110px;
+    background: var(--weiss);
+    border: 2px solid var(--rot);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .summary h3 {
+    font-size: 20px; margin-bottom: 16px; color: var(--rot);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .summary h3::before {
+    content: '';
+    width: 18px; height: 16px; background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .summary-empty {
+    color: var(--text-mid); font-size: 14px; padding: 16px 0;
+    text-align: center; font-style: italic;
+  }
+  .summary-line {
+    display: flex; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px dashed var(--silbergrau);
+    font-size: 15px;
+  }
+  .summary-line:last-of-type { border-bottom: none; }
+  .summary-line .label { color: var(--text-mid); }
+  .summary-line .value { color: var(--anthrazit); font-weight: 500; }
+  .summary-line.package .label { color: var(--anthrazit); font-weight: 500; }
+  .summary-total {
+    display: flex; justify-content: space-between;
+    padding-top: 16px; margin-top: 8px;
+    border-top: 2px solid var(--anthrazit);
+    font-size: 18px; font-weight: 700; color: var(--anthrazit);
+  }
+  .summary-total.mega .total-value { color: var(--rot); font-size: 14px; }
+  .summary-cta {
+    display: block; width: 100%;
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 16px;
+    font-size: 17px; font-weight: 700;
+    margin-top: 20px;
+    transition: all var(--transition);
+  }
+  .summary-cta:hover:not(:disabled) {
+    background: var(--rot-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  .summary-cta:disabled { background: var(--silbergrau); cursor: not-allowed; }
+  .summary-note {
+    font-size: 12px; color: var(--text-mid); margin-top: 10px; text-align: center;
+  }
+
+  /* ─────────────────── FORM ─────────────────── */
+  .form-section {
+    background: var(--grau-bg);
+    padding: 80px 0;
+    scroll-margin-top: 80px;
+  }
+  .form-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 720px; margin: 0 auto;
+    box-shadow: var(--shadow);
+  }
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label {
+    font-size: 14px; font-weight: 500; color: var(--anthrazit);
+    margin-bottom: 6px;
+  }
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    padding: 12px 14px;
+    border: 1px solid var(--silbergrau);
+    border-radius: var(--radius);
+    font-size: 15px; font-family: inherit;
+    transition: border-color var(--transition);
+  }
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    outline: none; border-color: var(--rot);
+  }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+  .form-summary-box {
+    background: var(--rot-light); padding: 16px; border-radius: var(--radius);
+    margin: 20px 0; font-size: 14px;
+  }
+  .form-submit {
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 16px 32px;
+    font-size: 17px; font-weight: 700;
+    transition: all var(--transition);
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--rot-dark); }
+
+  /* ─────────────────── PROCESS ─────────────────── */
+  .process { padding: 80px 0; }
+  .process-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  @media (max-width: 900px) { .process-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .process-grid { grid-template-columns: 1fr; } }
+  .process-step {
+    text-align: center; padding: 24px 16px;
+    position: relative;
+  }
+  .process-icon {
+    width: 80px; height: 70px; margin: 0 auto 16px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--weiss); font-size: 28px; font-weight: 900;
+  }
+  .process-step h4 {
+    font-size: 18px; margin-bottom: 8px;
+  }
+  .process-step p {
+    color: var(--text-mid); font-size: 14px;
+  }
+
+  /* ─────────────────── RULES (DARF / DARF NICHT) ─────────────────── */
+  .rules { padding: 60px 0; background: var(--grau-bg); }
+  .rules-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 800px) { .rules-grid { grid-template-columns: 1fr; } }
+  .rule-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+  }
+  .rule-card.yes { border-top: 5px solid var(--erfolg); }
+  .rule-card.no { border-top: 5px solid var(--rot); }
+  .rule-card h3 {
+    font-size: 22px; margin-bottom: 8px;
+  }
+  .rule-card .sub {
+    color: var(--text-mid); font-size: 14px; margin-bottom: 20px; font-style: italic;
+  }
+  .rule-list { list-style: none; }
+  .rule-list li {
+    padding: 10px 0 10px 32px; position: relative;
+    border-bottom: 1px solid var(--grau-bg);
+    font-size: 15px;
+  }
+  .rule-list li:last-child { border-bottom: none; }
+  .rule-card.yes .rule-list li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 9px;
+    width: 22px; height: 22px;
+    background: var(--erfolg); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .rule-card.no .rule-list li::before {
+    content: '✕';
+    position: absolute; left: 0; top: 9px;
+    width: 22px; height: 22px;
+    background: var(--rot); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+  }
+  .rule-quip {
+    color: var(--text-mid); font-size: 13px; font-style: italic; padding: 4px 0 0 32px;
+  }
+
+  /* ─────────────────── BENEFITS ─────────────────── */
+  .benefits { padding: 80px 0; }
+  .benefits-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  @media (max-width: 900px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .benefits-grid { grid-template-columns: 1fr; } }
+  .benefit {
+    padding: 24px;
+    border-left: 4px solid var(--rot);
+    background: var(--weiss);
+  }
+  .benefit-icon {
+    width: 36px; height: 32px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    margin-bottom: 12px;
+  }
+  .benefit h4 { font-size: 17px; margin-bottom: 6px; }
+  .benefit p { color: var(--text-mid); font-size: 14px; }
+
+  /* ─────────────────── FAQ ─────────────────── */
+  .faq { padding: 80px 0; background: var(--grau-bg); }
+  .faq-list { max-width: 820px; margin: 0 auto; }
+  .faq-item {
+    background: var(--weiss); border-radius: 8px; margin-bottom: 12px;
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition);
+  }
+  .faq-item.open { box-shadow: var(--shadow); }
+  .faq-question {
+    width: 100%; background: none; border: none;
+    padding: 20px 56px 20px 24px;
+    text-align: left;
+    font-size: 17px; font-weight: 500; color: var(--anthrazit);
+    position: relative;
+    transition: background var(--transition);
+  }
+  .faq-question:hover { background: var(--rot-light); }
+  .faq-question::after {
+    content: '+';
+    position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--rot); font-size: 28px; font-weight: 300;
+    transition: transform var(--transition);
+  }
+  .faq-item.open .faq-question::after { transform: translateY(-50%) rotate(45deg); }
+  .faq-answer {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .faq-item.open .faq-answer { max-height: 400px; }
+  .faq-answer p {
+    padding: 0 24px 20px;
+    color: var(--text-mid); font-size: 15px;
+  }
+
+  /* ─────────────────── CONTACT ─────────────────── */
+  .contact-cta {
+    background: var(--anthrazit); color: var(--weiss);
+    padding: 60px 0; text-align: center;
+  }
+  .contact-cta h2 { color: var(--weiss); font-size: 28px; margin-bottom: 12px; }
+  .contact-cta p { color: var(--silbergrau); margin-bottom: 24px; }
+  .contact-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--rot); color: var(--weiss);
+    padding: 14px 28px; border-radius: var(--radius);
+    font-weight: 700; font-size: 16px;
+    transition: background var(--transition);
+  }
+  .contact-btn:hover { background: var(--rot-dark); color: var(--weiss); }
+  .contact-btn.outline {
+    background: transparent; border: 2px solid var(--weiss);
+  }
+  .contact-btn.outline:hover { background: var(--weiss); color: var(--anthrazit); }
+
+  /* ─────────────────── FOOTER ─────────────────── */
+  .footer {
+    background: var(--anthrazit);
+    color: var(--silbergrau);
+    padding: 40px 0 20px;
+    font-size: 14px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer h5 {
+    color: var(--weiss); font-size: 14px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .footer ul { list-style: none; }
+  .footer ul li { padding: 4px 0; }
+  .footer a { color: var(--silbergrau); }
+  .footer a:hover { color: var(--weiss); }
+  .footer-bottom {
+    border-top: 1px solid var(--anthrazit-mid);
+    padding-top: 16px;
+    text-align: center; font-size: 12px;
+  }
+
+  /* ─────────────────── THANKYOU ─────────────────── */
+  .thankyou {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(61, 69, 72, 0.95);
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .thankyou.show { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .thankyou-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 48px;
+    max-width: 520px; width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .thankyou-icon {
+    width: 80px; height: 70px;
+    margin: 0 auto 24px;
+    background: var(--erfolg);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--weiss); font-size: 36px; font-weight: 900;
+  }
+  .thankyou h2 { font-size: 28px; margin-bottom: 12px; }
+  .thankyou p { color: var(--text-mid); margin-bottom: 24px; }
+  .thankyou-btn {
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 12px 28px; font-weight: 700;
+  }
+
+  /* ─────────────────── STATS BAR ─────────────────── */
+  .stats-bar {
+    background: var(--silbergrau);
+    padding: 28px 0;
+    border-top: 4px solid var(--rot);
+  }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    text-align: center;
+  }
+  @media (max-width: 720px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-value {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 900; color: var(--rot); line-height: 1;
+  }
+  .stat-label {
+    font-size: 13px; color: var(--anthrazit);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* ─────────────────── TRANSFORMATION ─────────────────── */
+  .transformation { padding: 80px 0; background: var(--weiss); }
+  .transform-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    position: relative;
+  }
+  @media (max-width: 800px) { .transform-grid { grid-template-columns: 1fr; gap: 24px; } }
+  .transform-col {
+    border-radius: 12px;
+    padding: 32px;
+    overflow: hidden;
+  }
+  .transform-col-img {
+    display: block;
+    width: calc(100% + 64px);
+    height: 200px;
+    object-fit: cover;
+    margin: -32px -32px 24px;
+  }
+  .transform-col.after .transform-col-img {
+    background: var(--grau-bg);
+  }
+  .transform-col.before {
+    border-top: 5px solid var(--silbergrau);
+    background: var(--grau-bg);
+  }
+  .transform-col.after {
+    border-top: 5px solid var(--rot);
+    background: var(--weiss);
+    box-shadow: var(--shadow);
+  }
+  .transform-col h4 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .transform-col.before h4 { color: var(--anthrazit-mid); }
+  .transform-col.after h4 { color: var(--rot); }
+  .transform-list { list-style: none; }
+  .transform-list li {
+    position: relative;
+    padding: 12px 0 12px 32px;
+    border-bottom: 1px solid var(--silbergrau);
+    font-size: 15px;
+  }
+  .transform-list li:last-child { border-bottom: none; }
+  .transform-col.before .transform-list li::before {
+    content: '−';
+    position: absolute; left: 0; top: 11px;
+    width: 22px; height: 22px;
+    background: var(--anthrazit-mid); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .transform-col.after .transform-list li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 11px;
+    width: 22px; height: 22px;
+    background: var(--rot); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+  }
+
+  /* ─────────────────── MEASURABLE ─────────────────── */
+  .measurable { padding: 60px 0; background: var(--grau-bg); }
+  .measure-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  @media (max-width: 800px) { .measure-grid { grid-template-columns: 1fr; } }
+  .measure-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .measure-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .measure-icon {
+    width: 64px; height: 56px; margin: 0 auto 20px;
+    background: var(--rot); color: var(--weiss);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900;
+  }
+  .measure-card h4 { font-size: 19px; margin-bottom: 10px; }
+  .measure-card p { color: var(--text-mid); font-size: 15px; }
+
+  /* ─────────────────── LEISTUNGEN + USP ─────────────────── */
+  .leistungen-usp { padding: 80px 0; }
+  .lu-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  }
+  @media (max-width: 900px) { .lu-grid { grid-template-columns: 1fr; gap: 32px; } }
+  .lu-leistungen h3,
+  .lu-usp h3 { font-size: 22px; margin-bottom: 8px; }
+  .lu-leistungen .sub {
+    color: var(--text-mid); font-size: 15px; margin-bottom: 24px;
+  }
+  .bullet-list { list-style: none; }
+  .bullet-list li {
+    position: relative;
+    padding: 12px 0 12px 32px;
+    font-size: 15px;
+    border-bottom: 1px dashed var(--silbergrau);
+  }
+  .bullet-list li:last-child { border-bottom: none; }
+  .bullet-list li::before {
+    content: '';
+    position: absolute; left: 0; top: 16px;
+    width: 14px; height: 12px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .lu-usp .usp-card {
+    background: var(--weiss);
+    border-left: 4px solid var(--rot);
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .lu-usp .usp-card h4 {
+    font-size: 17px; margin-bottom: 6px;
+    color: var(--anthrazit);
+  }
+  .lu-usp .usp-card p {
+    color: var(--text-mid); font-size: 14px;
+  }
+
+  /* ─────────────────── KONFIG BANNER ─────────────────── */
+  .konfig-banner {
+    width: 100%;
+    height: clamp(180px, 28vw, 300px);
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow);
+    display: block;
+  }
+
+  /* Mobile-Nav (vereinfacht für Entwurf) */
+  @media (max-width: 800px) {
+    .nav { gap: 18px; font-size: 14px; }
+    .nav a { font-size: 14px; }
+  }
+  @media (max-width: 600px) {
+    .nav { display: none; }
+    .header-inner::after {
+      content: '☰'; color: var(--rot); font-size: 28px;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ─────────────────── HEADER ─────────────────── -->
+<header class="header">
+  <div class="container header-inner">
+    <a class="logo" href="#" aria-label="ETH Solutions Startseite">
+      <!-- Logo-Approximation aus dem CD-Manual (Blox-Element + ETH).
+           Vor Live-Schaltung durch eth_em_logo_rgb.ai ersetzen. -->
+      <svg class="logo-mark" viewBox="0 0 100 70" aria-hidden="true">
+        <g fill="#d51224">
+          <!-- linke Linien -->
+          <rect x="2" y="18" width="22" height="4"/>
+          <rect x="2" y="28" width="22" height="4"/>
+          <!-- Spitze (Dach) -->
+          <polygon points="34,8 50,4 50,14 34,18"/>
+          <polygon points="50,4 66,8 66,18 50,14"/>
+          <!-- rechte Linien -->
+          <rect x="76" y="18" width="22" height="4"/>
+          <rect x="76" y="28" width="22" height="4"/>
+          <!-- zentrales Hexagon -->
+          <polygon points="50,18 64,25 64,40 50,47 36,40 36,25"/>
+        </g>
+      </svg>
+      <span class="logo-text">ETH</span>
+    </a>
+    <nav class="nav">
+      <a href="#">Wohnungswirtschaft</a>
+      <a href="#">Gewerbe</a>
+      <a href="#" class="active">Sperrmüll</a>
+      <a href="#">Über uns</a>
+      <a href="#">Jobs</a>
+      <a href="#">Kontakt</a>
+      <button class="nav-search" aria-label="Suche">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ─────────────────── HERO ─────────────────── -->
+<section class="hero">
+  <div class="hero-banner">SPERRMÜLLENTSORGUNG</div>
+</section>
+
+<!-- ─────────────────── INTRO ─────────────────── -->
+<section class="intro">
+  <div class="container">
+    <h1>Sperrmüll loswerden – schnell, fair, fachgerecht</h1>
+    <div class="intro-text">
+      <p>Egal ob einzelnes Möbelstück, Keller-Räumung oder komplette Haushaltsauflösung: Wir holen Ihren Sperrmüll in Hamburg ab – mit festen Pauschalen und ohne Überraschungen auf der Rechnung.</p>
+      <p>Postleitzahl prüfen, Paket auswählen, Anfrage absenden. Wir melden uns innerhalb weniger Stunden mit dem Termin. Optional übernehmen wir auch Demontage, Trageservice und liefern den Entsorgungsnachweis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── STATS BAR ─────────────────── -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat"><span class="stat-value">Festpreis</span><span class="stat-label">Vorab kalkuliert</span></div>
+      <div class="stat"><span class="stat-value">24 h</span><span class="stat-label">Antwortzeit</span></div>
+      <div class="stat"><span class="stat-value">100 %</span><span class="stat-label">Fachgerecht</span></div>
+      <div class="stat"><span class="stat-value">Eigener</span><span class="stat-label">Fuhrpark + Anlage</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── TRANSFORMATION ─────────────────── -->
+<section class="transformation">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Vom Stress zur Lösung</span>
+      <h2>Sperrmüll-Probleme heute – fertige Sache morgen</h2>
+      <p>Sie kennen das? Wir auch. Der Unterschied: bei uns ist nach 24 Stunden Bewegung in der Sache.</p>
+    </div>
+    <div class="transform-grid">
+      <div class="transform-col before">
+        <img class="transform-col-img" src="images/entruempelung-fruehjahr-zeitpunkt.webp" alt="Vollgestellte Garage mit Kisten, Möbeln und Container">
+        <h4>Vorher – die typische Situation</h4>
+        <ul class="transform-list">
+          <li>Kein Platz mehr — Keller, Hof oder Lager quillt über</li>
+          <li>Keine Übersicht der Mengen — passt das in einen Sprinter oder einen Container?</li>
+          <li>Sperrmüll oder Sondermüll — was darf eigentlich wohin?</li>
+          <li>Kein Ansprechpartner — Anrufe versanden, nichts passiert</li>
+        </ul>
+      </div>
+      <div class="transform-col after">
+        <img class="transform-col-img" src="images/service-entsorgung-entruempelung.jpg" alt="ETH-Mitarbeiter tragen einen Container voller Sperrmüll">
+        <h4>Nachher – mit ETH Solutions</h4>
+        <ul class="transform-list">
+          <li>Transparente Kosten — Pauschalpreise, keine Überraschungen auf der Rechnung</li>
+          <li>Alle Arbeiten erledigt — Demontage, Verladung, Entsorgung, Nachweis</li>
+          <li>Sauber sortiert — fachgerecht und gesetzeskonform entsorgt</li>
+          <li>Fester Ansprechpartner — auch für laufende Projekte im B2B</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── MESSBARE VORTEILE ─────────────────── -->
+<section class="measurable">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Messbarer Mehrwert</span>
+      <h2>Was Sie konkret davon haben</h2>
+    </div>
+    <div class="measure-grid">
+      <div class="measure-card">
+        <div class="measure-icon">€</div>
+        <h4>Kosten reduziert</h4>
+        <p>Pauschalpreise statt Stundensätzen. Bei Bündelung mehrerer Termine zusätzliche Konditionen für B2B-Kunden.</p>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">⏱</div>
+        <h4>Zeit gespart</h4>
+        <p>Eine Anfrage – wir koordinieren alles: Anfahrt, Demontage, Abholung, Entsorgungsnachweis. Sie machen weiter mit Ihrem Tagesgeschäft.</p>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">✓</div>
+        <h4>Rechtssicher</h4>
+        <p>Entsorgung nach KrWG, mit Nachweis dokumentiert. Ihr Compliance-Risiko bei der Sperrmüll-Entsorgung: Null.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── LEISTUNGEN + USP ─────────────────── -->
+<section class="leistungen-usp">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Was wir tun</span>
+      <h2>Unsere Leistungen — und was uns ausmacht</h2>
+    </div>
+    <div class="lu-grid">
+      <div class="lu-leistungen">
+        <h3>Vom Plan bis zum Nachweis</h3>
+        <p class="sub">Wir begleiten den gesamten Prozess. Sie haben einen Ansprechpartner – egal, was es ist.</p>
+        <ul class="bullet-list">
+          <li>Beratung & Bedarfs-Klärung</li>
+          <li>Ablaufplanung (Termin, Logistik, Halteverbot)</li>
+          <li>Umsetzung mit eigenem Team</li>
+          <li>Demontage- und Trageservice auf Wunsch</li>
+          <li>Fachgerechte und umweltgerechte Entsorgung</li>
+          <li>Entsorgungsnachweis nach KrWG</li>
+        </ul>
+      </div>
+
+      <div class="lu-usp">
+        <h3>Darum ETH</h3>
+        <div class="usp-card">
+          <h4>Entsorgungsfachbetrieb</h4>
+          <p>Zertifiziert, mit eigenem Fuhrpark und eigener Entsorgungsanlage. Keine Subunternehmer-Kette, keine versteckten Aufschläge.</p>
+        </div>
+        <div class="usp-card">
+          <h4>Persönlich erreichbar</h4>
+          <p>Sie haben einen direkten Ansprechpartner — kein Call-Center, keine Tickets. Antworten innerhalb von 24 Stunden, Termine oft schon binnen 24–48 Stunden.</p>
+        </div>
+        <div class="usp-card">
+          <h4>Sauberes Equipment, faire Preise</h4>
+          <p>Gepflegte Fahrzeuge, geschultes Personal, diskret und gründlich gearbeitet — gepaart mit marktüblich fairen Preisen, transparent vorab kalkuliert.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── PLZ-CHECK ─────────────────── -->
+<section class="plz-check" id="plz-check">
+  <div class="container">
+    <h2>Holen wir bei Ihnen ab?</h2>
+    <p class="lead">Geben Sie Ihre Postleitzahl ein – wir prüfen sofort, ob wir Ihr Gebiet bedienen.</p>
+    <form class="plz-form" id="plzForm" onsubmit="event.preventDefault(); checkPLZ();">
+      <input type="text" class="plz-input" id="plz-input"
+             placeholder="z.B. 20095"
+             maxlength="5" pattern="[0-9]{5}"
+             inputmode="numeric"
+             aria-label="Postleitzahl">
+      <button type="submit" class="plz-btn">Verfügbarkeit prüfen</button>
+    </form>
+    <div class="plz-result" id="plz-result"></div>
+  </div>
+</section>
+
+<!-- ─────────────────── KONFIGURATOR ─────────────────── -->
+<section class="konfigurator" id="konfigurator">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Schritt 1 von 2</span>
+      <h2>Wählen Sie Ihr Paket</h2>
+      <p>Vier feste Pauschalen für die typischen Sperrmüll-Mengen. Klingt erstmal nach Schubladendenken – ist aber ehrlich: Sie wissen vorher, was es kostet.</p>
+    </div>
+
+    <img class="konfig-banner" src="images/sperrmuell-container-oder-abholung.webp" alt="Typische Sperrmüll-Situation: Möbel und Hausrat zur Abholung bereitgestellt">
+
+    <div class="config-grid">
+      <div>
+        <!-- PAKETE -->
+        <div class="packages" id="packages">
+          <div class="package" data-package="small" data-price="172" onclick="selectPackage('small')">
+            <span class="package-volume">1 – 3 m³ · Klein</span>
+            <h3 class="package-name">Kleine Mengen</h3>
+            <p class="package-tagline">"Ein Hauch von 'das reicht schon'."</p>
+            <div class="package-price">172,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Einzelne Möbelstücke, Elektrogeräte, Kartonagen</li>
+              <li>Kurze Einsatzzeiten</li>
+              <li>Ideal für Privatkunden</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="medium" data-price="273.64" onclick="selectPackage('medium')">
+            <span class="package-volume">4 – 8 m³ · Mittel</span>
+            <h3 class="package-name">Mittlere Mengen</h3>
+            <p class="package-tagline">"Eine ordentliche Portion Chaos."</p>
+            <div class="package-price">273,64 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Keller, Garagen, Lagerräume, Teilräumungen</li>
+              <li>Effiziente Zwei-Mann-Teams</li>
+              <li>Sortenreine Trennung inklusive</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="large" data-price="473" onclick="selectPackage('large')">
+            <span class="package-volume">8 – 12 m³ · Groß</span>
+            <h3 class="package-name">Große Mengen</h3>
+            <p class="package-tagline">"Ein Sprinter voll Überraschungen."</p>
+            <div class="package-price">473,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Haushaltsauflösungen, Firmenräumungen</li>
+              <li>Planung & Durchführung aus einer Hand</li>
+              <li>Inkl. Dokumentation & Nachweis</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="mega" data-price="0" onclick="selectPackage('mega')">
+            <span class="package-volume">ab 12 m³ · Mega</span>
+            <h3 class="package-name">Mega Mengen</h3>
+            <p class="package-tagline">"Eine Galaxie voll To-dos."</p>
+            <div class="package-price no-price">Aufmaß erforderlich</div>
+            <ul class="package-features">
+              <li>Komplette Haushaltsauflösungen, Großräumungen</li>
+              <li>Container- und Logistiklösungen</li>
+              <li>Individuelles Angebot innerhalb von 24 h</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ADDONS -->
+        <div class="addons">
+          <h3>Zusätzliche Stücke?</h3>
+          <p class="addons-sub">Großgeräte, Kühlschränke und Co. werden separat berechnet – einfach passende Stückzahl wählen.</p>
+
+          <ul class="addon-list">
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Großgeräte</div>
+                <div class="addon-info-desc">Waschmaschine, Herd, Spülmaschine – braucht zwei Leute und ein stilles Gebet</div>
+              </div>
+              <div class="addon-price">19,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('grossgeraet', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-grossgeraet">0</span>
+                <button class="stepper-btn" onclick="updateAddon('grossgeraet', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Kleingeräte</div>
+                <div class="addon-info-desc">Drucker, Mikrowelle, Kaffeemaschine – alles, was irgendwann mal gepiept hat</div>
+              </div>
+              <div class="addon-price">6,30 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('kleingeraet', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-kleingeraet">0</span>
+                <button class="stepper-btn" onclick="updateAddon('kleingeraet', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Kühlschränke</div>
+                <div class="addon-info-desc">Leer, halb leer oder „Überraschung des Monats" – ohne FCKW</div>
+              </div>
+              <div class="addon-price">31,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('kuehlschrank', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-kuehlschrank">0</span>
+                <button class="stepper-btn" onclick="updateAddon('kuehlschrank', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Monitore & Fernseher</div>
+                <div class="addon-info-desc">Vom Röhrenmonster bis zum Smart-TV</div>
+              </div>
+              <div class="addon-price">6,30 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('monitor', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-monitor">0</span>
+                <button class="stepper-btn" onclick="updateAddon('monitor', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Autoreifen</div>
+                <div class="addon-info-desc">Rund, schwarz, schwer. Nehmen wir. Punkt.</div>
+              </div>
+              <div class="addon-price">15,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('reifen', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-reifen">0</span>
+                <button class="stepper-btn" onclick="updateAddon('reifen', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SUMMARY (sticky rechts) -->
+      <div class="summary-wrap">
+        <div class="summary" id="summary">
+          <h3>Ihre Auswahl</h3>
+          <div id="summary-body">
+            <p class="summary-empty">Wählen Sie ein Paket, um zu starten.</p>
+          </div>
+          <button class="summary-cta" id="summary-cta" onclick="goToForm()" disabled>
+            Anfrage absenden
+          </button>
+          <p class="summary-note">Unverbindlich · keine Vorab-Zahlung · Antwort innerhalb von 24 h</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── FORM ─────────────────── -->
+<section class="form-section" id="form-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Schritt 2 von 2</span>
+      <h2>Anfrage senden</h2>
+      <p>Wir melden uns innerhalb von 24 Stunden mit Terminvorschlag und Festpreis-Bestätigung.</p>
+    </div>
+    <form class="form-card" id="anfrage-form" onsubmit="event.preventDefault(); submitForm();">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="form-name">Name *</label>
+          <input type="text" id="form-name" name="name" required>
+        </div>
+        <div class="form-field">
+          <label for="form-email">E-Mail *</label>
+          <input type="email" id="form-email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label for="form-tel">Telefon</label>
+          <input type="tel" id="form-tel" name="tel">
+        </div>
+        <div class="form-field">
+          <label for="form-plz">Postleitzahl *</label>
+          <input type="text" id="form-plz" name="plz" required maxlength="5" pattern="[0-9]{5}">
+        </div>
+        <div class="form-field full">
+          <label for="form-adresse">Abholadresse</label>
+          <input type="text" id="form-adresse" name="adresse" placeholder="Straße, Hausnummer, Stadtteil">
+        </div>
+        <div class="form-field">
+          <label for="form-termin">Wunschtermin</label>
+          <input type="date" id="form-termin" name="termin">
+        </div>
+        <div class="form-field">
+          <label for="form-zugang">Zugang</label>
+          <select id="form-zugang" name="zugang">
+            <option>Erdgeschoss / Hof</option>
+            <option>Obergeschoss (Treppe)</option>
+            <option>Keller</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label for="form-notiz">Notiz / Fotos</label>
+          <textarea id="form-notiz" name="notiz" placeholder="Kurze Beschreibung, gerne auch Link zu Fotos"></textarea>
+        </div>
+      </div>
+
+      <div class="form-summary-box" id="form-summary-box">
+        <strong>Ihre Auswahl:</strong> <span id="form-summary-text">Bitte oben Paket auswählen.</span>
+      </div>
+
+      <button type="submit" class="form-submit">Anfrage jetzt absenden</button>
+    </form>
+  </div>
+</section>
+
+<!-- ─────────────────── PROCESS ─────────────────── -->
+<section class="process">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">So einfach</span>
+      <h2>So funktioniert's</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="process-icon">1</div>
+        <h4>Anfrage</h4>
+        <p>PLZ prüfen, Paket wählen, Formular senden. Dauert keine 3 Minuten.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-icon">2</div>
+        <h4>Termin</h4>
+        <p>Wir bestätigen Ihren Wunschtermin oder schlagen eine Alternative vor – meist binnen 24 h.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-icon">3</div>
+        <h4>Abholung</h4>
+        <p>Unser Zwei-Mann-Team kommt pünktlich, lädt sauber, hinterlässt besenreine Flächen.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-icon">4</div>
+        <h4>Nachweis</h4>
+        <p>Auf Wunsch erhalten Sie eine Entsorgungsbestätigung gemäß KrWG.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── RULES ─────────────────── -->
+<section class="rules">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Was geht, was nicht</span>
+      <h2>Sperrmüll vs. Sondermüll</h2>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card yes">
+        <h3>Das nehmen wir mit</h3>
+        <p class="sub">Die „Kannman-machen"-Liste – ohne Murren, Knurren oder Fluchtreflex.</p>
+        <ul class="rule-list">
+          <li>Möbelstücke (Schränke, Tische, Stühle, Regale, Betten)</li>
+          <li>Matratzen und Lattenroste</li>
+          <li>Teppiche und größere Bodenbeläge</li>
+          <li>Koffer, Kleinmöbel, Haushaltsgegenstände</li>
+          <li>Gartenmöbel und sperrige Kunststoffteile</li>
+          <li>Großgeräte, Kühlschränke, Monitore (als Add-on)</li>
+        </ul>
+      </div>
+
+      <div class="rule-card no">
+        <h3>Das auf gar keinen Fall</h3>
+        <p class="sub">Die „Auf-keinen-Fall"-Liste – Dinge, die uns schneller wegrennen lassen als ein Staubsaugerroboter vor einer Socke.</p>
+        <ul class="rule-list">
+          <li>Gasflaschen <span class="rule-quip">— wir mögen Spannung, aber nicht die explosive Art</span></li>
+          <li>Chemikalien <span class="rule-quip">— wenn es zischt, dampft oder leuchtet: bleibt bei dir</span></li>
+          <li>Öle (Motor, Frittier, Zauber) <span class="rule-quip">— nein danke</span></li>
+          <li>Farben & Lacke <span class="rule-quip">— wir sind nicht Picasso</span></li>
+          <li>Bauschutt, Fliesen, Sanitärkeramik</li>
+          <li>Speisereste <span class="rule-quip">— Müll ja, kulinarische Experimente nein</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── BENEFITS ─────────────────── -->
+<section class="benefits">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Warum ETH</span>
+      <h2>Vier Gründe für uns</h2>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="benefit-icon"></div>
+        <h4>24–48 h Termin</h4>
+        <p>Schnelle Terminvergabe – auch bei kurzfristigen Räumungen.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon"></div>
+        <h4>Feste Preise</h4>
+        <p>Klar kalkulierbar, keine versteckten Kosten, keine Überraschungen.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon"></div>
+        <h4>Fachgerecht</h4>
+        <p>Gesetzeskonform nach KrWG, mit Entsorgungsnachweis.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon"></div>
+        <h4>Diskret & sauber</h4>
+        <p>Wir arbeiten effizient und hinterlassen besenreine Flächen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── FAQ ─────────────────── -->
+<section class="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Häufige Fragen</span>
+      <h2>FAQ</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">Was kostet die Demontage von Möbeln?</button>
+        <div class="faq-answer"><p>Demontage und Trageservice bieten wir gegen Aufpreis an. Geben Sie es einfach in der Anfrage an, dann erhalten Sie zusammen mit der Termin-Bestätigung einen Festpreis.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Brauche ich ein Halteverbot?</button>
+        <div class="faq-answer"><p>In der Regel nicht – wir kommen mit einem Sprinter und finden meist eine Halte-Option. Falls die Stelle erfahrungsgemäß eng ist, organisieren wir das Halteverbot auf Wunsch für Sie mit.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Bekomme ich einen Entsorgungsnachweis?</button>
+        <div class="faq-answer"><p>Ja, auf Wunsch erhalten Sie eine Entsorgungsbestätigung gemäß den Bestimmungen des Kreislaufwirtschaftsgesetzes (KrWG). Geben Sie das einfach im Anfrage-Formular an.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Was, wenn ich das Volumen falsch einschätze?</button>
+        <div class="faq-answer"><p>Kein Drama – unser Team fährt mit ausreichend Reserve und wir berechnen ggf. ein angepasstes Paket. Bei größeren Differenzen (z.B. Mega-Mengen statt Mittel) sprechen wir vor Ort mit Ihnen, bevor wir laden.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Was ist mit gemischten Abfällen oder Sondermüll?</button>
+        <div class="faq-answer"><p>Bauschutt, Chemikalien, Öle und Farben dürfen wir im Sperrmüll nicht mitnehmen. Dafür haben wir aber separate Entsorgungslösungen – einfach in der Anfrage erwähnen, wir machen Ihnen ein Komplett-Angebot.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Wie weit fahrt ihr?</button>
+        <div class="faq-answer"><p>Standardmäßig Hamburg und direkter Umkreis (PLZ 20000–22999). Außerhalb dieses Bereichs prüfen wir individuell – senden Sie uns einfach eine Anfrage.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── CONTACT CTA ─────────────────── -->
+<section class="contact-cta">
+  <div class="container">
+    <h2>Lieber direkt reden?</h2>
+    <p>Wir sind Mo–Fr von 8 – 17 Uhr persönlich erreichbar.</p>
+    <div class="contact-buttons">
+      <a href="tel:+4940000000" class="contact-btn">📞 040 / 000 000</a>
+      <a href="mailto:sperrmuell@eth-solutions.de" class="contact-btn outline">✉ sperrmuell@eth-solutions.de</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── FOOTER ─────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h5>ETH Solutions GmbH & Co. KG</h5>
+        <p>Gemeinsam neue Wege gehen.</p>
+        <p style="margin-top:8px;">Hamburg<br>Tel. 040 / 000 000<br>info@eth-solutions.de</p>
+      </div>
+      <div>
+        <h5>Leistungen</h5>
+        <ul>
+          <li><a href="#">Sperrmüll</a></li>
+          <li><a href="#">Entrümpelung</a></li>
+          <li><a href="#">Container</a></li>
+          <li><a href="#">Gewerbe</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Unternehmen</h5>
+        <ul>
+          <li><a href="#">Über uns</a></li>
+          <li><a href="#">Jobs</a></li>
+          <li><a href="#">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Rechtliches</h5>
+        <ul>
+          <li><a href="#">Impressum</a></li>
+          <li><a href="#">Datenschutz</a></li>
+          <li><a href="#">AGB</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 ETH Solutions GmbH & Co. KG · Entwurf für Demonstrations-Zwecke
+    </div>
+  </div>
+</footer>
+
+<!-- ─────────────────── THANKYOU OVERLAY ─────────────────── -->
+<div class="thankyou" id="thankyou">
+  <div class="thankyou-card">
+    <div class="thankyou-icon">✓</div>
+    <h2>Vielen Dank!</h2>
+    <p>Ihre Anfrage ist bei uns eingegangen. Wir melden uns innerhalb von 24 Stunden mit Termin und Festpreis-Bestätigung.</p>
+    <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
+  </div>
+</div>
+
+<!-- ─────────────────── JAVASCRIPT ─────────────────── -->
+<script>
+  // ───────── State ─────────
+  const state = {
+    plz: '',
+    plzValid: false,
+    plzInArea: false,
+    package: null,
+    addons: { grossgeraet: 0, kleingeraet: 0, kuehlschrank: 0, monitor: 0, reifen: 0 }
+  };
+
+  const PRICES = {
+    packages: {
+      small:  { name: 'Kleine Mengen (1–3 m³)',   price: 172.00 },
+      medium: { name: 'Mittlere Mengen (4–8 m³)', price: 273.64 },
+      large:  { name: 'Große Mengen (8–12 m³)',   price: 473.00 },
+      mega:   { name: 'Mega Mengen (ab 12 m³)',   price: null }
+    },
+    addons: {
+      grossgeraet:  { name: 'Großgeräte',     price: 19.00 },
+      kleingeraet:  { name: 'Kleingeräte',    price:  6.30 },
+      kuehlschrank: { name: 'Kühlschränke',   price: 31.00 },
+      monitor:      { name: 'Monitore/TVs',   price:  6.30 },
+      reifen:       { name: 'Autoreifen',     price: 15.00 }
+    }
+  };
+
+  const PLZ_RANGES = [[20000, 22999]]; // Hamburg + direkter Umkreis (Mock)
+
+  // ───────── PLZ-Check ─────────
+  function checkPLZ() {
+    const value = document.getElementById('plz-input').value.trim();
+    const result = document.getElementById('plz-result');
+
+    if (!/^\d{5}$/.test(value)) {
+      result.className = 'plz-result show error';
+      result.textContent = 'Bitte geben Sie eine fünfstellige Postleitzahl ein.';
+      return;
+    }
+
+    const num = parseInt(value, 10);
+    const inArea = PLZ_RANGES.some(([min, max]) => num >= min && num <= max);
+
+    state.plz = value;
+    state.plzValid = true;
+    state.plzInArea = inArea;
+
+    if (inArea) {
+      result.className = 'plz-result show success';
+      result.innerHTML = '✓ Wir holen bei Ihnen ab. Wählen Sie unten Ihr Paket.';
+      setTimeout(() => {
+        document.getElementById('konfigurator').scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    } else {
+      result.className = 'plz-result show warn';
+      result.innerHTML = 'Ihr Gebiet liegt außerhalb unseres Standardbereichs – wir prüfen es individuell. Wählen Sie ein Paket und senden Sie uns eine Anfrage.';
+    }
+
+    // sync Form-PLZ
+    document.getElementById('form-plz').value = value;
+  }
+
+  // ───────── Paket-Auswahl ─────────
+  function selectPackage(name) {
+    state.package = name;
+    document.querySelectorAll('.package').forEach(p => p.classList.remove('selected'));
+    document.querySelector(`.package[data-package="${name}"]`).classList.add('selected');
+    updateSummary();
+  }
+
+  // ───────── Add-ons ─────────
+  function updateAddon(key, delta) {
+    state.addons[key] = Math.max(0, state.addons[key] + delta);
+    document.getElementById(`count-${key}`).textContent = state.addons[key];
+    updateSummary();
+  }
+
+  // ───────── Summary ─────────
+  function fmt(n) {
+    return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  }
+
+  function updateSummary() {
+    const body = document.getElementById('summary-body');
+    const cta = document.getElementById('summary-cta');
+    const formSummary = document.getElementById('form-summary-text');
+
+    if (!state.package) {
+      body.innerHTML = '<p class="summary-empty">Wählen Sie ein Paket, um zu starten.</p>';
+      cta.disabled = true;
+      formSummary.textContent = 'Bitte oben Paket auswählen.';
+      return;
+    }
+
+    const pkg = PRICES.packages[state.package];
+    const isMega = state.package === 'mega';
+    let html = `<div class="summary-line package"><span class="label">${pkg.name}</span><span class="value">${isMega ? 'Aufmaß' : fmt(pkg.price)}</span></div>`;
+
+    let addonTotal = 0;
+    let hasAddons = false;
+    for (const key of Object.keys(state.addons)) {
+      const count = state.addons[key];
+      if (count > 0) {
+        hasAddons = true;
+        const a = PRICES.addons[key];
+        const sum = a.price * count;
+        addonTotal += sum;
+        html += `<div class="summary-line"><span class="label">${count}× ${a.name}</span><span class="value">${fmt(sum)}</span></div>`;
+      }
+    }
+
+    if (isMega) {
+      html += `<div class="summary-total mega"><span>Zwischensumme</span><span class="total-value">individuelles Angebot${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}</span></div>`;
+    } else {
+      const total = pkg.price + addonTotal;
+      html += `<div class="summary-total"><span>Gesamtpreis</span><span>${fmt(total)}</span></div>`;
+    }
+
+    body.innerHTML = html;
+    cta.disabled = false;
+
+    // Form-Summary synchronisieren
+    const summaryText = isMega
+      ? `${pkg.name}${hasAddons ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''} (Aufmaß folgt)`
+      : `${pkg.name} – ${fmt(pkg.price + addonTotal)}`;
+    formSummary.textContent = summaryText;
+  }
+
+  // ───────── Form ─────────
+  function goToForm() {
+    document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function submitForm() {
+    const data = new FormData(document.getElementById('anfrage-form'));
+    const payload = {
+      _tool: 'eth-sperrmuell',
+      kontakt: Object.fromEntries(data.entries()),
+      auswahl: {
+        plz: state.plz,
+        plzInArea: state.plzInArea,
+        package: state.package,
+        packageName: state.package ? PRICES.packages[state.package].name : null,
+        packagePrice: state.package ? PRICES.packages[state.package].price : null,
+        addons: { ...state.addons }
+      }
+    };
+
+    // PRODUCTION-NOTIZ: Hier in echten Endpoint posten (z.B. ETH-Mailservice)
+    console.log('[ETH Sperrmüll] Anfrage-Payload:', payload);
+
+    // Bestätigungs-Overlay anzeigen
+    document.getElementById('thankyou').classList.add('show');
+    document.getElementById('anfrage-form').reset();
+  }
+
+  function closeThankyou() {
+    document.getElementById('thankyou').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ───────── FAQ ─────────
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      q.parentElement.classList.toggle('open');
+    });
+  });
+
+  // ───────── PLZ-Input nur Ziffern ─────────
+  document.getElementById('plz-input').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5);
+  });
+</script>
+
+</body>
+</html>
