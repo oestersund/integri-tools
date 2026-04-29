@@ -33,10 +33,10 @@
             background: #F7F7F5;
         }
         
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
         
         /* Header */
@@ -1084,7 +1084,7 @@
 
 <div class="save-indicator" id="saveIndicator">✓ Automatisch gespeichert</div>
 
-<div class="container">
+<div class="wrapper">
     <div class="app-header">
         <h1>Integri · Content Review</h1>
         <p>Inhalte bearbeiten, prüfen und freigeben</p>
@@ -1265,11 +1265,10 @@
         </div>
     </div>
 
+    <!-- PREVIEW MODE -->
+    <div id="previewMode"></div>
 
 </div>
-
-<!-- PREVIEW MODE -->
-<div id="previewMode"></div>
 
 <script>
 // Global state
@@ -3389,6 +3388,9 @@ window.addEventListener('DOMContentLoaded', function() {
     checkBriefingHashImport();
 });
 </script>
+
+<script>window.INTEGRI_CHROME = { docname: 'Content Review' };</script>
+<script src="../assets/tool-chrome.js"></script>
 
 </body>
 </html>
