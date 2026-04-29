@@ -3314,6 +3314,20 @@ function loadColors() {
 }
 
 // ——————————————————————————————————————
+// Befüllt contentData aus originalContent (nach mapBriefingToContent)
+function initContentDataFromOriginal() {
+    const allSections = ['hero','intro','stats','problems','usps','trust','services','cta1','pricing','cases','testimonials','faq','cta2'];
+    allSections.forEach(function(section) {
+        const blocks = getOriginalBlocksForSection(section);
+        blocks.forEach(function(block) {
+            if (block.original && block.type === 'text') {
+                contentData[block.id] = { value: block.original, type: 'text', deleted: false };
+            }
+        });
+    });
+}
+
+// ——————————————————————————————————————
 // BRIEFING URL-HASH IMPORT
 // Unterstützt zwei Formate:
 //   ?briefing=briefings/YYYY-MM-DD-slug.json  → lädt JSON von GitHub Raw
@@ -3368,8 +3382,11 @@ async function checkBriefingHashImport() {
     // URL bereinigen (kein Reload)
     history.replaceState(null, '', window.location.pathname);
 
-    // Briefing importieren
+    // Briefing importieren — contentData aus originalContent befüllen
+    contentData = {};
     mapBriefingToContent(json);
+    initContentDataFromOriginal();
+    saveToLocalStorage();
     renderAllSections();
 
     // Rückmeldung
