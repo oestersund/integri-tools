@@ -2834,53 +2834,30 @@ function mapBriefingToContent(b) {
     
     // === PROBLEMS ===
     originalContent.problems.title = 'Ihre Herausforderung - Unsere Lösung';
-    
-    // Problems: Detailliert mit " - " Zusatzinfo
-    const wishesArray = wishes.split('\n').filter(w => w.trim()).map(w => w.replace(/^[>\-\*]\s*/, '').trim()).slice(0, 3);
-    wishesArray.forEach((wish, i) => {
-        let problem = '';
-        let detail = '';
-        
-        const wishLower = wish.toLowerCase();
-        if (wishLower.includes('kommunikation') || wishLower.includes('erreichbar')) {
-            problem = 'Bisheriger Anbieter unzuverlässig';
-            detail = 'Termine werden nicht eingehalten, Rückrufe dauern Tage';
-        } else if (wishLower.includes('personal') || wishLower.includes('qualität')) {
-            problem = 'Mangelnde Servicequalität';
-            detail = 'Personal nicht passend qualifiziert oder motiviert';
-        } else if (wishLower.includes('preis') || wishLower.includes('transparent')) {
-            problem = 'Intransparente Kosten';
-            detail = 'Versteckte Gebühren, unklare Abrechnungen';
-        } else {
-            problem = `Mangel an ${wish.split(' ')[0]}`;
-            detail = 'Bisherige Lösungen erfüllen nicht die Anforderungen';
-        }
-        
-        originalContent.problems[`problem${i + 1}`] = `${problem} - ${detail}`;
+
+    // Problems: direkt aus integri-problems (Vorher-Situationen)
+    const problemsArray = problems.split('\n').filter(p => p.trim()).map(p => p.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
+    problemsArray.forEach((p, i) => {
+        originalContent.problems[`problem${i + 1}`] = p;
     });
-    
-    // Solutions: Konkrete Benefits aus Wishes
-    wishesArray.forEach((wish, i) => {
-        const wishLower = wish.toLowerCase();
-        let solution = '';
-        let detail = '';
-        
-        if (wishLower.includes('kommunikation') || wishLower.includes('erreichbar')) {
-            solution = 'Bessere Sichtbarkeit im Quartier';
-            detail = 'regelmäßige Begehungen, präsent und ansprechbar';
-        } else if (wishLower.includes('personal') || wishLower.includes('qualität')) {
-            solution = 'Schnelle Reaktionszeiten bei allen Anliegen';
-            detail = 'Sie und Ihre Kunden erreichen uns verlässlich';
-        } else if (wishLower.includes('preis') || wishLower.includes('transparent')) {
-            solution = 'Transparente Preisgestaltung';
-            detail = 'Sie zahlen nur für tatsächlich erbrachte Leistungen';
-        } else {
-            solution = wish;
-            detail = 'Professionelle Umsetzung Ihrer Anforderungen';
-        }
-        
-        originalContent.problems[`solution${i + 1}`] = `${solution} - ${detail}`;
+    // Fallback falls integri-problems leer
+    if (problemsArray.length === 0) {
+        originalContent.problems.problem1 = 'Bisheriger Anbieter unzuverlässig';
+        originalContent.problems.problem2 = 'Mangelnde Servicequalität';
+        originalContent.problems.problem3 = 'Intransparente Kosten';
+    }
+
+    // Solutions: direkt aus integri-results (Nachher-Ergebnisse)
+    const resultsArray = results.split('\n').filter(r => r.trim()).map(r => r.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
+    resultsArray.forEach((r, i) => {
+        originalContent.problems[`solution${i + 1}`] = r;
     });
+    // Fallback falls integri-results leer
+    if (resultsArray.length === 0) {
+        originalContent.problems.solution1 = 'Zuverlässige Kommunikation und Termintreue';
+        originalContent.problems.solution2 = 'Qualifiziertes Personal, das Ihre Standards kennt';
+        originalContent.problems.solution3 = 'Transparente Preisgestaltung ohne versteckte Kosten';
+    }
     
     // === USPS ===
     const topicShort = topic.split(' ')[0] || 'Service';
