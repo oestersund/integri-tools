@@ -2834,23 +2834,19 @@ function mapBriefingToContent(b) {
     
     // === PROBLEMS ===
     originalContent.problems.title = 'Ihre Herausforderung - Unsere Lösung';
-
-    // Vorher: direkt aus integri-problems
+    
+    // Problems: direkt aus integri-problems
     const problemsArray = problems.split('\n').filter(p => p.trim()).map(p => p.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
-    problemsArray.forEach((p, i) => {
-        originalContent.problems[`problem${i + 1}`] = p;
-    });
+    problemsArray.forEach((p, i) => { originalContent.problems[`problem${i + 1}`] = p; });
     if (problemsArray.length === 0) {
         originalContent.problems.problem1 = 'Bisheriger Anbieter unzuverlässig';
         originalContent.problems.problem2 = 'Mangelnde Servicequalität';
         originalContent.problems.problem3 = 'Intransparente Kosten';
     }
 
-    // Nachher: direkt aus integri-results
+    // Solutions: direkt aus integri-results
     const resultsArray = results.split('\n').filter(r => r.trim()).map(r => r.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
-    resultsArray.forEach((r, i) => {
-        originalContent.problems[`solution${i + 1}`] = r;
-    });
+    resultsArray.forEach((r, i) => { originalContent.problems[`solution${i + 1}`] = r; });
     if (resultsArray.length === 0) {
         originalContent.problems.solution1 = 'Zuverlässige Kommunikation und Termintreue';
         originalContent.problems.solution2 = 'Qualifiziertes Personal, das Ihre Standards kennt';
@@ -3314,20 +3310,6 @@ function loadColors() {
 }
 
 // ——————————————————————————————————————
-// Befüllt contentData aus originalContent (nach mapBriefingToContent)
-function initContentDataFromOriginal() {
-    const allSections = ['hero','intro','stats','problems','usps','trust','services','cta1','pricing','cases','testimonials','faq','cta2'];
-    allSections.forEach(function(section) {
-        const blocks = getOriginalBlocksForSection(section);
-        blocks.forEach(function(block) {
-            if (block.original && block.type === 'text') {
-                contentData[block.id] = { value: block.original, type: 'text', deleted: false };
-            }
-        });
-    });
-}
-
-// ——————————————————————————————————————
 // BRIEFING URL-HASH IMPORT
 // Unterstützt zwei Formate:
 //   ?briefing=briefings/YYYY-MM-DD-slug.json  → lädt JSON von GitHub Raw
@@ -3382,10 +3364,20 @@ async function checkBriefingHashImport() {
     // URL bereinigen (kein Reload)
     history.replaceState(null, '', window.location.pathname);
 
-    // Briefing importieren — contentData aus originalContent befüllen
+    // Briefing importieren
     contentData = {};
     mapBriefingToContent(json);
-    initContentDataFromOriginal();
+
+    // contentData aus originalContent befüllen (Edit-Mode + Preview)
+    var allSections = ['hero','intro','stats','problems','usps','trust','services','cta1','pricing','cases','testimonials','faq','cta2'];
+    allSections.forEach(function(section) {
+        var blocks = getOriginalBlocksForSection(section);
+        blocks.forEach(function(block) {
+            if (block.original && block.type === 'text') {
+                contentData[block.id] = { value: block.original, type: 'text', deleted: false };
+            }
+        });
+    });
     saveToLocalStorage();
     renderAllSections();
 
