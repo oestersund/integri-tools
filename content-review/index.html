@@ -2677,19 +2677,27 @@ function importBriefing() {
         reader.onload = (event) => {
             try {
                 const briefing = JSON.parse(event.target.result);
-                
+
                 // Clear existing data
                 contentData = {};
-                
-                // Apply intelligent mapping
+
+                // 1. Briefing → originalContent mappen
                 mapBriefingToContent(briefing);
-                
+
+                // 2. originalContent → contentData übertragen (war bisher fehlend)
+                initContentDataFromOriginal();
+
                 saveToLocalStorage();
                 renderAllSections();
-                alert('Briefing erfolgreich importiert und intelligent gemappt!');
+
+                const notice = document.createElement('div');
+                notice.style.cssText = 'position:fixed;top:20px;right:20px;background:#033132;color:white;padding:12px 20px;border-radius:6px;font-size:14px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+                notice.textContent = '✓ Briefing importiert';
+                document.body.appendChild(notice);
+                setTimeout(() => notice.remove(), 3000);
             } catch (error) {
-                alert('Fehler beim Import: Ungültige JSON-Datei');
-                console.error(error);
+                console.error('importBriefing Fehler:', error);
+                alert('Fehler beim Import: ' + error.message);
             }
         };
         reader.readAsText(file);
