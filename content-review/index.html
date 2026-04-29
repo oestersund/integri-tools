@@ -2835,24 +2835,22 @@ function mapBriefingToContent(b) {
     // === PROBLEMS ===
     originalContent.problems.title = 'Ihre Herausforderung - Unsere Lösung';
 
-    // Problems: direkt aus integri-problems (Vorher-Situationen)
+    // Vorher: direkt aus integri-problems
     const problemsArray = problems.split('\n').filter(p => p.trim()).map(p => p.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
     problemsArray.forEach((p, i) => {
         originalContent.problems[`problem${i + 1}`] = p;
     });
-    // Fallback falls integri-problems leer
     if (problemsArray.length === 0) {
         originalContent.problems.problem1 = 'Bisheriger Anbieter unzuverlässig';
         originalContent.problems.problem2 = 'Mangelnde Servicequalität';
         originalContent.problems.problem3 = 'Intransparente Kosten';
     }
 
-    // Solutions: direkt aus integri-results (Nachher-Ergebnisse)
+    // Nachher: direkt aus integri-results
     const resultsArray = results.split('\n').filter(r => r.trim()).map(r => r.replace(/^[>\-\*\d\.]+\s*/, '').trim()).slice(0, 3);
     resultsArray.forEach((r, i) => {
         originalContent.problems[`solution${i + 1}`] = r;
     });
-    // Fallback falls integri-results leer
     if (resultsArray.length === 0) {
         originalContent.problems.solution1 = 'Zuverlässige Kommunikation und Termintreue';
         originalContent.problems.solution2 = 'Qualifiziertes Personal, das Ihre Standards kennt';
@@ -3370,10 +3368,8 @@ async function checkBriefingHashImport() {
     // URL bereinigen (kein Reload)
     history.replaceState(null, '', window.location.pathname);
 
-    // Briefing importieren — ContentData leeren damit kein LocalStorage-Cache überlagert
-    contentData = {};
+    // Briefing importieren
     mapBriefingToContent(json);
-    saveToLocalStorage();
     renderAllSections();
 
     // Rückmeldung
