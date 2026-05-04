@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KI-Sprint — Hausaufgaben Session 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --petrol:#033132;--petrol-light:#055557;--off-white:#F7F7F5;--white:#FFFFFF;
+      --text:#2C3E50;--text-dim:#5A6B7A;--border:#D1D5D8;--apricot:#FFF5F2;
+      --terracotta:#c1603a;--green:#2D7D3E;--green-light:#EBF5ED;
+      --blue-light:#EEF4FF;--blue:#2D4A7A;--radius-sm:4px;--radius-md:8px;--error:#C0392B;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'IBM Plex Sans',-apple-system,sans-serif;font-size:16px;line-height:1.65;
+      color:var(--text);background:var(--off-white);padding:40px 20px 60px;-webkit-font-smoothing:antialiased}
+    .wrapper{max-width:760px;margin:0 auto}
+    .global-header{background:var(--white);border-radius:var(--radius-md);border-top:4px solid var(--petrol);
+      padding:14px 28px;margin-bottom:8px;box-shadow:0 1px 4px rgba(3,49,50,0.06);
+      display:flex;align-items:center;justify-content:space-between}
+    .header-left{display:flex;align-items:center;gap:14px}
+    .header-brand{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+      color:var(--petrol);border-left:1px solid var(--border);padding-left:14px}
+    .header-docname{font-size:15px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--petrol)}
+    .page-title{background:var(--white);border-radius:var(--radius-md);border-left:4px solid var(--petrol);
+      padding:24px 28px;margin:20px 0 8px}
+    .page-title h1{font-size:22px;font-weight:600;color:var(--petrol);margin-bottom:6px}
+    .page-title p{font-size:14px;color:var(--text-dim);line-height:1.5}
+    .section{background:var(--white);border-radius:var(--radius-md);padding:24px 28px;
+      margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;
+      padding-bottom:14px;border-bottom:1px solid var(--border)}
+    .section-badge{background:var(--petrol);color:var(--white);font-size:11px;font-weight:600;
+      letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
+    .section-badge.blue{background:var(--blue)}
+    .section-title{font-size:16px;font-weight:600;color:var(--text)}
+    .section-hint{font-size:13px;color:var(--text-dim);margin-top:2px}
+    .question{margin-bottom:20px}
+    .q-label{font-size:14px;font-weight:600;display:block;margin-bottom:4px;color:var(--text)}
+    .q-hint{font-size:12px;color:var(--text-dim);margin-bottom:8px}
+    .required-mark{color:var(--error);margin-left:2px}
+    input[type="text"],input[type="email"],textarea,select{width:100%;padding:10px 12px;
+      border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;
+      font-family:inherit;color:var(--text);background:var(--white);transition:border-color 0.15s}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:var(--petrol);
+      box-shadow:0 0 0 3px rgba(3,49,50,0.08)}
+    textarea{resize:vertical;min-height:90px}
+    .radio-group,.checkbox-group{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+    .radio-group label,.checkbox-group label{display:flex;align-items:flex-start;gap:10px;
+      font-size:14px;cursor:pointer;padding:8px 12px;border:1px solid var(--border);
+      border-radius:var(--radius-sm);transition:background 0.1s,border-color 0.1s}
+    .radio-group label:hover,.checkbox-group label:hover{background:#f0faf9;border-color:var(--petrol)}
+    .radio-group input,.checkbox-group input{width:auto;flex-shrink:0;margin-top:3px;accent-color:var(--petrol)}
+    .matrix-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+    .matrix-table th{background:#F0F4F7;font-weight:600;font-size:12px;text-transform:uppercase;
+      letter-spacing:0.06em;color:var(--text-dim);padding:8px 10px;border:1px solid var(--border);text-align:left}
+    .matrix-table td{padding:6px;border:1px solid var(--border);vertical-align:middle}
+    .matrix-table td input{padding:6px 8px;font-size:13px;border:1px solid #E0E5E8;border-radius:var(--radius-sm)}
+    .matrix-table tr:nth-child(even) td{background:#FAFBFC}
+    .matrix-add-row{font-size:12px;color:var(--petrol);cursor:pointer;border:none;background:none;
+      margin-top:6px;text-decoration:underline;padding:0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:560px){.two-col{grid-template-columns:1fr}}
+    .status-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .status-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;
+      border:1.5px solid var(--border);background:var(--white);cursor:pointer;
+      transition:all 0.15s;color:var(--text-dim)}
+    .status-btn.selected-yes{background:var(--green-light);border-color:var(--green);color:var(--green)}
+    .status-btn.selected-no{background:var(--apricot);border-color:var(--terracotta);color:var(--terracotta)}
+    .status-btn.selected-partial{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+    .submit-section{margin-top:24px}
+    .submit-btn{width:100%;padding:14px;background:var(--petrol);color:var(--white);
+      border:none;border-radius:var(--radius-md);font-size:16px;font-weight:600;
+      font-family:inherit;cursor:pointer;transition:background 0.2s}
+    .submit-btn:hover:not(:disabled){background:var(--petrol-light)}
+    .submit-btn:disabled{opacity:0.6;cursor:not-allowed}
+    #thank-you-view{display:none;text-align:center;padding:60px 24px;background:var(--white);
+      border-radius:var(--radius-md);margin-top:8px}
+    .ty-check{font-size:2.5rem;margin-bottom:16px;color:var(--green)}
+    #thank-you-view h2{color:var(--petrol);margin-bottom:8px}
+    #thank-you-view p{color:var(--text-dim);max-width:400px;margin:0 auto}
+    .global-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+      font-size:12px;color:var(--text-dim);margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+    .global-footer a{color:var(--petrol);text-decoration:none}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <script>window.INTEGRI_CHROME = { docname: 'KI-Sprint HA 1' };</script>
+  <script src="../assets/tool-chrome.js"></script>
+
+  <header class="global-header">
+    <div class="header-left">
+      <div class="header-brand">INTEGRI</div>
+    </div>
+    <div class="header-docname">KI-Sprint &middot; Hausaufgaben Session 1</div>
+  </header>
+
+  <div class="page-title">
+    <h1>Ihre Hausaufgaben &mdash; Session 1</h1>
+    <p>Bitte f&uuml;llen Sie dieses Formular vor Session 2 aus. Aufwand: ca. 60&ndash;90 Minuten.<br>
+    Die Antworten flie&szlig;en direkt in den Aufbau Ihres KI-Workflows in Session 2.</p>
+  </div>
+
+  <div id="form-sections">
+
+    <!-- Kontakt -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-badge">Kontakt</span>
+        <div><div class="section-title">Ihre Angaben</div></div>
+      </div>
+      <div class="two-col">
+        <div class="question">
+          <label class="q-label" for="f-name">Name <span class="required-mark">*</span></label>
+          <input type="text" id="f-name" placeholder="Dr. Vorname Nachname" />
+        </div>
+        <div class="question">
+          <label class="q-label" for="f-email">E-Mail <span class="required-mark">*</span></label>
+          <input type="email" id="f-email" placeholder="ihre@praxis.de" />
+        </div>
+      </div>
+      <div class="question">
+        <label class="q-label" for="f-praxis">Praxisname</label>
+        <input type="text" id="f-praxis" placeholder="z. B. Functional Med GbR" />
+      </div>
+    </div>
+
+    <!-- Block A -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-badge">Block A</span>
+        <div>
+          <div class="section-title">Einrichten</div>
+          <div class="section-hint">~20&ndash;30 Min</div>
+        </div>
+      </div>
+      <div class="question">
+        <label class="q-label">Claude Pro Account angelegt? <span class="required-mark">*</span></label>
+        <p class="q-hint">claude.ai &rarr; Pro (20 &euro;/Monat)</p>
+        <div class="status-row">
+          <button class="status-btn" data-field="a1" data-val="Ja, erledigt">&#10003; Ja, erledigt</button>
+          <button class="status-btn" data-field="a1" data-val="Noch nicht">&#10007; Noch nicht</button>
+          <button class="status-btn" data-field="a1" data-val="Bis Session 2">Bis Session 2</button>
+        </div>
+        <input type="hidden" id="f-a1" />
+      </div>
+      <div class="question">
+        <label class="q-label">Leeres Claude-Projekt angelegt? <span class="required-mark">*</span></label>
+        <p class="q-hint">Nach Login: "Neues Projekt" &rarr; Name z. B. "Laborbefund-Reports" &mdash; noch kein Inhalt n&ouml;tig</p>
+        <div class="status-row">
+          <button class="status-btn" data-field="a2" data-val="Ja, angelegt">&#10003; Ja, angelegt</button>
+          <button class="status-btn" data-field="a2" data-val="Noch nicht">&#10007; Noch nicht</button>
+          <button class="status-btn" data-field="a2" data-val="Bis Session 2">Bis Session 2</button>
+        </div>
+        <input type="hidden" id="f-a2" />
+      </div>
+    </div>
+
+    <!-- Block B -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-badge blue">Block B</span>
+        <div>
+          <div class="section-title">Sammeln &amp; Vorbereiten</div>
+          <div class="section-hint">~40&ndash;60 Min</div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label class="q-label">Wie viele Laborbefunde haben Sie anonymisiert? <span class="required-mark">*</span></label>
+        <p class="q-hint">Ziel: 3&ndash;5 Befunde. Regel: Name &rarr; "Patient M, 28 J., m" &middot; Adresse raus &middot; Labor-ID bleibt.</p>
+        <div class="radio-group">
+          <label><input type="radio" name="b1" value="0 - noch keine" /> Noch keine</label>
+          <label><input type="radio" name="b1" value="1-2 Befunde" /> 1&ndash;2 Befunde</label>
+          <label><input type="radio" name="b1" value="3-5 Befunde (Ziel erreicht)" /> 3&ndash;5 Befunde &#10003;</label>
+          <label><input type="radio" name="b1" value="Mehr als 5" /> Mehr als 5</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label class="q-label" for="f-b2">Wunsch-Output: Wie sieht der perfekte Report aus? <span class="required-mark">*</span></label>
+        <p class="q-hint">Zu einem der anonymisierten Bef&uuml;nde: Was steht im Einleitungssatz? Welcher Ton? Was fehlt bei ChatGPT immer? Stichpunkte reichen.</p>
+        <textarea id="f-b2" rows="5" placeholder="z. B.: Einleitung beginnt mit Sportart und aktuellen Zielen &middot; Ton ist direkt aber nicht zu medizinisch &middot; ChatGPT ignoriert immer meinen Vitamin-D-Zielwert ..."></textarea>
+      </div>
+
+      <div class="question">
+        <label class="q-label" for="f-b3">Ton-Beispiel: Ein Absatz aus Ihrem besten Report</label>
+        <p class="q-hint">Kopieren Sie einen Absatz, der klingt "wie Sie" &mdash; das wird der Stilanker f&uuml;r Session 2.</p>
+        <textarea id="f-b3" rows="4" placeholder="z. B.: 'Dein Omega-3-Wert liegt mit 12 % deutlich im optimalen Bereich ...'"></textarea>
+      </div>
+
+      <div class="question">
+        <label class="q-label">Individualisierungslogik: Welche Zielwerte &auml;ndern sich je nach Patient?</label>
+        <p class="q-hint">Tragen Sie ein, was Sie sicher wissen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
+        <table class="matrix-table" id="matrix-table">
+          <thead>
+            <tr>
+              <th style="width:30%">Parameter</th>
+              <th style="width:25%">Standard-Zielwert</th>
+              <th style="width:27%">Bedingung (z. B. Sportler)</th>
+              <th style="width:18%">Angepasster Wert</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-body">
+            <tr>
+              <td><input type="text" value="Ferritin" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" value="Leistungssportler" /></td>
+              <td><input type="text" value="80-120 ng/ml" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="Homocystein" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" value="Athleten" /></td>
+              <td><input type="text" value="6-8 umol/l" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Vitamin D" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" placeholder="" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="(weitere)" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" placeholder="" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="matrix-add-row" type="button" onclick="addMatrixRow()">+ Zeile hinzuf&uuml;gen</button>
+      </div>
+
+      <div class="question">
+        <label class="q-label">CI &amp; Referenzdokumente</label>
+        <p class="q-hint">Gibt es eine CI-Datei (Tonalität, Schreibstil)? Oder externe Protokolle, die Sie nutzen?</p>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="docs" value="CI-Dokument vorhanden - schicke vorab" /> CI-Dokument vorhanden &mdash; schicke ich vorab</label>
+          <label><input type="checkbox" name="docs" value="CI-Dokument vorhanden - bringe in Session 2" /> CI-Dokument vorhanden &mdash; bringe ich in Session 2 mit</label>
+          <label><input type="checkbox" name="docs" value="Externe Referenztabellen / Protokolle vorhanden" /> Externe Referenztabellen / Protokolle vorhanden</label>
+          <label><input type="checkbox" name="docs" value="Kein CI-Dokument - Ton-Beispiel reicht" /> Kein CI-Dokument &mdash; Ton-Beispiel reicht</label>
+          <label><input type="checkbox" name="docs" value="Keine externen Quellen" /> Keine externen Quellen</label>
+        </div>
+        <div style="margin-top:10px">
+          <label class="q-label" for="f-b5d" style="font-weight:500;font-size:13px">Beschreibung (optional)</label>
+          <input type="text" id="f-b5d" placeholder="z. B. IFM-Protokoll, eigene Zielwerttabelle als PDF ..." />
+        </div>
+      </div>
+
+      <div class="question">
+        <label class="q-label" for="f-notes">Anmerkungen / Offene Fragen</label>
+        <textarea id="f-notes" rows="3" placeholder="Optional &mdash; was ist Ihnen seit Session 1 noch eingefallen?"></textarea>
+      </div>
+    </div>
+
+    <div class="submit-section" id="submit-section">
+      <button class="submit-btn" id="submit-btn" type="button" onclick="submitForm()">
+        Hausaufgaben einreichen
+      </button>
+    </div>
+
+  </div>
+
+  <div id="thank-you-view">
+    <div class="ty-check">&#10003;</div>
+    <h2>Eingegangen &mdash; vielen Dank!</h2>
+    <p>Ihre Hausaufgaben sind angekommen. Wir besprechen alles in Session 2.</p>
+  </div>
+
+  <footer class="global-footer">
+    <span>&copy; 2026 INTEGRI &middot; Tilman M&ouml;ller</span>
+    <span>
+      <a href="https://integri.de/datenschutz" target="_blank">Datenschutz</a> &middot;
+      <a href="https://integri.de/impressum" target="_blank">Impressum</a>
+    </span>
+  </footer>
+
+</div>
+
+<script>
+var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
+
+document.querySelectorAll('.status-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var field = this.dataset.field;
+    var val = this.dataset.val;
+    document.querySelectorAll('.status-btn[data-field="' + field + '"]').forEach(function(b) {
+      b.classList.remove('selected-yes','selected-no','selected-partial');
+    });
+    var cls = val.startsWith('Ja') ? 'selected-yes' : val.startsWith('Noch') ? 'selected-no' : 'selected-partial';
+    this.classList.add(cls);
+    document.getElementById('f-' + field).value = val;
+  });
+});
+
+function addMatrixRow() {
+  var tbody = document.getElementById('matrix-body');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Parameter" /></td>' +
+    '<td><input type="text" placeholder="" /></td>' +
+    '<td><input type="text" placeholder="Bedingung" /></td>' +
+    '<td><input type="text" placeholder="Wert" /></td>';
+  tbody.appendChild(tr);
+}
+
+function readMatrix() {
+  var rows = document.querySelectorAll('#matrix-body tr');
+  var lines = [];
+  rows.forEach(function(row) {
+    var vals = Array.from(row.querySelectorAll('input')).map(function(c){return c.value.trim();});
+    if (vals.some(function(v){return v!=='';})) lines.push(vals.join(' | '));
+  });
+  return lines.join('\n') || '(nicht ausgefuellt)';
+}
+
+function readDocs() {
+  var checked = document.querySelectorAll('input[name="docs"]:checked');
+  return Array.from(checked).map(function(c){return c.value;}).join(', ') || '(keine Angabe)';
+}
+
+function readRadio(name) {
+  var c = document.querySelector('input[name="' + name + '"]:checked');
+  return c ? c.value : '';
+}
+
+function validate() {
+  var err = [];
+  if (!document.getElementById('f-name').value.trim()) err.push('Name');
+  if (!document.getElementById('f-email').value.trim()) err.push('E-Mail');
+  if (!document.getElementById('f-a1').value) err.push('Claude Pro Status');
+  if (!document.getElementById('f-a2').value) err.push('Claude-Projekt Status');
+  if (!readRadio('b1')) err.push('Anzahl anonymisierter Befunde');
+  if (!document.getElementById('f-b2').value.trim()) err.push('Wunsch-Output');
+  return err;
+}
+
+function submitForm() {
+  var errors = validate();
+  if (errors.length > 0) {
+    alert('Bitte noch ausfuellen:\n- ' + errors.join('\n- '));
+    return;
+  }
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet ...';
+
+  var name   = document.getElementById('f-name').value.trim();
+  var email  = document.getElementById('f-email').value.trim();
+  var praxis = document.getElementById('f-praxis').value.trim();
+
+  var content = [
+    '=== KI-SPRINT HAUSAUFGABEN SESSION 1 ===',
+    'Name:    ' + name,
+    'Praxis:  ' + (praxis||'-'),
+    'E-Mail:  ' + email,
+    '',
+    '--- BLOCK A: EINRICHTEN ---',
+    'Claude Pro:    ' + document.getElementById('f-a1').value,
+    'Claude-Projekt: ' + document.getElementById('f-a2').value,
+    '',
+    '--- BLOCK B: SAMMELN ---',
+    'Befunde anonymisiert: ' + readRadio('b1'),
+    '',
+    'Wunsch-Output:',
+    document.getElementById('f-b2').value.trim(),
+    '',
+    'Ton-Beispiel:',
+    document.getElementById('f-b3').value.trim() || '(nicht ausgefuellt)',
+    '',
+    'Individualisierungsmatrix (Parameter | Standard | Bedingung | Wert):',
+    readMatrix(),
+    '',
+    'CI & Referenzdokumente: ' + readDocs(),
+    document.getElementById('f-b5d').value.trim() ? 'Detail: ' + document.getElementById('f-b5d').value.trim() : '',
+    '',
+    'Anmerkungen: ' + (document.getElementById('f-notes').value.trim() || '-'),
+  ].filter(function(l){return l!==undefined;}).join('\n');
+
+  fetch(WORKER_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify({email:email, _tool:'ki-sprint-ha-1', name:name, content:content})
+  })
+  .then(function(r){return r.json();})
+  .then(function(){
+    document.getElementById('form-sections').style.display='none';
+    var tv = document.getElementById('thank-you-view');
+    tv.style.display='block';
+    tv.scrollIntoView({behavior:'smooth'});
+  })
+  .catch(function(){
+    btn.disabled=false;
+    btn.textContent='Hausaufgaben einreichen';
+    alert('Fehler beim Senden. Bitte erneut versuchen oder direkt an info@integri.de schreiben.');
+  });
+}
+</script>
+</body>
+</html>
