@@ -16,13 +16,6 @@
     body{font-family:'IBM Plex Sans',-apple-system,sans-serif;font-size:16px;line-height:1.65;
       color:var(--text);background:var(--off-white);padding:40px 20px 60px;-webkit-font-smoothing:antialiased}
     .wrapper{max-width:760px;margin:0 auto}
-    .global-header{background:var(--white);border-radius:var(--radius-md);border-top:4px solid var(--petrol);
-      padding:14px 28px;margin-bottom:8px;box-shadow:0 1px 4px rgba(3,49,50,0.06);
-      display:flex;align-items:center;justify-content:space-between}
-    .header-left{display:flex;align-items:center;gap:14px}
-    .header-brand{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
-      color:var(--petrol);border-left:1px solid var(--border);padding-left:14px}
-    .header-docname{font-size:15px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--petrol)}
     .page-title{background:var(--white);border-radius:var(--radius-md);border-left:4px solid var(--petrol);
       padding:24px 28px;margin:20px 0 8px}
     .page-title h1{font-size:22px;font-weight:600;color:var(--petrol);margin-bottom:6px}
@@ -36,14 +29,14 @@
     .section-badge.blue{background:var(--blue)}
     .section-title{font-size:16px;font-weight:600;color:var(--text)}
     .section-hint{font-size:13px;color:var(--text-dim);margin-top:2px}
-    .question{margin-bottom:20px}
+    .question{margin-bottom:22px}
     .q-label{font-size:14px;font-weight:600;display:block;margin-bottom:4px;color:var(--text)}
-    .q-hint{font-size:12px;color:var(--text-dim);margin-bottom:8px}
+    .q-hint{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.5}
     .required-mark{color:var(--error);margin-left:2px}
-    input[type="text"],input[type="email"],textarea,select{width:100%;padding:10px 12px;
+    input[type="text"],input[type="email"],textarea{width:100%;padding:10px 12px;
       border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;
       font-family:inherit;color:var(--text);background:var(--white);transition:border-color 0.15s}
-    input:focus,textarea:focus,select:focus{outline:none;border-color:var(--petrol);
+    input:focus,textarea:focus{outline:none;border-color:var(--petrol);
       box-shadow:0 0 0 3px rgba(3,49,50,0.08)}
     textarea{resize:vertical;min-height:90px}
     .radio-group,.checkbox-group{display:flex;flex-direction:column;gap:6px;margin-top:4px}
@@ -56,7 +49,7 @@
     .matrix-table th{background:#F0F4F7;font-weight:600;font-size:12px;text-transform:uppercase;
       letter-spacing:0.06em;color:var(--text-dim);padding:8px 10px;border:1px solid var(--border);text-align:left}
     .matrix-table td{padding:6px;border:1px solid var(--border);vertical-align:middle}
-    .matrix-table td input{padding:6px 8px;font-size:13px;border:1px solid #E0E5E8;border-radius:var(--radius-sm)}
+    .matrix-table td input{padding:6px 8px;font-size:13px;border:1px solid #E0E5E8;border-radius:var(--radius-sm);width:100%}
     .matrix-table tr:nth-child(even) td{background:#FAFBFC}
     .matrix-add-row{font-size:12px;color:var(--petrol);cursor:pointer;border:none;background:none;
       margin-top:6px;text-decoration:underline;padding:0}
@@ -69,6 +62,24 @@
     .status-btn.selected-yes{background:var(--green-light);border-color:var(--green);color:var(--green)}
     .status-btn.selected-no{background:var(--apricot);border-color:var(--terracotta);color:var(--terracotta)}
     .status-btn.selected-partial{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+    /* File upload */
+    .upload-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:16px 20px;
+      text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;margin-top:6px}
+    .upload-zone:hover{border-color:var(--petrol);background:#f5fbfb}
+    .upload-zone input[type="file"]{display:none}
+    .upload-zone-label{font-size:13px;color:var(--text-dim);cursor:pointer}
+    .upload-zone-label strong{color:var(--petrol)}
+    .upload-file-list{margin-top:8px;font-size:12px;color:var(--text-dim)}
+    .upload-file-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f0f0f0}
+    .upload-file-item:last-child{border-bottom:none}
+    .upload-note{font-size:12px;color:var(--text-dim);margin-top:8px;padding:8px 12px;
+      background:var(--blue-light);border-radius:var(--radius-sm);border-left:3px solid var(--blue)}
+    /* Profile chips */
+    .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chip{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;
+      border:1.5px solid var(--border);background:var(--white);cursor:pointer;
+      transition:all 0.15s;color:var(--text-dim)}
+    .chip.selected{background:var(--petrol);border-color:var(--petrol);color:var(--white)}
     .submit-section{margin-top:24px}
     .submit-btn{width:100%;padding:14px;background:var(--petrol);color:var(--white);
       border:none;border-radius:var(--radius-md);font-size:16px;font-weight:600;
@@ -83,6 +94,7 @@
     .global-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
       font-size:12px;color:var(--text-dim);margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
     .global-footer a{color:var(--petrol);text-decoration:none}
+    .divider{border:none;border-top:1px solid var(--border);margin:20px 0}
   </style>
 </head>
 <body>
@@ -91,17 +103,10 @@
   <script>window.INTEGRI_CHROME = { docname: 'KI-Sprint HA 1' };</script>
   <script src="../assets/tool-chrome.js"></script>
 
-  <header class="global-header">
-    <div class="header-left">
-      <div class="header-brand">INTEGRI</div>
-    </div>
-    <div class="header-docname">KI-Sprint &middot; Hausaufgaben Session 1</div>
-  </header>
-
   <div class="page-title">
-    <h1>Ihre Hausaufgaben &mdash; Session 1</h1>
+    <h1>Hausaufgaben &mdash; Session 1</h1>
     <p>Bitte f&uuml;llen Sie dieses Formular vor Session 2 aus. Aufwand: ca. 60&ndash;90 Minuten.<br>
-    Die Antworten flie&szlig;en direkt in den Aufbau Ihres KI-Workflows in Session 2.</p>
+    Dokumente k&ouml;nnen direkt hochgeladen oder vorab per E-Mail an <strong>info@integri.de</strong> geschickt werden.</p>
   </div>
 
   <div id="form-sections">
@@ -122,13 +127,13 @@
           <input type="email" id="f-email" placeholder="ihre@praxis.de" />
         </div>
       </div>
-      <div class="question">
+      <div class="question" style="margin-bottom:0">
         <label class="q-label" for="f-praxis">Praxisname</label>
         <input type="text" id="f-praxis" placeholder="z. B. Functional Med GbR" />
       </div>
     </div>
 
-    <!-- Block A -->
+    <!-- Block A: Einrichten -->
     <div class="section">
       <div class="section-header">
         <span class="section-badge">Block A</span>
@@ -137,9 +142,10 @@
           <div class="section-hint">~20&ndash;30 Min</div>
         </div>
       </div>
+
       <div class="question">
-        <label class="q-label">Claude Pro Account angelegt? <span class="required-mark">*</span></label>
-        <p class="q-hint">claude.ai &rarr; Pro (20 &euro;/Monat)</p>
+        <label class="q-label">Claude Pro eingerichtet? <span class="required-mark">*</span></label>
+        <p class="q-hint">claude.ai &rarr; Pro (20 &euro;/Monat). Falls noch nicht aktiv: jetzt einrichten.</p>
         <div class="status-row">
           <button class="status-btn" data-field="a1" data-val="Ja, erledigt">&#10003; Ja, erledigt</button>
           <button class="status-btn" data-field="a1" data-val="Noch nicht">&#10007; Noch nicht</button>
@@ -147,9 +153,10 @@
         </div>
         <input type="hidden" id="f-a1" />
       </div>
+
       <div class="question">
         <label class="q-label">Leeres Claude-Projekt angelegt? <span class="required-mark">*</span></label>
-        <p class="q-hint">Nach Login: "Neues Projekt" &rarr; Name z. B. "Laborbefund-Reports" &mdash; noch kein Inhalt n&ouml;tig</p>
+        <p class="q-hint">Nach Login: "Neues Projekt" &rarr; Name z. B. "Laborbefund-Reports" &mdash; noch kein Inhalt n&ouml;tig. Das f&uuml;llen wir gemeinsam in Session 2.</p>
         <div class="status-row">
           <button class="status-btn" data-field="a2" data-val="Ja, angelegt">&#10003; Ja, angelegt</button>
           <button class="status-btn" data-field="a2" data-val="Noch nicht">&#10007; Noch nicht</button>
@@ -157,9 +164,20 @@
         </div>
         <input type="hidden" id="f-a2" />
       </div>
+
+      <div class="question" style="margin-bottom:0">
+        <label class="q-label">Mit den Grundfunktionen von Claude vertraut gemacht?</label>
+        <p class="q-hint">Interface kennenlernen, einen Test-Chat ausprobieren &mdash; einfach klicken und schauen. Eine Schritt-f&uuml;r-Schritt-Anleitung stellen wir separat bereit.</p>
+        <div class="status-row">
+          <button class="status-btn" data-field="a3" data-val="Ja, erkundet">&#10003; Ja, erkundet</button>
+          <button class="status-btn" data-field="a3" data-val="Kurz reingeschaut">Kurz reingeschaut</button>
+          <button class="status-btn" data-field="a3" data-val="Noch nicht">&#10007; Noch nicht</button>
+        </div>
+        <input type="hidden" id="f-a3" />
+      </div>
     </div>
 
-    <!-- Block B -->
+    <!-- Block B: Sammeln -->
     <div class="section">
       <div class="section-header">
         <span class="section-badge blue">Block B</span>
@@ -169,42 +187,93 @@
         </div>
       </div>
 
+      <!-- Befunde -->
       <div class="question">
-        <label class="q-label">Wie viele Laborbefunde haben Sie anonymisiert? <span class="required-mark">*</span></label>
-        <p class="q-hint">Ziel: 3&ndash;5 Befunde. Regel: Name &rarr; "Patient M, 28 J., m" &middot; Adresse raus &middot; Labor-ID bleibt.</p>
-        <div class="radio-group">
-          <label><input type="radio" name="b1" value="0 - noch keine" /> Noch keine</label>
-          <label><input type="radio" name="b1" value="1-2 Befunde" /> 1&ndash;2 Befunde</label>
-          <label><input type="radio" name="b1" value="3-5 Befunde (Ziel erreicht)" /> 3&ndash;5 Befunde &#10003;</label>
-          <label><input type="radio" name="b1" value="Mehr als 5" /> Mehr als 5</label>
+        <label class="q-label">3&ndash;5 Laborbefunde zusammenstellen <span class="required-mark">*</span></label>
+        <p class="q-hint">Reale Befunde aus dem Praxisalltag &mdash; m&ouml;glichst unterschiedliche F&auml;lle. Das sind unser Testmaterial f&uuml;r Session 2. Befunde k&ouml;nnen direkt hochgeladen oder per Mail an info@integri.de geschickt werden.</p>
+        <div class="radio-group" style="margin-bottom:12px">
+          <label><input type="radio" name="b-befunde-anzahl" value="Noch keine" /> Noch keine</label>
+          <label><input type="radio" name="b-befunde-anzahl" value="1-2 Befunde" /> 1&ndash;2 Befunde</label>
+          <label><input type="radio" name="b-befunde-anzahl" value="3-5 Befunde (Ziel erreicht)" /> 3&ndash;5 Befunde &#10003;</label>
+          <label><input type="radio" name="b-befunde-anzahl" value="Mehr als 5" /> Mehr als 5</label>
+        </div>
+        <div class="upload-zone" id="zone-befunde" onclick="document.getElementById('file-befunde').click()">
+          <input type="file" id="file-befunde" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFiles(this,'list-befunde','files-befunde')" />
+          <label class="upload-zone-label"><strong>Befunde hochladen</strong><br>PDF, JPG &mdash; mehrere m&ouml;glich</label>
+          <div class="upload-file-list" id="list-befunde"></div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Erg&auml;nzende Mails -->
+      <div class="question">
+        <label class="q-label">Erg&auml;nzende Mails an Patienten</label>
+        <p class="q-hint">Die Mails, die aktuell zusammen mit dem Laborreport und dem Praxisdokument an Patienten gehen &mdash; mit Supplement-Links, Hinweisen etc. Diese zeigen uns, was noch au&szlig;erhalb des Reports l&auml;uft und was sp&auml;ter integriert werden soll.</p>
+        <div class="upload-zone" id="zone-mails" onclick="document.getElementById('file-mails').click()">
+          <input type="file" id="file-mails" multiple accept=".pdf,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-mails','files-mails')" />
+          <label class="upload-zone-label"><strong>Beispiel-Mails hochladen</strong><br>PDF, EML, DOCX &mdash; mehrere m&ouml;glich</label>
+          <div class="upload-file-list" id="list-mails"></div>
+        </div>
+        <div class="upload-note">Alternativ: Mails einfach weiterleiten an <strong>info@integri.de</strong></div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- CI-Dokumente / Sprachbeispiele -->
+      <div class="question">
+        <label class="q-label">CI-Dokumente &amp; Sprachbeispiele</label>
+        <p class="q-hint">Dokumente, die eine typische patientengerechte Sprache in Ihrem Wording widerspiegeln &mdash; Texte, die Ihre Zielgruppe gut versteht und die zu Ihrer Marke passen. Auch Beispiel-Reports, Website-Texte oder Patientenbriefe sind willkommen. <strong>Bitte m&ouml;glichst vorab senden.</strong></p>
+        <div class="upload-zone" id="zone-ci" onclick="document.getElementById('file-ci').click()">
+          <input type="file" id="file-ci" multiple accept=".pdf,.docx,.pages,.jpg,.png,.txt,.md" onchange="handleFiles(this,'list-ci','files-ci')" />
+          <label class="upload-zone-label"><strong>Dokumente hochladen</strong><br>PDF, DOCX, Pages, Bilder &mdash; mehrere m&ouml;glich</label>
+          <div class="upload-file-list" id="list-ci"></div>
+        </div>
+        <div class="upload-note">Alternativ: Dokumente vorab an <strong>info@integri.de</strong> senden &mdash; je fr&uuml;her, desto besser f&uuml;r Session 2.</div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Individualisierungslogik -->
+      <div class="question">
+        <label class="q-label">Welche Patientenprofile sind f&uuml;r Ihre Praxis relevant?</label>
+        <p class="q-hint">Mehrfachauswahl m&ouml;glich. Das sind unsere Arbeits-Profile &mdash; weitere kommen sp&auml;ter aus der Praxis.</p>
+        <div class="chip-group" id="profile-chips">
+          <button class="chip" type="button" data-val="Sportler / Athleten">Sportler / Athleten</button>
+          <button class="chip" type="button" data-val="Stoffwechselanalyse">Stoffwechselanalyse</button>
+          <button class="chip" type="button" data-val="Kinderwunsch">Kinderwunsch</button>
+        </div>
+        <input type="hidden" id="f-profile" />
+        <div style="margin-top:10px">
+          <input type="text" id="f-profile-extra" placeholder="Weitere Profile (optional) ..." />
         </div>
       </div>
 
       <div class="question">
-        <label class="q-label" for="f-b2">Wunsch-Output: Wie sieht der perfekte Report aus? <span class="required-mark">*</span></label>
-        <p class="q-hint">Zu einem der anonymisierten Bef&uuml;nde: Was steht im Einleitungssatz? Welcher Ton? Was fehlt bei ChatGPT immer? Stichpunkte reichen.</p>
-        <textarea id="f-b2" rows="5" placeholder="z. B.: Einleitung beginnt mit Sportart und aktuellen Zielen &middot; Ton ist direkt aber nicht zu medizinisch &middot; ChatGPT ignoriert immer meinen Vitamin-D-Zielwert ..."></textarea>
-      </div>
-
-      <div class="question">
-        <label class="q-label" for="f-b3">Ton-Beispiel: Ein Absatz aus Ihrem besten Report</label>
-        <p class="q-hint">Kopieren Sie einen Absatz, der klingt "wie Sie" &mdash; das wird der Stilanker f&uuml;r Session 2.</p>
-        <textarea id="f-b3" rows="4" placeholder="z. B.: 'Dein Omega-3-Wert liegt mit 12 % deutlich im optimalen Bereich ...'"></textarea>
-      </div>
-
-      <div class="question">
-        <label class="q-label">Individualisierungslogik: Welche Zielwerte &auml;ndern sich je nach Patient?</label>
+        <label class="q-label">Individualisierungsmatrix: Ihre abweichenden Zielwerte</label>
         <p class="q-hint">Tragen Sie ein, was Sie sicher wissen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
         <table class="matrix-table" id="matrix-table">
           <thead>
             <tr>
-              <th style="width:30%">Parameter</th>
-              <th style="width:25%">Standard-Zielwert</th>
-              <th style="width:27%">Bedingung (z. B. Sportler)</th>
-              <th style="width:18%">Angepasster Wert</th>
+              <th style="width:28%">Parameter</th>
+              <th style="width:24%">Ihr Zielwert</th>
+              <th style="width:28%">Bedingung (z. B. Sportler)</th>
+              <th style="width:20%">Angepasster Wert</th>
             </tr>
           </thead>
           <tbody id="matrix-body">
+            <tr>
+              <td><input type="text" value="Vitamin D" /></td>
+              <td><input type="text" value="40-50 ng/ml" /></td>
+              <td><input type="text" value="Leistungssportler" /></td>
+              <td><input type="text" value="40-60 ng/ml" /></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="Omega-3 Index" /></td>
+              <td><input type="text" value=">8 %" /></td>
+              <td><input type="text" placeholder="" /></td>
+              <td><input type="text" placeholder="" /></td>
+            </tr>
             <tr>
               <td><input type="text" value="Ferritin" /></td>
               <td><input type="text" placeholder="" /></td>
@@ -212,19 +281,7 @@
               <td><input type="text" value="80-120 ng/ml" /></td>
             </tr>
             <tr>
-              <td><input type="text" value="Homocystein" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" value="Athleten" /></td>
-              <td><input type="text" value="6-8 umol/l" /></td>
-            </tr>
-            <tr>
-              <td><input type="text" placeholder="Vitamin D" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" placeholder="" /></td>
-            </tr>
-            <tr>
-              <td><input type="text" placeholder="(weitere)" /></td>
+              <td><input type="text" placeholder="Weiterer Parameter" /></td>
               <td><input type="text" placeholder="" /></td>
               <td><input type="text" placeholder="" /></td>
               <td><input type="text" placeholder="" /></td>
@@ -234,23 +291,24 @@
         <button class="matrix-add-row" type="button" onclick="addMatrixRow()">+ Zeile hinzuf&uuml;gen</button>
       </div>
 
+      <hr class="divider" />
+
+      <!-- Standardauswahl Blutwerte -->
       <div class="question">
-        <label class="q-label">CI &amp; Referenzdokumente</label>
-        <p class="q-hint">Gibt es eine CI-Datei (Tonalität, Schreibstil)? Oder externe Protokolle, die Sie nutzen?</p>
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="docs" value="CI-Dokument vorhanden - schicke vorab" /> CI-Dokument vorhanden &mdash; schicke ich vorab</label>
-          <label><input type="checkbox" name="docs" value="CI-Dokument vorhanden - bringe in Session 2" /> CI-Dokument vorhanden &mdash; bringe ich in Session 2 mit</label>
-          <label><input type="checkbox" name="docs" value="Externe Referenztabellen / Protokolle vorhanden" /> Externe Referenztabellen / Protokolle vorhanden</label>
-          <label><input type="checkbox" name="docs" value="Kein CI-Dokument - Ton-Beispiel reicht" /> Kein CI-Dokument &mdash; Ton-Beispiel reicht</label>
-          <label><input type="checkbox" name="docs" value="Keine externen Quellen" /> Keine externen Quellen</label>
-        </div>
-        <div style="margin-top:10px">
-          <label class="q-label" for="f-b5d" style="font-weight:500;font-size:13px">Beschreibung (optional)</label>
-          <input type="text" id="f-b5d" placeholder="z. B. IFM-Protokoll, eigene Zielwerttabelle als PDF ..." />
+        <label class="q-label">Ihre Go-to Blutwerte &mdash; Praxis-Leistungsportfolio</label>
+        <p class="q-hint">Welche Werte kommen in Ihrer Praxis &uuml;berhaupt in Frage? Das begrenzt sp&auml;ter, was die KI vorschlagen darf. Stichpunkte oder Komma-getrennte Liste gen&uuml;gt &mdash; unvollst&auml;ndig ist okay.</p>
+        <textarea id="f-blutwerte" rows="4" placeholder="z. B.: Vitamin D, Omega-3 Index, Ferritin, Homocystein, Blutzucker n&uuml;chtern, HbA1c, TSH, fT3, fT4, CRP, Cortisol, DHEA-S, Testosteron ..."></textarea>
+        <div class="upload-zone" style="margin-top:8px" id="zone-blutwerte" onclick="document.getElementById('file-blutwerte').click()">
+          <input type="file" id="file-blutwerte" accept=".pdf,.xlsx,.docx,.csv,.txt" onchange="handleFiles(this,'list-blutwerte','files-blutwerte')" />
+          <label class="upload-zone-label"><strong>Liste hochladen</strong> (falls als Datei vorhanden)</label>
+          <div class="upload-file-list" id="list-blutwerte"></div>
         </div>
       </div>
 
-      <div class="question">
+      <hr class="divider" />
+
+      <!-- Anmerkungen -->
+      <div class="question" style="margin-bottom:0">
         <label class="q-label" for="f-notes">Anmerkungen / Offene Fragen</label>
         <textarea id="f-notes" rows="3" placeholder="Optional &mdash; was ist Ihnen seit Session 1 noch eingefallen?"></textarea>
       </div>
@@ -283,19 +341,65 @@
 <script>
 var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
 
+// --- URL-Parameter: E-Mail vorausfuellen ---
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var email = params.get('email');
+  var name  = params.get('name');
+  var praxis = params.get('praxis');
+  if (email)  document.getElementById('f-email').value  = decodeURIComponent(email);
+  if (name)   document.getElementById('f-name').value   = decodeURIComponent(name);
+  if (praxis) document.getElementById('f-praxis').value = decodeURIComponent(praxis);
+})();
+
+// --- Status-Buttons ---
 document.querySelectorAll('.status-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     var field = this.dataset.field;
-    var val = this.dataset.val;
     document.querySelectorAll('.status-btn[data-field="' + field + '"]').forEach(function(b) {
       b.classList.remove('selected-yes','selected-no','selected-partial');
     });
+    var val = this.dataset.val;
     var cls = val.startsWith('Ja') ? 'selected-yes' : val.startsWith('Noch') ? 'selected-no' : 'selected-partial';
     this.classList.add(cls);
     document.getElementById('f-' + field).value = val;
   });
 });
 
+// --- Profile Chips ---
+document.querySelectorAll('#profile-chips .chip').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    this.classList.toggle('selected');
+    var selected = Array.from(document.querySelectorAll('#profile-chips .chip.selected'))
+      .map(function(c){return c.dataset.val;});
+    document.getElementById('f-profile').value = selected.join(', ');
+  });
+});
+
+// --- Upload Handler ---
+// Hinweis: Dateien werden als Metadaten (Name, Groesse) erfasst.
+// Base64-Anhang-Support erfordert Worker-Update (worker-integri-email-v2.js).
+var uploadedFiles = {};
+
+function handleFiles(input, listId, storeKey) {
+  var files = Array.from(input.files);
+  uploadedFiles[storeKey] = files;
+  var list = document.getElementById(listId);
+  list.innerHTML = '';
+  files.forEach(function(f) {
+    var div = document.createElement('div');
+    div.className = 'upload-file-item';
+    div.innerHTML = '&#128206; <span>' + f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)</span>';
+    list.appendChild(div);
+  });
+}
+
+function getFileNames(storeKey) {
+  var files = uploadedFiles[storeKey] || [];
+  return files.length ? files.map(function(f){return f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)';}).join(', ') : '-';
+}
+
+// --- Matrix ---
 function addMatrixRow() {
   var tbody = document.getElementById('matrix-body');
   var tr = document.createElement('tr');
@@ -316,27 +420,22 @@ function readMatrix() {
   return lines.join('\n') || '(nicht ausgefuellt)';
 }
 
-function readDocs() {
-  var checked = document.querySelectorAll('input[name="docs"]:checked');
-  return Array.from(checked).map(function(c){return c.value;}).join(', ') || '(keine Angabe)';
-}
-
 function readRadio(name) {
   var c = document.querySelector('input[name="' + name + '"]:checked');
   return c ? c.value : '';
 }
 
+// --- Validierung ---
 function validate() {
   var err = [];
-  if (!document.getElementById('f-name').value.trim()) err.push('Name');
   if (!document.getElementById('f-email').value.trim()) err.push('E-Mail');
   if (!document.getElementById('f-a1').value) err.push('Claude Pro Status');
   if (!document.getElementById('f-a2').value) err.push('Claude-Projekt Status');
-  if (!readRadio('b1')) err.push('Anzahl anonymisierter Befunde');
-  if (!document.getElementById('f-b2').value.trim()) err.push('Wunsch-Output');
+  if (!readRadio('b-befunde-anzahl')) err.push('Anzahl Laborbefunde');
   return err;
 }
 
+// --- Submit ---
 function submitForm() {
   var errors = validate();
   if (errors.length > 0) {
@@ -351,33 +450,44 @@ function submitForm() {
   var email  = document.getElementById('f-email').value.trim();
   var praxis = document.getElementById('f-praxis').value.trim();
 
+  var profile = document.getElementById('f-profile').value || '-';
+  var profileExtra = document.getElementById('f-profile-extra').value.trim();
+  if (profileExtra) profile += ', ' + profileExtra;
+
   var content = [
     '=== KI-SPRINT HAUSAUFGABEN SESSION 1 ===',
-    'Name:    ' + name,
+    'Name:    ' + (name||'-'),
     'Praxis:  ' + (praxis||'-'),
     'E-Mail:  ' + email,
     '',
     '--- BLOCK A: EINRICHTEN ---',
-    'Claude Pro:    ' + document.getElementById('f-a1').value,
-    'Claude-Projekt: ' + document.getElementById('f-a2').value,
+    'Claude Pro:          ' + (document.getElementById('f-a1').value||'-'),
+    'Claude-Projekt:      ' + (document.getElementById('f-a2').value||'-'),
+    'Grundfunktionen:     ' + (document.getElementById('f-a3').value||'-'),
     '',
     '--- BLOCK B: SAMMELN ---',
-    'Befunde anonymisiert: ' + readRadio('b1'),
+    'Laborbefunde:        ' + (readRadio('b-befunde-anzahl')||'-'),
+    'Befund-Uploads:      ' + getFileNames('files-befunde'),
     '',
-    'Wunsch-Output:',
-    document.getElementById('f-b2').value.trim(),
+    'Ergaenzende Mails:   ' + getFileNames('files-mails'),
     '',
-    'Ton-Beispiel:',
-    document.getElementById('f-b3').value.trim() || '(nicht ausgefuellt)',
+    'CI-Dokumente:        ' + getFileNames('files-ci'),
     '',
-    'Individualisierungsmatrix (Parameter | Standard | Bedingung | Wert):',
+    'Patientenprofile:    ' + profile,
+    '',
+    'Individualisierungsmatrix (Parameter | Zielwert | Bedingung | Wert):',
     readMatrix(),
     '',
-    'CI & Referenzdokumente: ' + readDocs(),
-    document.getElementById('f-b5d').value.trim() ? 'Detail: ' + document.getElementById('f-b5d').value.trim() : '',
+    'Go-to Blutwerte:',
+    document.getElementById('f-blutwerte').value.trim() || '-',
+    'Blutwerte-Upload:    ' + getFileNames('files-blutwerte'),
     '',
-    'Anmerkungen: ' + (document.getElementById('f-notes').value.trim() || '-'),
-  ].filter(function(l){return l!==undefined;}).join('\n');
+    'Anmerkungen:',
+    document.getElementById('f-notes').value.trim() || '-',
+    '',
+    '--- HINWEIS ---',
+    'Hochgeladene Dateien bitte gesondert pruefen (Upload-Anhang-Support folgt).',
+  ].join('\n');
 
   fetch(WORKER_URL, {
     method:'POST',
