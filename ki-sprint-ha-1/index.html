@@ -201,24 +201,7 @@
     .chip:hover   { border-color: var(--terracotta); color: var(--terracotta); }
     .chip.selected{ background: var(--terracotta); border-color: var(--terracotta); color: var(--white); }
 
-    /* ── MATRIX ── */
-    .matrix-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
-    .matrix-table th {
-      background: #F0F4F7; font-weight: 600; font-size: 12px;
-      text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);
-      padding: 8px 10px; border: 1px solid var(--border); text-align: left;
-    }
-    .matrix-table td { padding: 6px; border: 1px solid var(--border); vertical-align: middle; }
-    .matrix-table td input {
-      padding: 6px 8px; font-size: 13px; border: 1px solid #E0E5E8;
-      border-radius: var(--radius-sm); width: 100%; font-family: inherit; outline: none;
-    }
-    .matrix-table tr:nth-child(even) td { background: #FAFBFC; }
-    .matrix-add-row {
-      font-size: 13px; color: var(--petrol); cursor: pointer;
-      border: none; background: none; margin-top: 6px;
-      text-decoration: underline; padding: 0; font-family: inherit;
-    }
+
 
     /* ── UPLOAD AREAS ── */
     .upload-area {
@@ -464,7 +447,7 @@
         <!-- Profile -->
         <div class="question">
           <label class="q-label">Welche Patientenprofile sind f&uuml;r Ihre Praxis relevant?</label>
-          <p class="q-hint">Mehrfachauswahl m&ouml;glich. Das sind unsere Arbeits-Profile &mdash; weitere kommen sp&auml;ter aus der Praxis.</p>
+          <p class="q-hint">Mehrfachauswahl m&ouml;glich. Das sind unsere Arbeits-Profile &mdash; weitere k&ouml;nnen erg&auml;nzt werden.</p>
           <div class="chip-group" id="profile-chips">
             <button class="chip" type="button" data-val="Sportler / Athleten">Sportler / Athleten</button>
             <button class="chip" type="button" data-val="Stoffwechselanalyse">Stoffwechselanalyse</button>
@@ -476,47 +459,11 @@
           </div>
         </div>
 
-        <!-- Matrix -->
+        <!-- Profil-Unterschiede -->
         <div class="question">
-          <label class="q-label">Individualisierungsmatrix: Ihre abweichenden Zielwerte</label>
-          <p class="q-hint">Tragen Sie ein, was Sie sicher wissen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
-          <table class="matrix-table" id="matrix-table">
-            <thead>
-              <tr>
-                <th style="width:28%">Parameter</th>
-                <th style="width:24%">Ihr Zielwert</th>
-                <th style="width:28%">Profil</th>
-                <th style="width:20%">Angepasster Wert</th>
-              </tr>
-            </thead>
-            <tbody id="matrix-body">
-              <tr>
-                <td><input type="text" value="Vitamin D" /></td>
-                <td><input type="text" value="40-50 ng/ml" /></td>
-                <td><input type="text" value="Sportler / Athleten" /></td>
-                <td><input type="text" value="40-60 ng/ml" /></td>
-              </tr>
-              <tr>
-                <td><input type="text" value="Omega-3 Index" /></td>
-                <td><input type="text" value=">8 %" /></td>
-                <td><input type="text" placeholder="" /></td>
-                <td><input type="text" placeholder="" /></td>
-              </tr>
-              <tr>
-                <td><input type="text" value="Ferritin" /></td>
-                <td><input type="text" placeholder="" /></td>
-                <td><input type="text" value="Sportler / Athleten" /></td>
-                <td><input type="text" value="80-120 ng/ml" /></td>
-              </tr>
-              <tr>
-                <td><input type="text" placeholder="Weiterer Parameter" /></td>
-                <td><input type="text" placeholder="" /></td>
-                <td><input type="text" placeholder="" /></td>
-                <td><input type="text" placeholder="" /></td>
-              </tr>
-            </tbody>
-          </table>
-          <button class="matrix-add-row" type="button" onclick="addMatrixRow()">+ Zeile hinzuf&uuml;gen</button>
+          <label class="q-label">Wie unterscheiden sich diese Profile in Bezug auf Ihre Soll-Parameter?</label>
+          <p class="q-hint">Stichpunkte gen&uuml;gen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
+          <textarea id="f-matrix" rows="6" placeholder="z.&nbsp;B.:&#10;Sportler / Athleten: Vitamin D 40&ndash;60 ng/ml, Ferritin 80&ndash;120 ng/ml, Omega-3 &gt;8 %&#10;Stoffwechselanalyse: Vitamin D 40&ndash;50 ng/ml, Standardwerte Labor&#10;Kinderwunsch: &hellip;"></textarea>
         </div>
 
         <hr class="divider" />
@@ -692,27 +639,7 @@ function getFileNames(zoneId) {
     : '-';
 }
 
-/* ── Matrix ── */
-function addMatrixRow() {
-  var tbody = document.getElementById('matrix-body');
-  var tr = document.createElement('tr');
-  tr.innerHTML =
-    '<td><input type="text" placeholder="Parameter" /></td>' +
-    '<td><input type="text" placeholder="" /></td>' +
-    '<td><input type="text" placeholder="Profil" /></td>' +
-    '<td><input type="text" placeholder="Wert" /></td>';
-  tbody.appendChild(tr);
-}
 
-function readMatrix() {
-  var rows = document.querySelectorAll('#matrix-body tr');
-  var lines = [];
-  rows.forEach(function(row) {
-    var vals = Array.from(row.querySelectorAll('input')).map(function(c){ return c.value.trim(); });
-    if (vals.some(function(v){ return v !== ''; })) lines.push(vals.join(' | '));
-  });
-  return lines.join('\n') || '(nicht ausgefüllt)';
-}
 
 /* ── Validierung ── */
 function validate() {
@@ -761,8 +688,8 @@ function submitForm() {
     '',
     'Patientenprofile:  ' + profile,
     '',
-    'Individualisierungsmatrix (Parameter | Zielwert | Profil | Wert):',
-    readMatrix(),
+    'Profil-Unterschiede / Soll-Parameter:',
+    document.getElementById('f-matrix').value.trim() || '-',
     '',
     'Go-to Blutwerte:',
     document.getElementById('f-blutwerte').value.trim() || '-',
