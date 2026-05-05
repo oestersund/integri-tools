@@ -1107,106 +1107,76 @@
 
   document.querySelectorAll('textarea').forEach(el => el.addEventListener('input', updateProgress));
 
-  /* ── Upload-Logik (wiederverwendbar) ── */
-  function initUpload(areaId, inputId, listId, labelId, itemsId) {
-    const files = [];
-    const area = document.getElementById(areaId);
-    const input = document.getElementById(inputId);
-    const list = document.getElementById(listId);
-    const label = document.getElementById(labelId);
-    const items = document.getElementById(itemsId);
+  /* ── Upload-Logik ── */
+  function fmtSize(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(0) + ' KB';
+    return (b/1048576).toFixed(1) + ' MB';
+  }
 
-    input.addEventListener('change', e => { addFiles(Array.from(e.target.files)); input.value = ''; });
+  function fileIcon(name) {
+    var e = name.split('.').pop().toLowerCase();
+    if (e === 'pdf')  return '&#128196;';
+    if (e === 'doc' || e === 'docx') return '&#128221;';
+    if (e === 'xls' || e === 'xlsx' || e === 'csv') return '&#128202;';
+    if (e === 'png' || e === 'jpg' || e === 'jpeg') return '&#128444;';
+    return '&#128206;';
+  }
 
-    area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag-over'); });
-    area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
-    area.addEventListener('drop', e => {
-      e.preventDefault();
-      area.classList.remove('drag-over');
+  var uploadStores = {};
+
+  function initUpload(zoneId, inputId, listId, labelId, itemsId) {
+    var files = [];
+    uploadStores[zoneId] = files;
+    var zone  = document.getElementById(zoneId);
+    var input = document.getElementById(inputId);
+    var list  = document.getElementById(listId);
+    var label = document.getElementById(labelId);
+    var items = document.getElementById(itemsId);
+
+    input.addEventListener('change', function(e) { addFiles(Array.from(e.target.files)); input.value = ''; });
+    zone.addEventListener('dragover',  function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function()  { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault(); zone.classList.remove('drag-over');
       addFiles(Array.from(e.dataTransfer.files));
     });
 
     function addFiles(newFiles) {
-      newFiles.forEach(f => {
+      newFiles.forEach(function(f) {
         if (files.length >= 10) return;
-        if (!files.find(x => x.name === f.name && x.size === f.size)) files.push(f);
+        if (!files.find(function(x){ return x.name === f.name && x.size === f.size; })) files.push(f);
       });
       render();
       updateProgress();
     }
 
-    function remove(i) { files.splice(i, 1); render(); updateProgress(); }
-
-    function fmt(b) {
-      if (b < 1024) return b + ' B';
-      if (b < 1048576) return (b/1024).toFixed(0) + ' KB';
-      return (b/1048576).toFixed(1) + ' MB';
-    }
-
-    function icon(n) {
-      const e = n.split('.').pop().toLowerCase();
-      if (e === 'pdf') return '📄';
-      if (['doc','docx'].includes(e)) return '📝';
-      if (['xls','xlsx','csv'].includes(e)) return '📊';
-      if (['png','jpg','jpeg'].includes(e)) return '🖼️';
-      return '📎';
-    }
-
     function render() {
       if (!files.length) { list.classList.remove('has-files'); return; }
       list.classList.add('has-files');
-      const noun = files.length === 1 ? 'Dokument' : 'Dokumente';
+      var noun = files.length === 1 ? 'Dokument' : 'Dokumente';
       label.textContent = files.length + ' ' + noun + ' beigefügt';
-      items.innerHTML = files.map((f, i) => `
-        <div class="file-item">
-          <span class="file-item-icon">${icon(f.name)}</span>
-          <span class="file-item-name">${f.name}</span>
-          <span class="file-item-size">${fmt(f.size)}</span>
-          <button class="file-item-remove" onclick="(${remove.toString()})(${i})" title="Entfernen">×</button>
-        </div>`).join('');
-    }
-
-    // expose remove globally per instance
-    window['removeFile_' + areaId] = remove;
-    // fix onclick after render
-    function render2() {
-      if (!files.length) { list.classList.remove('has-files'); return; }
-      list.classList.add('has-files');
-      const noun = files.length === 1 ? 'Dokument' : 'Dokumente';
-      label.textContent = files.length + ' ' + noun + ' beigefügt';
-      items.innerHTML = files.map((f, i) => `
-        <div class="file-item">
-          <span class="file-item-icon">${icon(f.name)}</span>
-          <span class="file-item-name">${f.name}</span>
-          <span class="file-item-size">${fmt(f.size)}</span>
-          <button class="file-item-remove" data-idx="${i}" data-area="${areaId}" title="Entfernen">×</button>
-        </div>`).join('');
-      items.querySelectorAll('.file-item-remove').forEach(btn => {
-        btn.addEventListener('click', () => { files.splice(+btn.dataset.idx, 1); render2(); updateProgress(); });
+      items.innerHTML = files.map(function(f, i) {
+        return '<div class="file-item">' +
+          '<span class="file-item-icon">' + fileIcon(f.name) + '</span>' +
+          '<span class="file-item-name">' + f.name + '</span>' +
+          '<span class="file-item-size">' + fmtSize(f.size) + '</span>' +
+          '<button class="file-item-remove" data-idx="' + i + '" data-zone="' + zoneId + '" title="Entfernen">&times;</button>' +
+          '</div>';
+      }).join('');
+      items.querySelectorAll('.file-item-remove').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          files.splice(+btn.dataset.idx, 1);
+          render();
+          updateProgress();
+        });
       });
     }
-    // replace render with render2
-    input.removeEventListener('change', input._handler);
-    input._handler = e => { addFiles(Array.from(e.target.files)); input.value = ''; };
-    input.addEventListener('change', input._handler);
-    area.removeEventListener('drop', area._dropHandler);
-    area._dropHandler = e => { e.preventDefault(); area.classList.remove('drag-over'); addFiles(Array.from(e.dataTransfer.files)); };
-    area.addEventListener('drop', area._dropHandler);
-
-    function addFiles2(newFiles) {
-      newFiles.forEach(f => {
-        if (files.length >= 10) return;
-        if (!files.find(x => x.name === f.name && x.size === f.size)) files.push(f);
-      });
-      render2(); updateProgress();
-    }
-    input._handler = e => { addFiles2(Array.from(e.target.files)); input.value = ''; };
-
-    return { files, render: render2, addFiles: addFiles2 };
   }
 
-  const upload3 = initUpload('upload-area-3', 'file-input-3', 'file-list-3', 'file-list-label-3', 'file-items-3');
-  const upload5 = initUpload('upload-area-5', 'file-input-5', 'file-list-5', 'file-list-label-5', 'file-items-5');
+  initUpload('upload-area-3', 'file-input-3', 'file-list-3', 'file-list-label-3', 'file-items-3');
+  initUpload('upload-area-5', 'file-input-5', 'file-list-5', 'file-list-label-5', 'file-items-5');
 
   /* ── Text-Export ── */
   function fmt(b) {
@@ -1239,14 +1209,16 @@
       out += '\n';
     });
 
-    if (upload3.files.length) {
+    var files3 = uploadStores['upload-area-3'] || [];
+    var files5 = uploadStores['upload-area-5'] || [];
+    if (files3.length) {
       out += '--- Beigefügte Eingabe-Beispiele ---\n';
-      upload3.files.forEach(f => out += '• ' + f.name + ' (' + fmt(f.size) + ')\n');
+      files3.forEach(function(f) { out += '\u2022 ' + f.name + ' (' + fmtSize(f.size) + ')\n'; });
       out += '\n';
     }
-    if (upload5.files.length) {
+    if (files5.length) {
       out += '--- Beigefügte Output-Referenzen ---\n';
-      upload5.files.forEach(f => out += '• ' + f.name + ' (' + fmt(f.size) + ')\n');
+      files5.forEach(function(f) { out += '\u2022 ' + f.name + ' (' + fmtSize(f.size) + ')\n'; });
       out += '\n';
     }
     return { vorname, nachname, email, out };
@@ -1272,11 +1244,12 @@
   }
 
   async function collectAttachments() {
-    var allFiles = [].concat(
-      (upload3.files || []).map(function(f) { return f; }),
-      (upload5.files || []).map(function(f) { return f; })
-    );
-    var results = await Promise.all(allFiles.map(async function(f) {
+    var zones = ['upload-area-3', 'upload-area-5'];
+    var all = [];
+    zones.forEach(function(zoneId) {
+      (uploadStores[zoneId] || []).forEach(function(f) { all.push(f); });
+    });
+    var results = await Promise.all(all.map(async function(f) {
       var b64 = await readFileAsBase64(f);
       return { name: f.name, type: f.type || 'application/octet-stream', content: b64 };
     }));
