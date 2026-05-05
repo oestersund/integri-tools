@@ -715,8 +715,7 @@ async function submitForm() {
     '2 weitere Komplett-Sets:            ' + getFileNames('zone-sets'),
     '',
     'Tone-of-Voice + CI-Beispiele:        ' + getFileNames('zone-ci'),
-    'ToV-Kommentar (Stilhinweise):',
-    document.getElementById('tov-kommentar').value.trim() || '-',
+    'ToV-Kommentar:   ' + (document.getElementById('tov-kommentar').value.trim() || '-'),
     '',
     'Patientenprofile:  ' + profile,
     '',
@@ -729,9 +728,7 @@ async function submitForm() {
     '',
     'Anmerkungen:',
     document.getElementById('f-notes').value.trim() || '-',
-    '',
-    '--- HINWEIS ---',
-    'Upload-Anhang-Support (worker-integri-email-v2.js) folgt.',
+
   ].join('\n');
 
   var attachments = await collectAttachments();
