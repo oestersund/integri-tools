@@ -3,305 +3,561 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KI-Sprint — Hausaufgaben Session 1</title>
+  <title>KI-Sprint &mdash; Hausaufgaben Session 1</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
+    /* INTEGRI TOOL &mdash; KI-Sprint Hausaufgaben Session 1
+       Design: Design_System_Master_v3_0_20260409.html */
+
     :root {
-      --petrol:#033132;--petrol-light:#055557;--off-white:#F7F7F5;--white:#FFFFFF;
-      --text:#2C3E50;--text-dim:#5A6B7A;--border:#D1D5D8;--apricot:#FFF5F2;
-      --terracotta:#c1603a;--green:#2D7D3E;--green-light:#EBF5ED;
-      --blue-light:#EEF4FF;--blue:#2D4A7A;--radius-sm:4px;--radius-md:8px;--error:#C0392B;
+      --petrol:       #033132;
+      --off-white:    #F7F7F5;
+      --white:        #FFFFFF;
+      --green:        #2D7D3E;
+      --terracotta:   #F08972;
+      --text:         #2C3E50;
+      --border:       #D1D5D8;
+      --apricot:      #FFF5F2;
+      --text-dim:     #5A6B7A;
+      --placeholder:  #8090A0;
+      --radius-sm:    4px;
+      --radius-md:    8px;
+      --error:        #C0392B;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'IBM Plex Sans',-apple-system,sans-serif;font-size:16px;line-height:1.65;
-      color:var(--text);background:var(--off-white);padding:40px 20px 60px;-webkit-font-smoothing:antialiased}
-    .wrapper{max-width:760px;margin:0 auto}
-    .page-title{background:var(--white);border-radius:var(--radius-md);border-left:4px solid var(--petrol);
-      padding:24px 28px;margin:20px 0 8px}
-    .page-title h1{font-size:22px;font-weight:600;color:var(--petrol);margin-bottom:6px}
-    .page-title p{font-size:14px;color:var(--text-dim);line-height:1.5}
-    .section{background:var(--white);border-radius:var(--radius-md);padding:24px 28px;
-      margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;
-      padding-bottom:14px;border-bottom:1px solid var(--border)}
-    .section-badge{background:var(--petrol);color:var(--white);font-size:11px;font-weight:600;
-      letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
-    .section-badge.blue{background:var(--blue)}
-    .section-title{font-size:16px;font-weight:600;color:var(--text)}
-    .section-hint{font-size:13px;color:var(--text-dim);margin-top:2px}
-    .question{margin-bottom:22px}
-    .q-label{font-size:14px;font-weight:600;display:block;margin-bottom:4px;color:var(--text)}
-    .q-hint{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.5}
-    .required-mark{color:var(--error);margin-left:2px}
-    input[type="text"],input[type="email"],textarea{width:100%;padding:10px 12px;
-      border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;
-      font-family:inherit;color:var(--text);background:var(--white);transition:border-color 0.15s}
-    input:focus,textarea:focus{outline:none;border-color:var(--petrol);
-      box-shadow:0 0 0 3px rgba(3,49,50,0.08)}
-    textarea{resize:vertical;min-height:90px}
-    .radio-group,.checkbox-group{display:flex;flex-direction:column;gap:6px;margin-top:4px}
-    .radio-group label,.checkbox-group label{display:flex;align-items:flex-start;gap:10px;
-      font-size:14px;cursor:pointer;padding:8px 12px;border:1px solid var(--border);
-      border-radius:var(--radius-sm);transition:background 0.1s,border-color 0.1s}
-    .radio-group label:hover,.checkbox-group label:hover{background:#f0faf9;border-color:var(--petrol)}
-    .radio-group input,.checkbox-group input{width:auto;flex-shrink:0;margin-top:3px;accent-color:var(--petrol)}
-    .matrix-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
-    .matrix-table th{background:#F0F4F7;font-weight:600;font-size:12px;text-transform:uppercase;
-      letter-spacing:0.06em;color:var(--text-dim);padding:8px 10px;border:1px solid var(--border);text-align:left}
-    .matrix-table td{padding:6px;border:1px solid var(--border);vertical-align:middle}
-    .matrix-table td input{padding:6px 8px;font-size:13px;border:1px solid #E0E5E8;border-radius:var(--radius-sm);width:100%}
-    .matrix-table tr:nth-child(even) td{background:#FAFBFC}
-    .matrix-add-row{font-size:12px;color:var(--petrol);cursor:pointer;border:none;background:none;
-      margin-top:6px;text-decoration:underline;padding:0}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:560px){.two-col{grid-template-columns:1fr}}
-    .status-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-    .status-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;
-      border:1.5px solid var(--border);background:var(--white);cursor:pointer;
-      transition:all 0.15s;color:var(--text-dim)}
-    .status-btn.selected-yes{background:var(--green-light);border-color:var(--green);color:var(--green)}
-    .status-btn.selected-no{background:var(--apricot);border-color:var(--terracotta);color:var(--terracotta)}
-    .status-btn.selected-partial{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
-    /* File upload */
-    .upload-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:16px 20px;
-      text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;margin-top:6px}
-    .upload-zone:hover{border-color:var(--petrol);background:#f5fbfb}
-    .upload-zone input[type="file"]{display:none}
-    .upload-zone-label{font-size:13px;color:var(--text-dim);cursor:pointer}
-    .upload-zone-label strong{color:var(--petrol)}
-    .upload-file-list{margin-top:8px;font-size:12px;color:var(--text-dim)}
-    .upload-file-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f0f0f0}
-    .upload-file-item:last-child{border-bottom:none}
-    .upload-note{font-size:12px;color:var(--text-dim);margin-top:8px;padding:8px 12px;
-      background:var(--blue-light);border-radius:var(--radius-sm);border-left:3px solid var(--blue)}
-    /* Profile chips */
-    .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .chip{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;
-      border:1.5px solid var(--border);background:var(--white);cursor:pointer;
-      transition:all 0.15s;color:var(--text-dim)}
-    .chip.selected{background:var(--petrol);border-color:var(--petrol);color:var(--white)}
-    .submit-section{margin-top:24px}
-    .submit-btn{width:100%;padding:14px;background:var(--petrol);color:var(--white);
-      border:none;border-radius:var(--radius-md);font-size:16px;font-weight:600;
-      font-family:inherit;cursor:pointer;transition:background 0.2s}
-    .submit-btn:hover:not(:disabled){background:var(--petrol-light)}
-    .submit-btn:disabled{opacity:0.6;cursor:not-allowed}
-    #thank-you-view{display:none;text-align:center;padding:60px 24px;background:var(--white);
-      border-radius:var(--radius-md);margin-top:8px}
-    .ty-check{font-size:2.5rem;margin-bottom:16px;color:var(--green)}
-    #thank-you-view h2{color:var(--petrol);margin-bottom:8px}
-    #thank-you-view p{color:var(--text-dim);max-width:400px;margin:0 auto}
-    .global-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
-      font-size:12px;color:var(--text-dim);margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-    .global-footer a{color:var(--petrol);text-decoration:none}
-    .divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--off-white);
+      padding: 40px 20px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper { max-width: 780px; margin: 0 auto; }
+
+    /* ── TOOL HEADER ── */
+    .tool-header {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border-top: 4px solid var(--petrol);
+      padding: 28px 32px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(3,49,50,0.06);
+    }
+
+    .tool-header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--petrol);
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .tool-header .subtitle {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: nowrap;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-field { flex: 1; min-width: 0; }
+
+    .meta-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .meta-field input[type="email"] {
+      border: none;
+      border-bottom: 2px solid var(--border);
+      padding: 4px 0;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      width: 100%;
+      background: transparent;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .meta-field input[type="email"]:focus { border-bottom-color: var(--petrol); }
+
+    /* ── SECTION CARDS ── */
+    .section-card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(3,49,50,0.05);
+    }
+
+    .section-head {
+      background: var(--green);
+      color: var(--white);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-num  { font-size: 15px; font-weight: 600; color: var(--white); flex-shrink: 0; }
+    .section-title{ font-size: 15px; font-weight: 600; color: var(--white); }
+    .section-tag  { margin-left: auto; font-size: 15px; font-weight: 400; color: var(--white); opacity: 0.85; }
+
+    .section-body { padding: 22px 24px; }
+
+    /* ── QUESTIONS ── */
+    .question { margin-bottom: 24px; }
+    .question:last-child { margin-bottom: 0; }
+
+    .q-sep { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+    .q-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--petrol);
+      margin-bottom: 5px;
+    }
+
+    .q-hint {
+      font-size: 15px;
+      color: var(--text-dim);
+      margin-bottom: 9px;
+      line-height: 1.55;
+    }
+
+    .required-mark { color: var(--error); margin-left: 2px; }
+
+    /* ── INPUTS ── */
+    input[type="text"] {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 15px; font-family: inherit; color: var(--text);
+      background: var(--white); transition: border-color 0.15s; outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: var(--petrol);
+      box-shadow: 0 0 0 3px rgba(3,49,50,0.08);
+    }
+
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      line-height: 1.65;
+      background: var(--off-white);
+      transition: border-color 0.15s, background 0.15s;
+      min-height: 80px;
+    }
+    textarea:focus { border-color: var(--petrol); background: var(--white); }
+    textarea::placeholder { color: var(--placeholder); font-size: 14px; }
+
+    /* ── STATUS BUTTONS ── */
+    .status-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+
+    .status-btn {
+      padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 500;
+      border: 2px solid var(--border); background: var(--white); cursor: pointer;
+      transition: all 0.15s; color: var(--text-dim); font-family: inherit;
+    }
+    .status-btn.selected-yes     { background: var(--green);      border-color: var(--green);      color: var(--white); }
+    .status-btn.selected-no      { background: var(--apricot);    border-color: var(--terracotta); color: var(--terracotta); }
+    .status-btn.selected-partial { background: #EEF4FF;           border-color: #2D4A7A;           color: #2D4A7A; }
+
+    /* ── CHIPS ── */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+    .chip {
+      padding: 7px 16px; border-radius: 20px; font-size: 14px; font-weight: 500;
+      border: 2px solid var(--border); background: var(--white); cursor: pointer;
+      transition: all 0.15s; color: var(--text-dim); font-family: inherit;
+    }
+    .chip:hover   { border-color: var(--terracotta); color: var(--terracotta); }
+    .chip.selected{ background: var(--terracotta); border-color: var(--terracotta); color: var(--white); }
+
+    /* ── MATRIX ── */
+    .matrix-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+    .matrix-table th {
+      background: #F0F4F7; font-weight: 600; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);
+      padding: 8px 10px; border: 1px solid var(--border); text-align: left;
+    }
+    .matrix-table td { padding: 6px; border: 1px solid var(--border); vertical-align: middle; }
+    .matrix-table td input {
+      padding: 6px 8px; font-size: 13px; border: 1px solid #E0E5E8;
+      border-radius: var(--radius-sm); width: 100%; font-family: inherit; outline: none;
+    }
+    .matrix-table tr:nth-child(even) td { background: #FAFBFC; }
+    .matrix-add-row {
+      font-size: 13px; color: var(--petrol); cursor: pointer;
+      border: none; background: none; margin-top: 6px;
+      text-decoration: underline; padding: 0; font-family: inherit;
+    }
+
+    /* ── UPLOAD AREAS ── */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--off-white);
+      margin-top: 8px;
+    }
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--terracotta);
+      background: var(--apricot);
+    }
+    .upload-area input[type="file"] { display: none; }
+
+    .upload-icon  { font-size: 24px; margin-bottom: 8px; }
+    .upload-label { font-size: 14px; font-weight: 600; color: var(--petrol); margin-bottom: 4px; }
+    .upload-hint  { font-size: 13px; color: var(--text-dim); }
+
+    .upload-btn {
+      display: inline-block; margin-top: 10px; padding: 7px 18px;
+      background: var(--terracotta); color: var(--white);
+      border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; font-family: inherit; transition: filter 0.15s;
+    }
+    .upload-btn:hover { filter: brightness(0.92); }
+
+    .file-list { margin-top: 12px; display: none; text-align: left; }
+    .file-list.has-files { display: block; }
+
+    .file-list-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+    }
+
+    .file-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; background: var(--white);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      margin-bottom: 4px; font-size: 14px;
+    }
+    .file-item-icon   { font-size: 16px; flex-shrink: 0; }
+    .file-item-name   { flex: 1; font-weight: 500; color: var(--text); word-break: break-word; }
+    .file-item-size   { font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+    .file-item-remove {
+      background: none; border: none; font-size: 18px; cursor: pointer;
+      color: var(--text-dim); flex-shrink: 0; padding: 0 2px; line-height: 1;
+      transition: color 0.12s; font-family: inherit;
+    }
+    .file-item-remove:hover { color: var(--terracotta); }
+
+    /* ── SUBMIT ── */
+    .submit-section { margin-top: 24px; }
+
+    .submit-hint {
+      margin-bottom: 10px; font-size: 14px;
+      color: var(--text-dim); text-align: right;
+    }
+
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 13px 24px;
+      background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      font-size: 16px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: filter 0.15s, box-shadow 0.15s, transform 0.1s;
+      box-shadow: 0 2px 6px rgba(3,49,50,0.12);
+    }
+    .btn-primary:hover:not(:disabled) {
+      filter: brightness(0.92);
+      box-shadow: 0 4px 10px rgba(3,49,50,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── THANK YOU ── */
+    #thank-you-view {
+      display: none; text-align: center; padding: 60px 24px;
+      background: var(--white); border-radius: var(--radius-md);
+      margin-top: 8px; border: 2px solid var(--border);
+    }
+    .ty-check { font-size: 2.5rem; margin-bottom: 16px; color: var(--green); }
+    #thank-you-view h2 { color: var(--petrol); margin-bottom: 8px; }
+    #thank-you-view p  { color: var(--text-dim); max-width: 400px; margin: 0 auto; }
+
+    /* ── FOOTER ── */
+    .global-footer {
+      display: flex; justify-content: space-between; flex-wrap: wrap;
+      gap: 8px; font-size: 12px; color: var(--text-dim);
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+    }
+    .global-footer a { color: var(--text-dim); text-decoration: none; }
+    .global-footer a:hover { color: var(--text); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+    @media (max-width: 600px) {
+      body { padding: 20px 12px 40px; }
+      .tool-header { padding: 20px 18px; }
+      .section-body { padding: 16px 18px; }
+    }
   </style>
 </head>
 <body>
 <div class="wrapper">
-
   <script>window.INTEGRI_CHROME = { docname: 'KI-Sprint HA 1' };</script>
   <script src="../assets/tool-chrome.js"></script>
 
-  <div class="page-title">
+  <!-- HEADER -->
+  <header class="tool-header">
     <h1>Hausaufgaben &mdash; Session 1</h1>
-    <p>Bitte senden Sie das Formular sp&auml;testens bis <strong>Freitag, 8.&nbsp;Mai 2026</strong> ab &mdash; drei Tage vor Session 2.</p>
-  </div>
+    <p class="subtitle">Bitte senden Sie das Formular sp&auml;testens bis <strong>Freitag, 8.&nbsp;Mai 2026</strong> ab &mdash; drei Tage vor Session 2.</p>
+    <div class="meta-row" id="meta-row">
+      <div class="meta-field">
+        <label for="f-email">E-Mail <span class="required-mark">*</span></label>
+        <input type="email" id="f-email" placeholder="ihre@praxis.de" />
+      </div>
+    </div>
+    <input type="hidden" id="f-name" value="" />
+    <input type="hidden" id="f-praxis" value="" />
+  </header>
 
   <div id="form-sections">
 
-    <!-- Kontakt -->
-    <div class="section" id="kontakt-section">
-      <div class="section-header">
-        <span class="section-badge">Kontakt</span>
-        <div><div class="section-title">Ihre Angaben</div></div>
+    <!-- 01 EINRICHTEN -->
+    <div class="section-card">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <span class="section-title">Einrichten</span>
+        <span class="section-tag">Claude Pro &amp; Projekt</span>
       </div>
-      <div class="question" style="margin-bottom:0">
-        <label class="q-label" for="f-email">E-Mail <span class="required-mark">*</span></label>
-        <input type="email" id="f-email" placeholder="ihre@praxis.de" />
-      </div>
-      <input type="hidden" id="f-name" value="" />
-      <input type="hidden" id="f-praxis" value="" />
-    </div>
+      <div class="section-body">
 
-    <!-- Block A: Einrichten -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-badge">Block A</span>
-        <div>
-          <div class="section-title">Einrichten</div>
+        <div class="question">
+          <label class="q-label">Claude Pro eingerichtet? <span class="required-mark">*</span></label>
+          <p class="q-hint">claude.ai &rarr; Pro (20&nbsp;&euro;/Monat). Falls noch nicht aktiv: jetzt einrichten.</p>
+          <div class="status-row">
+            <button class="status-btn" data-field="a1" data-val="Ja, erledigt">&#10003; Ja, erledigt</button>
+            <button class="status-btn" data-field="a1" data-val="Noch nicht">&#10007; Noch nicht</button>
+            <button class="status-btn" data-field="a1" data-val="Bis Session 2">Bis Session 2</button>
+          </div>
+          <input type="hidden" id="f-a1" />
         </div>
-      </div>
 
-      <div class="question">
-        <label class="q-label">Claude Pro eingerichtet? <span class="required-mark">*</span></label>
-        <p class="q-hint">claude.ai &rarr; Pro (20 &euro;/Monat). Falls noch nicht aktiv: jetzt einrichten.</p>
-        <div class="status-row">
-          <button class="status-btn" data-field="a1" data-val="Ja, erledigt">&#10003; Ja, erledigt</button>
-          <button class="status-btn" data-field="a1" data-val="Noch nicht">&#10007; Noch nicht</button>
-          <button class="status-btn" data-field="a1" data-val="Bis Session 2">Bis Session 2</button>
-        </div>
-        <input type="hidden" id="f-a1" />
-      </div>
+        <hr class="q-sep" />
 
-      <div class="question">
-        <label class="q-label">Leeres Claude-Projekt angelegt? <span class="required-mark">*</span></label>
-        <p class="q-hint">Nach Login: "Neues Projekt" &rarr; Name z. B. "Laborbefund-Reports" &mdash; noch kein Inhalt n&ouml;tig. Das f&uuml;llen wir gemeinsam in Session 2.</p>
-        <div class="status-row">
-          <button class="status-btn" data-field="a2" data-val="Ja, angelegt">&#10003; Ja, angelegt</button>
-          <button class="status-btn" data-field="a2" data-val="Noch nicht">&#10007; Noch nicht</button>
-          <button class="status-btn" data-field="a2" data-val="Bis Session 2">Bis Session 2</button>
+        <div class="question">
+          <label class="q-label">Leeres Claude-Projekt angelegt? <span class="required-mark">*</span></label>
+          <p class="q-hint">Nach Login: &ldquo;Neues Projekt&rdquo; &rarr; Name z.&nbsp;B. &ldquo;Laborbefund-Reports&rdquo; &mdash; noch kein Inhalt n&ouml;tig. Das f&uuml;llen wir gemeinsam in Session 2.</p>
+          <div class="status-row">
+            <button class="status-btn" data-field="a2" data-val="Ja, angelegt">&#10003; Ja, angelegt</button>
+            <button class="status-btn" data-field="a2" data-val="Noch nicht">&#10007; Noch nicht</button>
+            <button class="status-btn" data-field="a2" data-val="Bis Session 2">Bis Session 2</button>
+          </div>
+          <input type="hidden" id="f-a2" />
         </div>
-        <input type="hidden" id="f-a2" />
-      </div>
 
-      <div class="question" style="margin-bottom:0">
-        <label class="q-label">Mit den Grundfunktionen von Claude vertraut gemacht?</label>
-        <p class="q-hint">Interface kennenlernen, einen Test-Chat ausprobieren &mdash; einfach klicken und schauen. Eine Schritt-f&uuml;r-Schritt-Anleitung stellen wir separat bereit.</p>
-        <div class="status-row">
-          <button class="status-btn" data-field="a3" data-val="Ja, erkundet">&#10003; Ja, erkundet</button>
-          <button class="status-btn" data-field="a3" data-val="Kurz reingeschaut">Kurz reingeschaut</button>
-          <button class="status-btn" data-field="a3" data-val="Noch nicht">&#10007; Noch nicht</button>
+        <hr class="q-sep" />
+
+        <div class="question" style="margin-bottom:0">
+          <label class="q-label">Mit den Grundfunktionen von Claude vertraut gemacht?</label>
+          <p class="q-hint">Interface kennenlernen, einen Test-Chat ausprobieren &mdash; einfach klicken und schauen. Eine Schritt-f&uuml;r-Schritt-Anleitung stellen wir separat bereit.</p>
+          <div class="status-row">
+            <button class="status-btn" data-field="a3" data-val="Ja, erkundet">&#10003; Ja, erkundet</button>
+            <button class="status-btn" data-field="a3" data-val="Kurz reingeschaut">Kurz reingeschaut</button>
+            <button class="status-btn" data-field="a3" data-val="Noch nicht">&#10007; Noch nicht</button>
+          </div>
+          <input type="hidden" id="f-a3" />
         </div>
-        <input type="hidden" id="f-a3" />
+
       </div>
     </div>
 
-    <!-- Block B: Sammeln -->
-    <div class="section">
-      <div class="section-header">
-        <span class="section-badge blue">Block B</span>
-        <div>
-          <div class="section-title">Sammeln &amp; Vorbereiten</div>
-        </div>
+    <!-- 02 SAMMELN -->
+    <div class="section-card">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <span class="section-title">Sammeln &amp; Vorbereiten</span>
+        <span class="section-tag">Dokumente &amp; Profile</span>
       </div>
+      <div class="section-body">
 
-      <!-- Begleit-Mails bestehende Patienten -->
-      <div class="question">
-        <label class="q-label">Begleit-Mails &mdash; 2 bestehende Patienten <span class="required-mark">*</span></label>
-        <p class="q-hint">Die E-Mail, die Ihre Praxis an die Patienten schickt &mdash; mit Laborbefund und Lab Results im Anhang. Bitte f&uuml;r beide bereits &uuml;bermittelten Patienten hochladen.</p>
-        <div class="upload-zone" id="zone-begleit" onclick="document.getElementById('file-begleit').click()">
-          <input type="file" id="file-begleit" multiple accept=".pdf,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-begleit','files-begleit')" />
-          <label class="upload-zone-label"><strong>Begleit-Mails hochladen</strong><br>PDF, EML, DOCX &mdash; 2 Dateien</label>
-          <div class="upload-file-list" id="list-begleit"></div>
+        <!-- Begleit-Mails -->
+        <div class="question">
+          <label class="q-label">Begleit-Mails &mdash; 2 bestehende Patienten <span class="required-mark">*</span></label>
+          <p class="q-hint">Die E-Mail, die Ihre Praxis an die Patienten schickt &mdash; mit Laborbefund und Lab Results im Anhang. Bitte f&uuml;r beide bereits &uuml;bermittelten Patienten hochladen.</p>
+          <div class="upload-area" id="zone-begleit">
+            <input type="file" id="file-begleit" multiple accept=".pdf,.eml,.msg,.docx,.txt" />
+            <div class="upload-icon">&#128231;</div>
+            <div class="upload-label">Begleit-Mails hochladen</div>
+            <div class="upload-hint">PDF, EML, DOCX &mdash; 2 Dateien</div>
+            <button class="upload-btn" type="button" onclick="document.getElementById('file-begleit').click()">Dateien ausw&auml;hlen</button>
+          </div>
+          <div class="file-list" id="list-begleit">
+            <div class="file-list-label" id="list-begleit-label">0 Dateien</div>
+            <div id="items-begleit"></div>
+          </div>
         </div>
-      </div>
 
-      <hr class="divider" />
+        <hr class="divider" />
 
-      <!-- 2 weitere Komplett-Sets -->
-      <div class="question">
-        <label class="q-label">2 weitere Komplett-Sets</label>
-        <p class="q-hint">Pro Patient: Laborbefund + Lab Results Report + Begleit-Mail. Das gibt uns weitere F&auml;lle f&uuml;r Session 2.</p>
-        <div class="upload-zone" id="zone-sets" onclick="document.getElementById('file-sets').click()">
-          <input type="file" id="file-sets" multiple accept=".pdf,.jpg,.jpeg,.png,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-sets','files-sets')" />
-          <label class="upload-zone-label"><strong>Komplett-Sets hochladen</strong><br>PDF, JPG, EML, DOCX &mdash; alle Dateien der 2 Patienten</label>
-          <div class="upload-file-list" id="list-sets"></div>
+        <!-- Komplett-Sets -->
+        <div class="question">
+          <label class="q-label">2 weitere Komplett-Sets</label>
+          <p class="q-hint">Pro Patient: Laborbefund + Lab Results Report + Begleit-Mail. Das gibt uns weitere F&auml;lle f&uuml;r Session 2.</p>
+          <div class="upload-area" id="zone-sets">
+            <input type="file" id="file-sets" multiple accept=".pdf,.jpg,.jpeg,.png,.eml,.msg,.docx,.txt" />
+            <div class="upload-icon">&#128193;</div>
+            <div class="upload-label">Komplett-Sets hochladen</div>
+            <div class="upload-hint">PDF, JPG, EML, DOCX &mdash; alle Dateien der 2 Patienten</div>
+            <button class="upload-btn" type="button" onclick="document.getElementById('file-sets').click()">Dateien ausw&auml;hlen</button>
+          </div>
+          <div class="file-list" id="list-sets">
+            <div class="file-list-label" id="list-sets-label">0 Dateien</div>
+            <div id="items-sets"></div>
+          </div>
         </div>
-      </div>
 
-      <hr class="divider" />
+        <hr class="divider" />
 
-      <!-- CI-Dokumente / Tone-of-Voice -->
-      <div class="question">
-        <label class="q-label">CI-Dokumente &amp; Tone-of-Voice-Beispiele</label>
-        <p class="q-hint">Dokumente, die Ihre Praxissprache und Marke zeigen &mdash; Website-Texte, Patientenbriefe, Infomaterial, Beispiel-Reports. Je mehr Beispiele, desto pr&auml;ziser trifft die KI sp&auml;ter Ihren Ton.</p>
-        <div class="upload-zone" id="zone-ci" onclick="document.getElementById('file-ci').click()">
-          <input type="file" id="file-ci" multiple accept=".pdf,.docx,.pages,.jpg,.png,.txt,.md" onchange="handleFiles(this,'list-ci','files-ci')" />
-          <label class="upload-zone-label"><strong>Dokumente hochladen</strong><br>PDF, DOCX, Pages, Bilder &mdash; mehrere m&ouml;glich</label>
-          <div class="upload-file-list" id="list-ci"></div>
+        <!-- CI + ToV -->
+        <div class="question">
+          <label class="q-label">CI-Dokumente &amp; Tone-of-Voice-Beispiele</label>
+          <p class="q-hint">Dokumente, die Ihre Praxissprache und Marke zeigen &mdash; Website-Texte, Patientenbriefe, Infomaterial, Beispiel-Reports. Je mehr Beispiele, desto pr&auml;ziser trifft die KI sp&auml;ter Ihren Ton.</p>
+          <div class="upload-area" id="zone-ci">
+            <input type="file" id="file-ci" multiple accept=".pdf,.docx,.pages,.jpg,.png,.txt,.md" />
+            <div class="upload-icon">&#127912;</div>
+            <div class="upload-label">Dokumente hochladen</div>
+            <div class="upload-hint">PDF, DOCX, Pages, Bilder &mdash; mehrere m&ouml;glich</div>
+            <button class="upload-btn" type="button" onclick="document.getElementById('file-ci').click()">Dateien ausw&auml;hlen</button>
+          </div>
+          <div class="file-list" id="list-ci">
+            <div class="file-list-label" id="list-ci-label">0 Dateien</div>
+            <div id="items-ci"></div>
+          </div>
         </div>
-      </div>
 
-      <hr class="divider" />
+        <hr class="divider" />
 
-      <!-- Individualisierungslogik -->
-      <div class="question">
-        <label class="q-label">Welche Patientenprofile sind f&uuml;r Ihre Praxis relevant?</label>
-        <p class="q-hint">Mehrfachauswahl m&ouml;glich. Das sind unsere Arbeits-Profile &mdash; weitere kommen sp&auml;ter aus der Praxis.</p>
-        <div class="chip-group" id="profile-chips">
-          <button class="chip" type="button" data-val="Sportler / Athleten">Sportler / Athleten</button>
-          <button class="chip" type="button" data-val="Stoffwechselanalyse">Stoffwechselanalyse</button>
-          <button class="chip" type="button" data-val="Kinderwunsch">Kinderwunsch</button>
+        <!-- Profile -->
+        <div class="question">
+          <label class="q-label">Welche Patientenprofile sind f&uuml;r Ihre Praxis relevant?</label>
+          <p class="q-hint">Mehrfachauswahl m&ouml;glich. Das sind unsere Arbeits-Profile &mdash; weitere kommen sp&auml;ter aus der Praxis.</p>
+          <div class="chip-group" id="profile-chips">
+            <button class="chip" type="button" data-val="Sportler / Athleten">Sportler / Athleten</button>
+            <button class="chip" type="button" data-val="Stoffwechselanalyse">Stoffwechselanalyse</button>
+            <button class="chip" type="button" data-val="Kinderwunsch">Kinderwunsch</button>
+          </div>
+          <input type="hidden" id="f-profile" />
+          <div style="margin-top:10px">
+            <input type="text" id="f-profile-extra" placeholder="Weitere Profile (optional) &hellip;" />
+          </div>
         </div>
-        <input type="hidden" id="f-profile" />
-        <div style="margin-top:10px">
-          <input type="text" id="f-profile-extra" placeholder="Weitere Profile (optional) ..." />
+
+        <!-- Matrix -->
+        <div class="question">
+          <label class="q-label">Individualisierungsmatrix: Ihre abweichenden Zielwerte</label>
+          <p class="q-hint">Tragen Sie ein, was Sie sicher wissen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
+          <table class="matrix-table" id="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:28%">Parameter</th>
+                <th style="width:24%">Ihr Zielwert</th>
+                <th style="width:28%">Profil</th>
+                <th style="width:20%">Angepasster Wert</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-body">
+              <tr>
+                <td><input type="text" value="Vitamin D" /></td>
+                <td><input type="text" value="40-50 ng/ml" /></td>
+                <td><input type="text" value="Sportler / Athleten" /></td>
+                <td><input type="text" value="40-60 ng/ml" /></td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Omega-3 Index" /></td>
+                <td><input type="text" value=">8 %" /></td>
+                <td><input type="text" placeholder="" /></td>
+                <td><input type="text" placeholder="" /></td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Ferritin" /></td>
+                <td><input type="text" placeholder="" /></td>
+                <td><input type="text" value="Sportler / Athleten" /></td>
+                <td><input type="text" value="80-120 ng/ml" /></td>
+              </tr>
+              <tr>
+                <td><input type="text" placeholder="Weiterer Parameter" /></td>
+                <td><input type="text" placeholder="" /></td>
+                <td><input type="text" placeholder="" /></td>
+                <td><input type="text" placeholder="" /></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="matrix-add-row" type="button" onclick="addMatrixRow()">+ Zeile hinzuf&uuml;gen</button>
         </div>
-      </div>
 
-      <div class="question">
-        <label class="q-label">Individualisierungsmatrix: Ihre abweichenden Zielwerte</label>
-        <p class="q-hint">Tragen Sie ein, was Sie sicher wissen. Unvollst&auml;ndig ist okay &mdash; wir erg&auml;nzen in Session 2.</p>
-        <table class="matrix-table" id="matrix-table">
-          <thead>
-            <tr>
-              <th style="width:28%">Parameter</th>
-              <th style="width:24%">Ihr Zielwert</th>
-              <th style="width:28%">Profil</th>
-              <th style="width:20%">Angepasster Wert</th>
-            </tr>
-          </thead>
-          <tbody id="matrix-body">
-            <tr>
-              <td><input type="text" value="Vitamin D" /></td>
-              <td><input type="text" value="40-50 ng/ml" /></td>
-              <td><input type="text" value="Sportler / Athleten" /></td>
-              <td><input type="text" value="40-60 ng/ml" /></td>
-            </tr>
-            <tr>
-              <td><input type="text" value="Omega-3 Index" /></td>
-              <td><input type="text" value=">8 %" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" placeholder="" /></td>
-            </tr>
-            <tr>
-              <td><input type="text" value="Ferritin" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" value="Sportler / Athleten" /></td>
-              <td><input type="text" value="80-120 ng/ml" /></td>
-            </tr>
-            <tr>
-              <td><input type="text" placeholder="Weiterer Parameter" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" placeholder="" /></td>
-              <td><input type="text" placeholder="" /></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="matrix-add-row" type="button" onclick="addMatrixRow()">+ Zeile hinzuf&uuml;gen</button>
-      </div>
+        <hr class="divider" />
 
-      <hr class="divider" />
-
-      <!-- Standardauswahl Blutwerte -->
-      <div class="question">
-        <label class="q-label">Praxis-Leistungsportfolio: Go-to Blutwerte</label>
-        <p class="q-hint">Welche Werte sind f&uuml;r Ihre Praxis &uuml;berhaupt relevant? Das steuert, was die KI sp&auml;ter recherchieren soll. Entweder direkt eingeben oder als XLS, CSV, Word, PDF hochladen.</p>
-        <textarea id="f-blutwerte" rows="4" placeholder="z. B.: Vitamin D, Omega-3 Index, Ferritin, Homocystein, Blutzucker n&uuml;chtern, HbA1c, TSH, fT3, fT4, CRP, Cortisol, DHEA-S, Testosteron ..."></textarea>
-        <div class="upload-zone" style="margin-top:8px" id="zone-blutwerte" onclick="document.getElementById('file-blutwerte').click()">
-          <input type="file" id="file-blutwerte" accept=".pdf,.xlsx,.xls,.docx,.csv,.txt" onchange="handleFiles(this,'list-blutwerte','files-blutwerte')" />
-          <label class="upload-zone-label"><strong>Liste hochladen</strong> (falls als Datei vorhanden)</label>
-          <div class="upload-file-list" id="list-blutwerte"></div>
+        <!-- Blutwerte -->
+        <div class="question">
+          <label class="q-label">Praxis-Leistungsportfolio: Go-to Blutwerte</label>
+          <p class="q-hint">Welche Werte sind f&uuml;r Ihre Praxis &uuml;berhaupt relevant? Das steuert, was die KI sp&auml;ter recherchieren soll. Entweder direkt eingeben oder als XLS, CSV, Word, PDF hochladen.</p>
+          <textarea id="f-blutwerte" rows="4" placeholder="z.&nbsp;B.: Vitamin D, Omega-3 Index, Ferritin, Homocystein, Blutzucker n&uuml;chtern, HbA1c, TSH, fT3, fT4, CRP, Cortisol, DHEA-S, Testosteron &hellip;"></textarea>
+          <div class="upload-area" id="zone-blutwerte" style="margin-top:10px">
+            <input type="file" id="file-blutwerte" accept=".pdf,.xlsx,.xls,.docx,.csv,.txt" />
+            <div class="upload-icon">&#128202;</div>
+            <div class="upload-label">Liste hochladen</div>
+            <div class="upload-hint">XLS, CSV, PDF, DOCX</div>
+            <button class="upload-btn" type="button" onclick="document.getElementById('file-blutwerte').click()">Datei ausw&auml;hlen</button>
+          </div>
+          <div class="file-list" id="list-blutwerte">
+            <div class="file-list-label" id="list-blutwerte-label">0 Dateien</div>
+            <div id="items-blutwerte"></div>
+          </div>
         </div>
-      </div>
 
-      <hr class="divider" />
+        <hr class="divider" />
 
-      <!-- Anmerkungen -->
-      <div class="question" style="margin-bottom:0">
-        <label class="q-label" for="f-notes">Anmerkungen / Offene Fragen</label>
-        <textarea id="f-notes" rows="3" placeholder="Optional &mdash; was ist Ihnen seit Session 1 noch eingefallen?"></textarea>
+        <!-- Anmerkungen -->
+        <div class="question" style="margin-bottom:0">
+          <label class="q-label" for="f-notes">Anmerkungen / Offene Fragen</label>
+          <textarea id="f-notes" rows="3" placeholder="Optional &mdash; was ist Ihnen seit Session 1 noch eingefallen?"></textarea>
+        </div>
+
       </div>
     </div>
 
     <div class="submit-section" id="submit-section">
-      <button class="submit-btn" id="submit-btn" type="button" onclick="submitForm()">
+      <p class="submit-hint">Alle Felder ausgef&uuml;llt? Dann hier absenden.</p>
+      <button class="btn-primary" id="submit-btn" type="button" onclick="submitForm()">
         Hausaufgaben einreichen
       </button>
     </div>
 
-  </div>
+  </div><!-- /#form-sections -->
 
   <div id="thank-you-view">
     <div class="ty-check">&#10003;</div>
@@ -317,23 +573,24 @@
     </span>
   </footer>
 
-</div>
+</div><!-- /.wrapper -->
 
 <script>
 var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
 
-// --- URL-Parameter: E-Mail vorausfuellen ---
+/* ── URL-Parameter: E-Mail vorausfuellen + meta-row ausblenden ── */
 (function() {
   var params = new URLSearchParams(window.location.search);
-  var email = params.get('email');
-  var name  = params.get('name');
+  var email  = params.get('email');
+  var name   = params.get('name');
   var praxis = params.get('praxis');
   if (email)  document.getElementById('f-email').value  = decodeURIComponent(email);
   if (name)   document.getElementById('f-name').value   = decodeURIComponent(name);
   if (praxis) document.getElementById('f-praxis').value = decodeURIComponent(praxis);
+  if (email)  document.getElementById('meta-row').style.display = 'none';
 })();
 
-// --- Status-Buttons ---
+/* ── Status-Buttons ── */
 document.querySelectorAll('.status-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     var field = this.dataset.field;
@@ -347,44 +604,100 @@ document.querySelectorAll('.status-btn').forEach(function(btn) {
   });
 });
 
-// --- Profile Chips ---
+/* ── Profile Chips ── */
 document.querySelectorAll('#profile-chips .chip').forEach(function(chip) {
   chip.addEventListener('click', function() {
     this.classList.toggle('selected');
     var selected = Array.from(document.querySelectorAll('#profile-chips .chip.selected'))
-      .map(function(c){return c.dataset.val;});
+      .map(function(c){ return c.dataset.val; });
     document.getElementById('f-profile').value = selected.join(', ');
   });
 });
 
-// --- Upload Handler ---
-// Hinweis: Dateien werden als Metadaten (Name, Groesse) erfasst.
-// Base64-Anhang-Support erfordert Worker-Update (worker-integri-email-v2.js).
-var uploadedFiles = {};
+/* ── Upload Handler ── */
+function fmtSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(0) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
 
-function handleFiles(input, listId, storeKey) {
-  var files = Array.from(input.files);
-  uploadedFiles[storeKey] = files;
-  var list = document.getElementById(listId);
-  list.innerHTML = '';
-  files.forEach(function(f) {
-    var div = document.createElement('div');
-    div.className = 'upload-file-item';
-    div.innerHTML = '&#128206; <span>' + f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)</span>';
-    list.appendChild(div);
+function fileIcon(name) {
+  var e = name.split('.').pop().toLowerCase();
+  if (e === 'pdf')  return '&#128196;';
+  if (e === 'doc' || e === 'docx') return '&#128221;';
+  if (e === 'xls' || e === 'xlsx' || e === 'csv') return '&#128202;';
+  if (e === 'png' || e === 'jpg' || e === 'jpeg') return '&#128444;';
+  if (e === 'eml' || e === 'msg') return '&#128231;';
+  return '&#128206;';
+}
+
+var uploadStores = {};
+
+function initUpload(zoneId, inputId, listId, labelId, itemsId) {
+  var files = [];
+  uploadStores[zoneId] = files;
+  var zone  = document.getElementById(zoneId);
+  var input = document.getElementById(inputId);
+  var list  = document.getElementById(listId);
+  var label = document.getElementById(labelId);
+  var items = document.getElementById(itemsId);
+
+  input.addEventListener('change', function(e) { addFiles(Array.from(e.target.files)); input.value = ''; });
+  zone.addEventListener('dragover',  function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', function()  { zone.classList.remove('drag-over'); });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    addFiles(Array.from(e.dataTransfer.files));
   });
+
+  function addFiles(newFiles) {
+    newFiles.forEach(function(f) {
+      if (files.length >= 20) return;
+      if (!files.find(function(x){ return x.name === f.name && x.size === f.size; })) files.push(f);
+    });
+    render();
+  }
+
+  function render() {
+    if (!files.length) { list.classList.remove('has-files'); return; }
+    list.classList.add('has-files');
+    label.textContent = files.length + (files.length === 1 ? ' Datei' : ' Dateien');
+    items.innerHTML = files.map(function(f, i) {
+      return '<div class="file-item">' +
+        '<span class="file-item-icon">' + fileIcon(f.name) + '</span>' +
+        '<span class="file-item-name">' + f.name + '</span>' +
+        '<span class="file-item-size">' + fmtSize(f.size) + '</span>' +
+        '<button class="file-item-remove" data-idx="' + i + '" data-zone="' + zoneId + '" title="Entfernen">&times;</button>' +
+        '</div>';
+    }).join('');
+    items.querySelectorAll('.file-item-remove').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        files.splice(+btn.dataset.idx, 1);
+        render();
+      });
+    });
+  }
 }
 
-function getFileNames(storeKey) {
-  var files = uploadedFiles[storeKey] || [];
-  return files.length ? files.map(function(f){return f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)';}).join(', ') : '-';
+initUpload('zone-begleit',   'file-begleit',  'list-begleit',   'list-begleit-label',   'items-begleit');
+initUpload('zone-sets',      'file-sets',      'list-sets',      'list-sets-label',       'items-sets');
+initUpload('zone-ci',        'file-ci',        'list-ci',        'list-ci-label',         'items-ci');
+initUpload('zone-blutwerte', 'file-blutwerte', 'list-blutwerte', 'list-blutwerte-label',  'items-blutwerte');
+
+function getFileNames(zoneId) {
+  var files = uploadStores[zoneId] || [];
+  return files.length
+    ? files.map(function(f){ return f.name + ' (' + fmtSize(f.size) + ')'; }).join(', ')
+    : '-';
 }
 
-// --- Matrix ---
+/* ── Matrix ── */
 function addMatrixRow() {
   var tbody = document.getElementById('matrix-body');
   var tr = document.createElement('tr');
-  tr.innerHTML = '<td><input type="text" placeholder="Parameter" /></td>' +
+  tr.innerHTML =
+    '<td><input type="text" placeholder="Parameter" /></td>' +
     '<td><input type="text" placeholder="" /></td>' +
     '<td><input type="text" placeholder="Profil" /></td>' +
     '<td><input type="text" placeholder="Wert" /></td>';
@@ -395,18 +708,13 @@ function readMatrix() {
   var rows = document.querySelectorAll('#matrix-body tr');
   var lines = [];
   rows.forEach(function(row) {
-    var vals = Array.from(row.querySelectorAll('input')).map(function(c){return c.value.trim();});
-    if (vals.some(function(v){return v!=='';})) lines.push(vals.join(' | '));
+    var vals = Array.from(row.querySelectorAll('input')).map(function(c){ return c.value.trim(); });
+    if (vals.some(function(v){ return v !== ''; })) lines.push(vals.join(' | '));
   });
-  return lines.join('\n') || '(nicht ausgefuellt)';
+  return lines.join('\n') || '(nicht ausgefüllt)';
 }
 
-function readRadio(name) {
-  var c = document.querySelector('input[name="' + name + '"]:checked');
-  return c ? c.value : '';
-}
-
-// --- Validierung ---
+/* ── Validierung ── */
 function validate() {
   var err = [];
   if (!document.getElementById('f-email').value.trim()) err.push('E-Mail');
@@ -415,74 +723,73 @@ function validate() {
   return err;
 }
 
-// --- Submit ---
+/* ── Submit ── */
 function submitForm() {
   var errors = validate();
   if (errors.length > 0) {
-    alert('Bitte noch ausfuellen:\n- ' + errors.join('\n- '));
+    alert('Bitte noch ausfüllen:\n- ' + errors.join('\n- '));
     return;
   }
   var btn = document.getElementById('submit-btn');
   btn.disabled = true;
-  btn.textContent = 'Wird gesendet ...';
+  btn.textContent = 'Wird gesendet …';
 
   var name   = document.getElementById('f-name').value.trim();
   var email  = document.getElementById('f-email').value.trim();
   var praxis = document.getElementById('f-praxis').value.trim();
-
   var profile = document.getElementById('f-profile').value || '-';
   var profileExtra = document.getElementById('f-profile-extra').value.trim();
   if (profileExtra) profile += ', ' + profileExtra;
 
   var content = [
     '=== KI-SPRINT HAUSAUFGABEN SESSION 1 ===',
-    'Name:    ' + (name||'-'),
-    'Praxis:  ' + (praxis||'-'),
+    'Name:    ' + (name   || '-'),
+    'Praxis:  ' + (praxis || '-'),
     'E-Mail:  ' + email,
     '',
     '--- BLOCK A: EINRICHTEN ---',
-    'Claude Pro:          ' + (document.getElementById('f-a1').value||'-'),
-    'Claude-Projekt:      ' + (document.getElementById('f-a2').value||'-'),
-    'Grundfunktionen:     ' + (document.getElementById('f-a3').value||'-'),
+    'Claude Pro:       ' + (document.getElementById('f-a1').value || '-'),
+    'Claude-Projekt:   ' + (document.getElementById('f-a2').value || '-'),
+    'Grundfunktionen:  ' + (document.getElementById('f-a3').value || '-'),
     '',
     '--- BLOCK B: SAMMELN ---',
-    'Begleit-Mails (2 bestehende Pat.): ' + getFileNames('files-begleit'),
+    'Begleit-Mails (2 bestehende Pat.):  ' + getFileNames('zone-begleit'),
     '',
-    '2 weitere Komplett-Sets:           ' + getFileNames('files-sets'),
+    '2 weitere Komplett-Sets:            ' + getFileNames('zone-sets'),
     '',
-    'CI + ToV-Beispiele:  ' + getFileNames('files-ci'),
+    'CI + ToV-Beispiele:                 ' + getFileNames('zone-ci'),
     '',
-    'Patientenprofile:    ' + profile,
+    'Patientenprofile:  ' + profile,
     '',
     'Individualisierungsmatrix (Parameter | Zielwert | Profil | Wert):',
     readMatrix(),
     '',
     'Go-to Blutwerte:',
     document.getElementById('f-blutwerte').value.trim() || '-',
-    'Blutwerte-Upload:    ' + getFileNames('files-blutwerte'),
+    'Blutwerte-Upload:  ' + getFileNames('zone-blutwerte'),
     '',
     'Anmerkungen:',
     document.getElementById('f-notes').value.trim() || '-',
     '',
     '--- HINWEIS ---',
-    'Hochgeladene Dateien bitte gesondert pruefen (Upload-Anhang-Support folgt).',
+    'Upload-Anhang-Support (worker-integri-email-v2.js) folgt.',
   ].join('\n');
 
   fetch(WORKER_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify({email:email, _tool:'ki-sprint-ha-1', name:name, content:content})
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email: email, _tool: 'ki-sprint-ha-1', name: name, content: content })
   })
-  .then(function(r){return r.json();})
-  .then(function(){
-    document.getElementById('form-sections').style.display='none';
+  .then(function(r) { return r.json(); })
+  .then(function() {
+    document.getElementById('form-sections').style.display = 'none';
     var tv = document.getElementById('thank-you-view');
-    tv.style.display='block';
-    tv.scrollIntoView({behavior:'smooth'});
+    tv.style.display = 'block';
+    window.scrollTo(0, 0);
   })
-  .catch(function(){
-    btn.disabled=false;
-    btn.textContent='Hausaufgaben einreichen';
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Hausaufgaben einreichen';
     alert('Fehler beim Senden. Bitte erneut versuchen oder direkt an info@integri.de schreiben.');
   });
 }
