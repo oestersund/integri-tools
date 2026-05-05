@@ -105,8 +105,7 @@
 
   <div class="page-title">
     <h1>Hausaufgaben &mdash; Session 1</h1>
-    <p>Bitte f&uuml;llen Sie dieses Formular vor Session 2 aus. Aufwand: ca. 60&ndash;90 Minuten.<br>
-    Dokumente k&ouml;nnen direkt hochgeladen oder vorab per E-Mail an <strong>info@integri.de</strong> geschickt werden.</p>
+    <p>Bitte senden Sie das Formular sp&auml;testens bis <strong>Freitag, 8.&nbsp;Mai 2026</strong> ab &mdash; drei Tage vor Session 2.</p>
   </div>
 
   <div id="form-sections">
@@ -131,7 +130,6 @@
         <span class="section-badge">Block A</span>
         <div>
           <div class="section-title">Einrichten</div>
-          <div class="section-hint">~20&ndash;30 Min</div>
         </div>
       </div>
 
@@ -175,53 +173,44 @@
         <span class="section-badge blue">Block B</span>
         <div>
           <div class="section-title">Sammeln &amp; Vorbereiten</div>
-          <div class="section-hint">~40&ndash;60 Min</div>
         </div>
       </div>
 
-      <!-- Befunde -->
+      <!-- Begleit-Mails bestehende Patienten -->
       <div class="question">
-        <label class="q-label">3&ndash;5 Laborbefunde zusammenstellen <span class="required-mark">*</span></label>
-        <p class="q-hint">Reale Befunde aus dem Praxisalltag &mdash; m&ouml;glichst unterschiedliche F&auml;lle. Das sind unser Testmaterial f&uuml;r Session 2. Befunde k&ouml;nnen direkt hochgeladen oder per Mail an info@integri.de geschickt werden.</p>
-        <div class="radio-group" style="margin-bottom:12px">
-          <label><input type="radio" name="b-befunde-anzahl" value="Noch keine" /> Noch keine</label>
-          <label><input type="radio" name="b-befunde-anzahl" value="1-2 Befunde" /> 1&ndash;2 Befunde</label>
-          <label><input type="radio" name="b-befunde-anzahl" value="3-5 Befunde (Ziel erreicht)" /> 3&ndash;5 Befunde &#10003;</label>
-          <label><input type="radio" name="b-befunde-anzahl" value="Mehr als 5" /> Mehr als 5</label>
-        </div>
-        <div class="upload-zone" id="zone-befunde" onclick="document.getElementById('file-befunde').click()">
-          <input type="file" id="file-befunde" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFiles(this,'list-befunde','files-befunde')" />
-          <label class="upload-zone-label"><strong>Befunde hochladen</strong><br>PDF, JPG &mdash; mehrere m&ouml;glich</label>
-          <div class="upload-file-list" id="list-befunde"></div>
+        <label class="q-label">Begleit-Mails &mdash; 2 bestehende Patienten <span class="required-mark">*</span></label>
+        <p class="q-hint">Die E-Mail, die Ihre Praxis an die Patienten schickt &mdash; mit Laborbefund und Lab Results im Anhang. Bitte f&uuml;r beide bereits &uuml;bermittelten Patienten hochladen.</p>
+        <div class="upload-zone" id="zone-begleit" onclick="document.getElementById('file-begleit').click()">
+          <input type="file" id="file-begleit" multiple accept=".pdf,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-begleit','files-begleit')" />
+          <label class="upload-zone-label"><strong>Begleit-Mails hochladen</strong><br>PDF, EML, DOCX &mdash; 2 Dateien</label>
+          <div class="upload-file-list" id="list-begleit"></div>
         </div>
       </div>
 
       <hr class="divider" />
 
-      <!-- Erg&auml;nzende Mails -->
+      <!-- 2 weitere Komplett-Sets -->
       <div class="question">
-        <label class="q-label">Erg&auml;nzende Mails an Patienten</label>
-        <p class="q-hint">Die Mails, die aktuell zusammen mit dem Laborreport und dem Praxisdokument an Patienten gehen &mdash; mit Supplement-Links, Hinweisen etc. Diese zeigen uns, was noch au&szlig;erhalb des Reports l&auml;uft und was sp&auml;ter integriert werden soll.</p>
-        <div class="upload-zone" id="zone-mails" onclick="document.getElementById('file-mails').click()">
-          <input type="file" id="file-mails" multiple accept=".pdf,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-mails','files-mails')" />
-          <label class="upload-zone-label"><strong>Beispiel-Mails hochladen</strong><br>PDF, EML, DOCX &mdash; mehrere m&ouml;glich</label>
-          <div class="upload-file-list" id="list-mails"></div>
+        <label class="q-label">2 weitere Komplett-Sets</label>
+        <p class="q-hint">Pro Patient: Laborbefund + Lab Results Report + Begleit-Mail. Das gibt uns weitere F&auml;lle f&uuml;r Session 2.</p>
+        <div class="upload-zone" id="zone-sets" onclick="document.getElementById('file-sets').click()">
+          <input type="file" id="file-sets" multiple accept=".pdf,.jpg,.jpeg,.png,.eml,.msg,.docx,.txt" onchange="handleFiles(this,'list-sets','files-sets')" />
+          <label class="upload-zone-label"><strong>Komplett-Sets hochladen</strong><br>PDF, JPG, EML, DOCX &mdash; alle Dateien der 2 Patienten</label>
+          <div class="upload-file-list" id="list-sets"></div>
         </div>
-        <div class="upload-note">Alternativ: Mails einfach weiterleiten an <strong>info@integri.de</strong></div>
       </div>
 
       <hr class="divider" />
 
-      <!-- CI-Dokumente / Sprachbeispiele -->
+      <!-- CI-Dokumente / Tone-of-Voice -->
       <div class="question">
-        <label class="q-label">CI-Dokumente &amp; Sprachbeispiele</label>
-        <p class="q-hint">Dokumente, die eine typische patientengerechte Sprache in Ihrem Wording widerspiegeln &mdash; Texte, die Ihre Zielgruppe gut versteht und die zu Ihrer Marke passen. Auch Beispiel-Reports, Website-Texte oder Patientenbriefe sind willkommen. <strong>Bitte m&ouml;glichst vorab senden.</strong></p>
+        <label class="q-label">CI-Dokumente &amp; Tone-of-Voice-Beispiele</label>
+        <p class="q-hint">Dokumente, die Ihre Praxissprache und Marke zeigen &mdash; Website-Texte, Patientenbriefe, Infomaterial, Beispiel-Reports. Je mehr Beispiele, desto pr&auml;ziser trifft die KI sp&auml;ter Ihren Ton.</p>
         <div class="upload-zone" id="zone-ci" onclick="document.getElementById('file-ci').click()">
           <input type="file" id="file-ci" multiple accept=".pdf,.docx,.pages,.jpg,.png,.txt,.md" onchange="handleFiles(this,'list-ci','files-ci')" />
           <label class="upload-zone-label"><strong>Dokumente hochladen</strong><br>PDF, DOCX, Pages, Bilder &mdash; mehrere m&ouml;glich</label>
           <div class="upload-file-list" id="list-ci"></div>
         </div>
-        <div class="upload-note">Alternativ: Dokumente vorab an <strong>info@integri.de</strong> senden &mdash; je fr&uuml;her, desto besser f&uuml;r Session 2.</div>
       </div>
 
       <hr class="divider" />
@@ -287,11 +276,11 @@
 
       <!-- Standardauswahl Blutwerte -->
       <div class="question">
-        <label class="q-label">Ihre Go-to Blutwerte &mdash; Praxis-Leistungsportfolio</label>
-        <p class="q-hint">Welche Werte kommen in Ihrer Praxis &uuml;berhaupt in Frage? Das begrenzt sp&auml;ter, was die KI vorschlagen darf. Stichpunkte oder Komma-getrennte Liste gen&uuml;gt &mdash; unvollst&auml;ndig ist okay.</p>
+        <label class="q-label">Praxis-Leistungsportfolio: Go-to Blutwerte</label>
+        <p class="q-hint">Welche Werte sind f&uuml;r Ihre Praxis &uuml;berhaupt relevant? Das steuert, was die KI sp&auml;ter recherchieren soll. Entweder direkt eingeben oder als XLS, CSV, Word, PDF hochladen.</p>
         <textarea id="f-blutwerte" rows="4" placeholder="z. B.: Vitamin D, Omega-3 Index, Ferritin, Homocystein, Blutzucker n&uuml;chtern, HbA1c, TSH, fT3, fT4, CRP, Cortisol, DHEA-S, Testosteron ..."></textarea>
         <div class="upload-zone" style="margin-top:8px" id="zone-blutwerte" onclick="document.getElementById('file-blutwerte').click()">
-          <input type="file" id="file-blutwerte" accept=".pdf,.xlsx,.docx,.csv,.txt" onchange="handleFiles(this,'list-blutwerte','files-blutwerte')" />
+          <input type="file" id="file-blutwerte" accept=".pdf,.xlsx,.xls,.docx,.csv,.txt" onchange="handleFiles(this,'list-blutwerte','files-blutwerte')" />
           <label class="upload-zone-label"><strong>Liste hochladen</strong> (falls als Datei vorhanden)</label>
           <div class="upload-file-list" id="list-blutwerte"></div>
         </div>
@@ -423,7 +412,6 @@ function validate() {
   if (!document.getElementById('f-email').value.trim()) err.push('E-Mail');
   if (!document.getElementById('f-a1').value) err.push('Claude Pro Status');
   if (!document.getElementById('f-a2').value) err.push('Claude-Projekt Status');
-  if (!readRadio('b-befunde-anzahl')) err.push('Anzahl Laborbefunde');
   return err;
 }
 
@@ -458,12 +446,11 @@ function submitForm() {
     'Grundfunktionen:     ' + (document.getElementById('f-a3').value||'-'),
     '',
     '--- BLOCK B: SAMMELN ---',
-    'Laborbefunde:        ' + (readRadio('b-befunde-anzahl')||'-'),
-    'Befund-Uploads:      ' + getFileNames('files-befunde'),
+    'Begleit-Mails (2 bestehende Pat.): ' + getFileNames('files-begleit'),
     '',
-    'Ergaenzende Mails:   ' + getFileNames('files-mails'),
+    '2 weitere Komplett-Sets:           ' + getFileNames('files-sets'),
     '',
-    'CI-Dokumente:        ' + getFileNames('files-ci'),
+    'CI + ToV-Beispiele:  ' + getFileNames('files-ci'),
     '',
     'Patientenprofile:    ' + profile,
     '',
