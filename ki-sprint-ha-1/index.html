@@ -387,6 +387,26 @@
       </div>
       <div class="section-body">
 
+        <!-- Kontext-Input -->
+        <div class="question">
+          <label class="q-label">Kontext aus Ihrer Vorbereitung</label>
+          <p class="q-hint">Anamnese, Fragebogen, Telefonnotizen &mdash; der Einleitungskontext, den Sie typischerweise f&uuml;r einen Patienten sammeln. Bitte ein konkretes Beispiel eintragen oder exportieren. <em style="color:var(--text-dim);">Mittelfristig: Export direkt aus Ihren Systemen (MD oder PDF).</em></p>
+          <textarea id="f-kontext" rows="5" placeholder="Beispiel: 28-j&auml;hriger Leistungssportler, Ironman-Vorbereitung, Schulter-Verletzungshistorie, Ziel: Leistungsoptimierung und Regeneration ..."></textarea>
+          <div class="upload-area" id="zone-kontext" style="margin-top:12px;">
+            <input type="file" id="file-kontext" multiple accept=".pdf,.docx,.txt,.md" />
+            <div class="upload-icon">&#128196;</div>
+            <div class="upload-label">Oder Datei hochladen</div>
+            <div class="upload-hint">PDF, DOCX, TXT &mdash; Export aus Anamnese-System</div>
+            <button class="upload-btn" type="button" onclick="document.getElementById('file-kontext').click()">Datei ausw&auml;hlen</button>
+          </div>
+          <div class="file-list" id="list-kontext">
+            <div class="file-list-label" id="list-kontext-label">0 Dateien</div>
+            <div id="items-kontext"></div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
         <!-- Begleit-Mails -->
         <div class="question">
           <label class="q-label">Begleit-Mails &mdash; 2 bestehende Patienten <span class="required-mark">*</span></label>
@@ -628,6 +648,7 @@ function initUpload(zoneId, inputId, listId, labelId, itemsId) {
   }
 }
 
+initUpload('zone-kontext',    'file-kontext',  'list-kontext',   'list-kontext-label',   'items-kontext');
 initUpload('zone-begleit',   'file-begleit',  'list-begleit',   'list-begleit-label',   'items-begleit');
 initUpload('zone-sets',      'file-sets',      'list-sets',      'list-sets-label',       'items-sets');
 initUpload('zone-ci',        'file-ci',        'list-ci',        'list-ci-label',         'items-ci');
@@ -653,7 +674,7 @@ function readFileAsBase64(file) {
 }
 
 async function collectAttachments() {
-  var zones = ['zone-begleit', 'zone-sets', 'zone-ci', 'zone-blutwerte'];
+  var zones = ['zone-kontext', 'zone-begleit', 'zone-sets', 'zone-ci', 'zone-blutwerte'];
   var all = [];
   zones.forEach(function(zoneId) {
     (uploadStores[zoneId] || []).forEach(function(f) {
@@ -710,6 +731,10 @@ async function submitForm() {
     'Grundfunktionen:  ' + (document.getElementById('f-a3').value || '-'),
     '',
     '--- BLOCK B: SAMMELN ---',
+    'Kontext-Input (Anamnese/Notizen):',
+    document.getElementById('f-kontext').value.trim() || '-',
+    'Kontext-Upload:  ' + getFileNames('zone-kontext'),
+    '',
     'Begleit-Mails (2 bestehende Pat.):  ' + getFileNames('zone-begleit'),
     '',
     '2 weitere Komplett-Sets:            ' + getFileNames('zone-sets'),
