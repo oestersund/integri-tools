@@ -427,19 +427,20 @@
 
         <!-- CI + ToV -->
         <div class="question">
-          <label class="q-label">CI-Dokumente &amp; Tone-of-Voice-Beispiele</label>
-          <p class="q-hint">Dokumente, die Ihre Praxissprache und Marke zeigen &mdash; Website-Texte, Patientenbriefe, Infomaterial, Beispiel-Reports. Je mehr Beispiele, desto pr&auml;ziser trifft die KI sp&auml;ter Ihren Ton.</p>
+          <label class="q-label">Tone-of-Voice &amp; CI-Dokumente</label>
+          <p class="q-hint">Laden Sie Textpassagen oder Dokumente hoch, die zeigen wie Sie schreiben &mdash; Patientenbriefe, Beispiel-Reports, Website-Texte, Infomaterial. Mehrere Dateien sind willkommen. Im Kommentarfeld unten k&ouml;nnen Sie markieren, welche Passagen besonders typisch f&uuml;r Ihren Stil sind oder was Sie gezielt beibehalten wollen.</p>
           <div class="upload-area" id="zone-ci">
             <input type="file" id="file-ci" multiple accept=".pdf,.docx,.pages,.jpg,.png,.txt,.md" />
             <div class="upload-icon">&#127912;</div>
-            <div class="upload-label">Dokumente hochladen</div>
-            <div class="upload-hint">PDF, DOCX, Pages, Bilder &mdash; mehrere m&ouml;glich</div>
+            <div class="upload-label">Textpassagen &amp; Dokumente hochladen</div>
+            <div class="upload-hint">PDF, DOCX, Pages, TXT &mdash; mehrere m&ouml;glich</div>
             <button class="upload-btn" type="button" onclick="document.getElementById('file-ci').click()">Dateien ausw&auml;hlen</button>
           </div>
           <div class="file-list" id="list-ci">
             <div class="file-list-label" id="list-ci-label">0 Dateien</div>
             <div id="items-ci"></div>
           </div>
+          <textarea id="tov-kommentar" placeholder="Optional: Was ist an diesen Texten besonders typisch für Ihren Stil? Welche Passagen oder Formulierungen soll die KI sich merken?" style="margin-top:12px; width:100%; box-sizing:border-box; padding:12px; border:1px solid var(--border); border-radius:var(--radius-md); font-family:inherit; font-size:14px; color:var(--text); background:#fff; resize:vertical; min-height:90px; line-height:1.5;"></textarea>
         </div>
 
         <hr class="divider" />
@@ -713,7 +714,9 @@ async function submitForm() {
     '',
     '2 weitere Komplett-Sets:            ' + getFileNames('zone-sets'),
     '',
-    'CI + ToV-Beispiele:                 ' + getFileNames('zone-ci'),
+    'Tone-of-Voice + CI-Beispiele:        ' + getFileNames('zone-ci'),
+    'ToV-Kommentar (Stilhinweise):',
+    document.getElementById('tov-kommentar').value.trim() || '-',
     '',
     'Patientenprofile:  ' + profile,
     '',
