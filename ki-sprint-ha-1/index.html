@@ -641,6 +641,35 @@ function getFileNames(zoneId) {
 
 
 
+/* ── File → Base64 ── */
+function readFileAsBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload  = function() { resolve(reader.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function collectAttachments() {
+  var zones = ['zone-begleit', 'zone-sets', 'zone-ci', 'zone-blutwerte'];
+  var all = [];
+  zones.forEach(function(zoneId) {
+    (uploadStores[zoneId] || []).forEach(function(f) {
+      all.push({ file: f, zone: zoneId });
+    });
+  });
+  var results = await Promise.all(all.map(async function(item) {
+    var b64 = await readFileAsBase64(item.file);
+    return {
+      name:    item.file.name,
+      type:    item.file.type || 'application/octet-stream',
+      content: b64
+    };
+  }));
+  return results;
+}
+
 /* ── Validierung ── */
 function validate() {
   var err = [];
@@ -651,7 +680,7 @@ function validate() {
 }
 
 /* ── Submit ── */
-function submitForm() {
+async function submitForm() {
   var errors = validate();
   if (errors.length > 0) {
     alert('Bitte noch ausfüllen:\n- ' + errors.join('\n- '));
@@ -702,10 +731,11 @@ function submitForm() {
     'Upload-Anhang-Support (worker-integri-email-v2.js) folgt.',
   ].join('\n');
 
+  var attachments = await collectAttachments();
   fetch(WORKER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({ email: email, _tool: 'ki-sprint-ha-1', name: name, content: content })
+    body: JSON.stringify({ email: email, _tool: 'ki-sprint-ha-1', name: name, content: content, attachments: attachments })
   })
   .then(function(r) { return r.json(); })
   .then(function() {
