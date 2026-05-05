@@ -1261,9 +1261,31 @@
     a.click();
   }
 
+  /* ── File → Base64 ── */
+  function readFileAsBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload  = function() { resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function collectAttachments() {
+    var allFiles = [].concat(
+      (upload3.files || []).map(function(f) { return f; }),
+      (upload5.files || []).map(function(f) { return f; })
+    );
+    var results = await Promise.all(allFiles.map(async function(f) {
+      var b64 = await readFileAsBase64(f);
+      return { name: f.name, type: f.type || 'application/octet-stream', content: b64 };
+    }));
+    return results;
+  }
+
   var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
 
-  function submitForm() {
+  async function submitForm() {
     var { vorname, nachname, email, out } = collectFormData();
 
     if (!email) {
@@ -1275,12 +1297,14 @@
     var btn = document.querySelector('.btn-primary[onclick="submitForm()"]');
     if (btn) { btn.disabled = true; btn.textContent = 'Wird gesendet…'; }
 
+    var attachments = await collectAttachments();
     var payload = {
       email:    email,
       vorname:  vorname,
       nachname: nachname,
       _tool:    'ki-sprint-checkliste',
-      content:  out
+      content:  out,
+      attachments: attachments
     };
 
     fetch(WORKER_URL, {
