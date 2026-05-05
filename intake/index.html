@@ -4,171 +4,201 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI-Mentoring — Intake-Fragebogen</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
+  /* ============================================================
+     INTEGRI TOOL — Intake-Fragebogen
+     Design: Design_System_Master_v3_0_20260409.html
+     ============================================================ */
+
   :root {
-    --integri-primary: #00A896;
-    --integri-primary-dark: #008B7D;
-    --integri-text: #333;
-    --integri-bg: #f5f7fa;
-    --integri-section-bg: #ffffff;
-    --integri-border: #e0e0e0;
-    --error: #c0392b;
-    --radius: 6px;
+    --petrol:       #033132;
+    --off-white:    #F7F7F5;
+    --white:        #FFFFFF;
+    --green:        #2D7D3E;
+    --terracotta:   #F08972;
+    --text:         #2C3E50;
+    --border:       #D1D5D8;
+    --apricot:      #FFF5F2;
+    --text-dim:     #5A6B7A;
+    --placeholder:  #8090A0;
+    --error:        #c0392b;
+    --radius-sm:    4px;
+    --radius-md:    8px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--integri-bg);
-    color: var(--integri-text);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--off-white);
+    padding: 40px 20px 60px;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Header (identisch zu website-briefing) ── */
-  header {
-    background: white;
-    border-bottom: 3px solid var(--integri-primary);
-    padding: 20px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  .wrapper { max-width: 780px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .tool-header {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    border-top: 4px solid var(--petrol);
+    padding: 28px 32px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(3,49,50,0.06);
   }
-  .header-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
+
+  .header-top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  }
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--integri-primary);
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
-  /* ── Page layout ── */
-  .page-wrap {
-    max-width: 720px;
-    margin: 40px auto 80px;
-    padding: 0 24px;
-  }
-
-  .intro {
-    margin-bottom: 32px;
-  }
-  .intro h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--integri-text);
-  }
-  .intro p {
-    color: #666;
-    font-size: 15px;
-  }
-  .badge-context {
-    display: inline-block;
-    background: var(--integri-primary);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-bottom: 14px;
-    letter-spacing: 0.06em;
+  .brand-mark {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--petrol);
   }
 
-  /* ── Cluster header ── */
+  .header-divider { width: 1px; height: 14px; background: var(--border); }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 3px;
+    background: var(--green);
+    color: var(--white);
+  }
+
+  .tool-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--petrol);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+
+  .tool-header .subtitle {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.65;
+    max-width: 620px;
+  }
+
+  /* ── Cluster-Trennlinie ── */
   .cluster-header {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--integri-primary);
-    margin: 40px 0 14px;
+    color: var(--green);
+    margin: 36px 0 14px;
     padding-bottom: 7px;
-    border-bottom: 2px solid var(--integri-primary);
+    border-bottom: 2px solid var(--green);
   }
 
-  /* ── Question cards ── */
+  /* ── Frage-Karten ── */
   .question {
-    background: var(--integri-section-bg);
-    border: 1px solid var(--integri-border);
-    border-radius: var(--radius);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     padding: 20px 24px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(3,49,50,0.04);
   }
   .question.hidden { display: none; }
 
   .q-label {
     font-size: 15px;
     font-weight: 600;
+    color: var(--petrol);
     margin-bottom: 6px;
     display: block;
-    color: var(--integri-text);
   }
-  .required-mark { color: var(--error); margin-left: 2px; }
+
+  .required-mark { color: var(--terracotta); margin-left: 2px; }
+
   .q-hint {
-    font-size: 13px;
-    color: #888;
+    font-size: 14px;
+    color: var(--text-dim);
     margin-bottom: 10px;
+    line-height: 1.55;
   }
+
   .select-hint {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 13px;
+    color: var(--placeholder);
     font-style: italic;
     margin-bottom: 8px;
   }
 
-  /* ── Inputs ── */
+  /* ── Eingabefelder ── */
   input[type="text"],
   input[type="email"],
   textarea,
   select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--integri-border);
-    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     font-size: 15px;
     font-family: inherit;
-    color: var(--integri-text);
-    background: #fff;
-    transition: border-color 0.15s;
+    color: var(--text);
+    background: var(--off-white);
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
   }
+
   input[type="text"]:focus,
   input[type="email"]:focus,
   textarea:focus {
-    outline: none;
-    border-color: var(--integri-primary);
-    box-shadow: 0 0 0 3px rgba(0,168,150,0.1);
+    border-color: var(--petrol);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(3,49,50,0.07);
   }
-  textarea { resize: vertical; min-height: 88px; }
+
+  textarea { resize: vertical; min-height: 88px; line-height: 1.65; }
 
   input.readonly-field {
     background: #f0f4f7;
-    color: #888;
+    color: var(--text-dim);
     cursor: default;
   }
 
-  /* ── Q1 sub-fields ── */
+  textarea::placeholder,
+  input::placeholder { color: var(--placeholder); }
+
+  /* ── Q1 Sub-Felder ── */
   .q1-group { display: flex; flex-direction: column; gap: 10px; }
   .sub-label {
-    font-size: 13px;
-    color: #888;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
     margin-bottom: 3px;
     display: block;
   }
 
-  /* ── Radio / Checkbox groups ── */
+  /* ── Radio / Checkbox ── */
   .radio-group,
   .checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
     margin-top: 4px;
   }
+
   .radio-group label,
   .checkbox-group label {
     display: flex;
@@ -176,60 +206,61 @@
     gap: 10px;
     font-size: 15px;
     cursor: pointer;
-    padding: 8px 12px;
-    border: 1px solid var(--integri-border);
-    border-radius: var(--radius);
-    transition: background 0.1s, border-color 0.1s;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--off-white);
+    transition: background 0.12s, border-color 0.12s;
   }
+
   .radio-group label:hover,
   .checkbox-group label:hover {
-    background: #f0faf9;
-    border-color: var(--integri-primary);
+    background: #EFF7F0;
+    border-color: var(--green);
   }
+
   .radio-group input,
   .checkbox-group input {
     width: auto;
     margin-top: 3px;
     flex-shrink: 0;
-    accent-color: var(--integri-primary);
+    accent-color: var(--green);
   }
-  .other-text {
-    margin-top: 8px;
-    display: none;
-  }
+
+  .other-text { margin-top: 8px; display: none; }
   .other-text.visible { display: block; }
 
-  /* ── Compound sub-sections (inside Q8) ── */
+  /* ── Sub-Sections (innerhalb Q8) ── */
   .sub-section {
     margin-top: 18px;
     padding-top: 18px;
-    border-top: 1px dashed var(--integri-border);
+    border-top: 1px dashed var(--border);
   }
   .sub-section-label {
     font-size: 14px;
     font-weight: 600;
-    color: #555;
-    margin-bottom: 4px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
     display: block;
   }
 
-  /* ── Optional part inside Q12 ── */
+  /* ── Optional-Teil ── */
   .optional-part {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px dashed var(--integri-border);
+    border-top: 1px dashed var(--border);
   }
   .optional-part .q-label {
     font-weight: 500;
     font-size: 14px;
-    color: #888;
+    color: var(--text-dim);
   }
 
   /* ── DSGVO ── */
   .dsgvo-block {
-    background: #fff;
-    border: 1px solid var(--integri-border);
-    border-radius: var(--radius);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     padding: 18px 22px;
     margin: 28px 0 20px;
   }
@@ -239,14 +270,15 @@
     font-size: 14px;
     cursor: pointer;
     align-items: flex-start;
+    color: var(--text);
   }
   .dsgvo-block input[type="checkbox"] {
     width: auto;
     flex-shrink: 0;
     margin-top: 2px;
-    accent-color: var(--integri-primary);
+    accent-color: var(--green);
   }
-  .dsgvo-block a { color: var(--integri-primary); }
+  .dsgvo-block a { color: var(--petrol); }
   .dsgvo-error {
     color: var(--error);
     font-size: 13px;
@@ -254,25 +286,26 @@
     display: none;
   }
 
-  /* ── Submit button ── */
+  /* ── Submit ── */
   .submit-btn {
     display: block;
     width: 100%;
     padding: 14px 24px;
-    background: var(--integri-primary);
-    color: #fff;
+    background: var(--terracotta);
+    color: var(--white);
     border: none;
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s;
     font-family: inherit;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, opacity 0.15s;
   }
-  .submit-btn:hover { background: var(--integri-primary-dark); }
-  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .submit-btn:hover { background: #e07860; }
+  .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-  /* ── Validation ── */
+  /* ── Validierung ── */
   .field-error {
     color: var(--error);
     font-size: 13px;
@@ -281,23 +314,25 @@
   }
   .field-error.visible { display: block; }
   .has-error input,
-  .has-error textarea {
-    border-color: var(--error);
-  }
+  .has-error textarea { border-color: var(--error); }
 
-  /* ── Thank-you screen ── */
+  /* ── Thank-You ── */
   .thank-you {
     display: none;
     text-align: center;
     padding: 60px 24px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    border-top: 4px solid var(--petrol);
+    box-shadow: 0 1px 4px rgba(3,49,50,0.06);
   }
   .thank-you .checkmark {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: var(--integri-primary);
-    color: #fff;
-    font-size: 28px;
+    background: var(--petrol);
+    color: var(--white);
+    font-size: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -305,85 +340,80 @@
   }
   .thank-you h2 {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 600;
+    color: var(--petrol);
     margin-bottom: 10px;
   }
-  .thank-you p {
-    color: #666;
-    font-size: 15px;
-    max-width: 460px;
-    margin: 0 auto;
-  }
+  .thank-you p { color: var(--text-dim); font-size: 15px; max-width: 460px; margin: 0 auto; }
 
   /* ── Footer ── */
-  footer {
-    text-align: center;
-    padding: 20px 24px;
+  .global-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     font-size: 12px;
-    color: #aaa;
-    border-top: 1px solid var(--integri-border);
+    color: var(--text-dim);
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
   }
-  footer a { color: #aaa; text-decoration: none; }
-  footer a:hover { color: var(--integri-primary); }
+  .global-footer a { color: var(--text-dim); text-decoration: none; }
+  .global-footer a:hover { color: var(--text); }
 
   @media (max-width: 480px) {
-    .page-wrap { padding: 0 14px; }
+    body { padding: 20px 14px 40px; }
+    .tool-header { padding: 20px 18px; }
     .question { padding: 16px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Header: identisch zu tools.integri.de/website-briefing/ -->
-<header>
-  <div class="header-container">
-    <div class="logo">INTEGRI</div>
-  </div>
-</header>
+<div class="wrapper">
 
-<div class="page-wrap">
-
-  <!-- ── Form view ── -->
+  <!-- ── Form View ── -->
   <div id="form-view">
 
-    <div class="intro">
-      <div id="context-badge" class="badge-context"></div>
-      <h2 id="form-title">KI-Mentoring — Fragebogen</h2>
-      <p id="form-subtitle"></p>
+    <div class="tool-header">
+      <div class="header-top">
+        <span class="brand-mark">Integri</span>
+        <div class="header-divider"></div>
+        <span class="badge" id="context-badge"></span>
+      </div>
+      <h1 id="form-title">KI-Mentoring — Fragebogen</h1>
+      <p class="subtitle" id="form-subtitle"></p>
     </div>
 
     <form id="intake-form" novalidate>
 
-      <!-- Meta-Felder (werden per JS gesetzt und im JSON mitgesendet) -->
       <input type="hidden" id="field-context">
-      <input type="hidden" id="field-anrede">
       <input type="hidden" id="field-anlass">
 
-      <!-- ══════════════════════════════════════
-           CLUSTER 1 — KONTEXT
-           ══════════════════════════════════════ -->
+      <!-- ══ CLUSTER 1 — KONTEXT ══ -->
       <div class="cluster-header">Kontext</div>
 
       <!-- Q1: Zur Person -->
       <div class="question" id="q1">
-        <span class="q-label" id="q1-label">Zu deiner Person <span class="required-mark">*</span></span>
+        <span class="q-label" id="q1-label">Zu Ihrer Person <span class="required-mark">*</span></span>
 
         <!-- Variante Website: Name + Rolle + Branche + E-Mail -->
         <div id="q1-website" class="q1-group">
           <div>
             <span class="sub-label">Name <span class="required-mark">*</span></span>
-            <input type="text" name="name" id="field-name" placeholder="Dein Name">
+            <input type="text" name="name" id="field-name" placeholder="Ihr Name">
           </div>
           <div>
             <span class="sub-label">Rolle / Funktion</span>
-            <input type="text" name="rolle" id="field-rolle" placeholder="z.B. Geschäftsführer, Marketing Lead">
+            <input type="text" name="rolle" id="field-rolle" placeholder="z.B. Geschäftsführerin, Marketing Lead">
           </div>
           <div>
             <span class="sub-label">Branche</span>
             <input type="text" name="branche" id="field-branche" placeholder="z.B. Agentur, Beratung, E-Commerce">
           </div>
           <div>
-            <span class="sub-label" id="q1-email-label">Deine E-Mail-Adresse <span class="required-mark">*</span></span>
+            <span class="sub-label" id="q1-email-label">Ihre E-Mail-Adresse <span class="required-mark">*</span></span>
             <input type="email" name="email" id="field-email" placeholder="name@beispiel.de">
           </div>
         </div>
@@ -392,10 +422,10 @@
         <div id="q1-warm" class="q1-group" style="display:none">
           <div>
             <span class="sub-label">Name <span class="required-mark">*</span></span>
-            <input type="text" name="name_warm" id="field-name-warm" placeholder="Dein Name">
+            <input type="text" name="name_warm" id="field-name-warm" placeholder="Ihr Name">
           </div>
           <div>
-            <span class="sub-label" id="q1-email-label-warm">Deine E-Mail-Adresse <span class="required-mark">*</span></span>
+            <span class="sub-label" id="q1-email-label-warm">Ihre E-Mail-Adresse <span class="required-mark">*</span></span>
             <input type="email" name="email" id="field-email-warm" placeholder="name@beispiel.de">
           </div>
         </div>
@@ -411,12 +441,12 @@
             <input type="text" name="pseudonym" id="field-pseudonym" placeholder="Optional — z.B. ein Spitzname">
           </div>
           <div>
-            <span class="sub-label" id="q1-email-label-group">E-Mail-Adresse (optional, für Kopie deiner Antworten)</span>
+            <span class="sub-label" id="q1-email-label-group">E-Mail-Adresse (optional, für Kopie Ihrer Antworten)</span>
             <input type="email" name="email" id="field-email-group" placeholder="name@beispiel.de">
           </div>
         </div>
 
-        <div class="field-error" id="q1-error">Bitte füll dieses Feld aus.</div>
+        <div class="field-error" id="q1-error">Bitte füllen Sie Name und E-Mail-Adresse aus.</div>
       </div>
 
       <!-- Q2: Unternehmensgröße -->
@@ -430,14 +460,12 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════
-           CLUSTER 2 — STATUS QUO
-           ══════════════════════════════════════ -->
+      <!-- ══ CLUSTER 2 — STATUS QUO ══ -->
       <div class="cluster-header" id="cluster2-header">Status quo</div>
 
       <!-- Q3: KI-Tools -->
       <div class="question" id="q3">
-        <span class="q-label" id="q3-label">Welche KI-Tools nutzt du aktuell?</span>
+        <span class="q-label" id="q3-label">Welche KI-Tools nutzen Sie aktuell?</span>
         <p class="select-hint">Mehrfachauswahl möglich</p>
         <div class="checkbox-group">
           <label><input type="checkbox" name="tools" value="ChatGPT"> ChatGPT</label>
@@ -456,7 +484,7 @@
         <input type="text" name="tools_andere_text" id="field-tools-andere" class="other-text" placeholder="Welche Tools?">
 
         <div class="sub-section" id="q3-nutzungsart-section">
-          <span class="sub-section-label" id="q3-nutzungsart-label">Nutzt du die kostenlose oder Bezahl-Version?</span>
+          <span class="sub-section-label" id="q3-nutzungsart-label">Nutzen Sie die kostenlose oder Bezahl-Version?</span>
           <div class="radio-group" style="margin-top:8px">
             <label><input type="radio" name="tools_nutzungsart" value="Kostenlose Versionen"> Kostenlose Versionen</label>
             <label><input type="radio" name="tools_nutzungsart" value="Bezahlte Versionen"> Bezahlte Versionen (z.B. ChatGPT Plus, Claude Pro)</label>
@@ -474,7 +502,7 @@
 
       <!-- Q5: Datenlage -->
       <div class="question" id="q5">
-        <span class="q-label" id="q5-label">Wo liegen deine Daten und Prozesse aktuell?</span>
+        <span class="q-label" id="q5-label">Wo liegen Ihre Daten und Prozesse aktuell?</span>
         <div class="radio-group">
           <label><input type="radio" name="datenlage" value="Dokumentiert in Systemen"> Dokumentiert in Systemen (CRM, Wiki, SOPs)</label>
           <label><input type="radio" name="datenlage" value="Teilweise dokumentiert"> Teilweise dokumentiert, teilweise im Kopf</label>
@@ -485,31 +513,27 @@
 
       <!-- Q7: Bisherige Erfahrungen -->
       <div class="question" id="q7">
-        <span class="q-label" id="q7-label">Welche Erfahrungen hast du bisher mit KI gemacht — was lief gut, was weniger?</span>
+        <span class="q-label" id="q7-label">Welche Erfahrungen haben Sie bisher mit KI gemacht — was lief gut, was weniger?</span>
         <textarea name="erfahrungen" id="field-erfahrungen" placeholder="Freitext"></textarea>
       </div>
 
       <!-- Q6: Konkreter Anwendungsfall -->
       <div class="question" id="q6">
-        <span class="q-label" id="q6-label">Nenne stichwortartig Anwendungsfälle, bei denen du KI heute schon einsetzt <span class="required-mark">*</span></span>
+        <span class="q-label" id="q6-label">Nennen Sie stichwortartig Anwendungsfälle, bei denen Sie KI heute schon einsetzen <span class="required-mark">*</span></span>
         <textarea name="anwendungsfall" id="field-anwendungsfall" placeholder="Freitext"></textarea>
-        <div class="field-error" id="q6-error">Bitte füll dieses Feld aus.</div>
+        <div class="field-error" id="q6-error">Bitte füllen Sie dieses Feld aus.</div>
       </div>
 
-      <!-- ══════════════════════════════════════
-           CLUSTER 3 — ZIEL
-           Drei Dimensionen als zusammenhängender Block:
-           Fähigkeit → Erfolgskriterium → Zeitrahmen
-           ══════════════════════════════════════ -->
+      <!-- ══ CLUSTER 3 — ZIEL ══ -->
       <div class="cluster-header" id="cluster3-header">Ziel</div>
 
-      <!-- Q8: Compound — Ziel (Fähigkeit + Erfolgskriterium + Zeitrahmen) -->
+      <!-- Q8: Compound — Ziel -->
       <div class="question" id="q8">
-        <span class="q-label" id="q8a-label">Was willst du mit KI können, was heute nicht möglich ist?</span>
+        <span class="q-label" id="q8a-label">Was möchten Sie mit KI können, was heute nicht möglich ist?</span>
         <textarea name="ziel_koennen" id="field-ziel-koennen" placeholder="Freitext"></textarea>
 
         <div class="sub-section" id="q8b-section">
-          <span class="sub-section-label" id="q8b-label">Beschreibe mit Stichworten, was diese Lösung auszeichnen soll.</span>
+          <span class="sub-section-label" id="q8b-label">Beschreiben Sie mit Stichworten, was diese Lösung auszeichnen soll.</span>
           <textarea name="erfolgsmessung" id="field-erfolgsmessung" placeholder="Freitext" style="min-height:72px"></textarea>
         </div>
 
@@ -525,9 +549,9 @@
         </div>
       </div>
 
-      <!-- Q9: Priorität (Mehrfachauswahl) -->
+      <!-- Q9: Priorität -->
       <div class="question" id="q9">
-        <span class="q-label" id="q9-label">Welcher Aspekt hat für dich Priorität?</span>
+        <span class="q-label" id="q9-label">Welcher Aspekt hat für Sie Priorität?</span>
         <p class="select-hint">Mehrfachauswahl möglich</p>
         <div class="checkbox-group">
           <label><input type="checkbox" name="prioritaet" value="Grundverständnis & Einordnung"> Grundverständnis &amp; Einordnung</label>
@@ -543,9 +567,7 @@
         <input type="text" name="prioritaet_andere_text" id="field-prio-andere" class="other-text" placeholder="Was genau?">
       </div>
 
-      <!-- ══════════════════════════════════════
-           CLUSTER 4 — NÄCHSTER AUSTAUSCH
-           ══════════════════════════════════════ -->
+      <!-- ══ CLUSTER 4 — NÄCHSTER AUSTAUSCH ══ -->
       <div class="cluster-header" id="cluster4-header">Nächster Austausch</div>
 
       <!-- Q10: Vertiefungsthemen -->
@@ -556,12 +578,10 @@
           <span class="q-label">Optional: Konkretes Beispiel, Problem oder Projekt, das wir durchgehen sollen.</span>
           <textarea name="vertiefung_beispiel" id="field-vertiefung-beispiel" placeholder="Freitext (optional)" style="min-height:70px"></textarea>
         </div>
-        <div class="field-error" id="q10-error">Bitte füll dieses Feld aus.</div>
+        <div class="field-error" id="q10-error">Bitte füllen Sie dieses Feld aus.</div>
       </div>
 
-      <!-- ══════════════════════════════════════
-           CLUSTER 5 — RAHMENBEDINGUNGEN
-           ══════════════════════════════════════ -->
+      <!-- ══ CLUSTER 5 — RAHMENBEDINGUNGEN ══ -->
       <div class="cluster-header" id="cluster5-header">Rahmenbedingungen</div>
 
       <!-- Q11: Zeitbudget -->
@@ -590,9 +610,9 @@
       <div class="dsgvo-block">
         <label>
           <input type="checkbox" id="dsgvo-consent">
-          <span id="dsgvo-text">Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen findest du in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+          <span id="dsgvo-text">Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen finden Sie in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
         </label>
-        <div class="dsgvo-error" id="dsgvo-error">Bitte stimme der Datenschutzerklärung zu.</div>
+        <div class="dsgvo-error" id="dsgvo-error">Bitte stimmen Sie der Datenschutzerklärung zu.</div>
       </div>
 
       <button type="submit" class="submit-btn" id="submit-btn">Fragebogen absenden</button>
@@ -600,89 +620,63 @@
     </form>
   </div><!-- /form-view -->
 
-  <!-- ── Thank-you view ── -->
+  <!-- ── Thank-You View ── -->
   <div class="thank-you" id="thank-you-view">
-    <div class="checkmark">✓</div>
-    <h2 id="thankyou-heading">Danke für deine Antworten.</h2>
-    <p id="thankyou-text">Ich melde mich in Kürze bei dir.</p>
-    <p id="thankyou-copy" style="margin-top:10px; font-size:13px; color:#aaa; display:none"></p>
+    <div class="checkmark">&#10003;</div>
+    <h2 id="thankyou-heading">Vielen Dank für Ihre Antworten.</h2>
+    <p id="thankyou-text">Ich melde mich in Kürze bei Ihnen.</p>
+    <p id="thankyou-copy" style="margin-top:10px; font-size:13px; color:var(--text-dim); display:none"></p>
   </div>
 
-</div><!-- /page-wrap -->
+  <!-- ── Footer ── -->
+  <div class="global-footer">
+    <span></span>
+    <span>
+      <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+      &nbsp;·&nbsp;
+      <a href="https://integri.de/impressum" target="_blank" rel="noopener">Impressum</a>
+    </span>
+  </div>
 
-<footer>
-  <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
-  &nbsp;·&nbsp;
-  <a href="https://integri.de/impressum" target="_blank" rel="noopener">Impressum</a>
-</footer>
+</div><!-- /wrapper -->
 
 <script>
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 // KONFIGURATION
-// ═══════════════════════════════════════════════════════════════
-
-// Cloudflare Worker URL — nach dem Deployment eintragen.
+// ════════════════════════════════════════════════════════════════
 var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
 
-// ═══════════════════════════════════════════════════════════════
-// TEXTE — Du / Sie
-// Alle pronomenabhängigen Texte an einer Stelle.
-// Neue Fragen: hier eintragen, beide Versionen.
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// TEXTE (immer Sie)
+// ════════════════════════════════════════════════════════════════
 var TEXTS = {
-  du: {
-    q1_label:         'Zu deiner Person',
-    q1_email_label:   'Deine E-Mail-Adresse',
-    q3_label:         'Welche KI-Tools nutzt du aktuell?',
-    q3_nutzungsart:   'Nutzt du die kostenlose oder Bezahl-Version?',
-    q5_label:         'Wo liegen deine Daten und Prozesse aktuell?',
-    q6_label:         'Nenne stichwortartig Anwendungsfälle, bei denen du KI heute schon einsetzt',
-    q6_group_label:   'Nenne eine konkrete Situation aus Studium, Job oder Alltag, in der KI dir helfen könnte oder schon hilft.',
-    q7_label:         'Welche Erfahrungen hast du bisher mit KI gemacht — was lief gut, was weniger?',
-    q8a_label:        'Was willst du mit KI können, was heute nicht möglich ist?',
-    q8b_label:        'Beschreibe mit Stichworten, was diese Lösung auszeichnen soll.',
-    q8b_group_label:  'Was wäre für dich nach der Session ein gutes Ergebnis?',
-    q9_label:         'Welcher Aspekt hat für dich Priorität?',
-    thankyou_copy:    'Eine Kopie deiner Antworten wurde an {email} gesendet.',
-    dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen findest du in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
-    subtitle_website: 'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
-    subtitle_warm:    'Bitte nimm dir 10–15 Minuten Zeit. Deine Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
-    subtitle_group:   'Bitte nimm dir 5–7 Minuten Zeit. Deine Antworten helfen mir, die Session auf eure Situation zuzuschneiden.',
-    thankyou_website: 'Ich melde mich in Kürze bei dir.',
-    thankyou_warm:    'Ich melde mich vor unserem nächsten Austausch bei dir.',
-    thankyou_group:   'Deine Antworten sind eingegangen. Ich freue mich auf die Session.',
-    thankyou_heading: 'Danke für deine Antworten.',
-    submit_label:     'Fragebogen absenden'
-  },
-  sie: {
-    q1_label:         'Zu Ihrer Person',
-    q1_email_label:   'Ihre E-Mail-Adresse',
-    q3_label:         'Welche KI-Tools nutzen Sie aktuell?',
-    q3_nutzungsart:   'Nutzen Sie die kostenlose oder Bezahl-Version?',
-    q5_label:         'Wo liegen Ihre Daten und Prozesse aktuell?',
-    q6_label:         'Nennen Sie stichwortartig Anwendungsfälle, bei denen Sie KI heute schon einsetzen',
-    q6_group_label:   'Nennen Sie eine konkrete Situation aus Studium, Job oder Alltag, in der KI Ihnen helfen könnte oder schon hilft.',
-    q7_label:         'Welche Erfahrungen haben Sie bisher mit KI gemacht — was lief gut, was weniger?',
-    q8a_label:        'Was möchten Sie mit KI können, was heute nicht möglich ist?',
-    q8b_label:        'Beschreiben Sie mit Stichworten, was diese Lösung auszeichnen soll.',
-    q8b_group_label:  'Was wäre für Sie nach der Session ein gutes Ergebnis?',
-    q9_label:         'Welcher Aspekt hat für Sie Priorität?',
-    thankyou_copy:    'Eine Kopie Ihrer Antworten wurde an {email} gesendet.',
-    dsgvo_text:       'Ich bin damit einverstanden, dass meine Angaben zur Vorbereitung und Durchführung des Mentorings verarbeitet werden. Weitere Informationen finden Sie in der <a href="https://integri.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
-    subtitle_website: 'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
-    subtitle_warm:    'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
-    subtitle_group:   'Bitte nehmen Sie sich 5–7 Minuten Zeit. Ihre Antworten helfen mir, die Session auf Ihre Situation zuzuschneiden.',
-    thankyou_website: 'Ich melde mich in Kürze bei Ihnen.',
-    thankyou_warm:    'Ich melde mich vor unserem nächsten Austausch bei Ihnen.',
-    thankyou_group:   'Ihre Antworten sind eingegangen. Ich freue mich auf die Session.',
-    thankyou_heading: 'Danke für Ihre Antworten.',
-    submit_label:     'Fragebogen absenden'
-  }
+  q1_label:         'Zu Ihrer Person',
+  q1_email_label:   'Ihre E-Mail-Adresse',
+  q3_label:         'Welche KI-Tools nutzen Sie aktuell?',
+  q3_nutzungsart:   'Nutzen Sie die kostenlose oder Bezahl-Version?',
+  q5_label:         'Wo liegen Ihre Daten und Prozesse aktuell?',
+  q6_label:         'Nennen Sie stichwortartig Anwendungsfälle, bei denen Sie KI heute schon einsetzen',
+  q6_group_label:   'Nennen Sie eine konkrete Situation aus Studium, Job oder Alltag, in der KI Ihnen helfen könnte oder schon hilft.',
+  q7_label:         'Welche Erfahrungen haben Sie bisher mit KI gemacht — was lief gut, was weniger?',
+  q8a_label:        'Was möchten Sie mit KI können, was heute nicht möglich ist?',
+  q8b_label:        'Beschreiben Sie mit Stichworten, was diese Lösung auszeichnen soll.',
+  q8b_group_label:  'Was wäre für Sie nach der Session ein gutes Ergebnis?',
+  q9_label:         'Welcher Aspekt hat für Sie Priorität?',
+  thankyou_copy:    'Eine Kopie Ihrer Antworten wurde an {email} gesendet.',
+  subtitle_website: 'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unser Gespräch optimal vorzubereiten.',
+  subtitle_warm:    'Bitte nehmen Sie sich 10–15 Minuten Zeit. Ihre Antworten helfen mir, unseren nächsten Austausch vorzubereiten.',
+  subtitle_group:   'Bitte nehmen Sie sich 5–7 Minuten Zeit. Ihre Antworten helfen mir, die Session auf Ihre Situation zuzuschneiden.',
+  thankyou_website: 'Ich melde mich in Kürze bei Ihnen.',
+  thankyou_warm:    'Ich melde mich vor unserem nächsten Austausch bei Ihnen.',
+  thankyou_group:   'Ihre Antworten sind eingegangen. Ich freue mich auf die Session.',
+  thankyou_heading: 'Vielen Dank für Ihre Antworten.',
+  q1_error:         'Bitte füllen Sie Name und E-Mail-Adresse aus.',
+  field_error:      'Bitte füllen Sie dieses Feld aus.'
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 // CONTEXT CONFIG
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 var CONTEXT_CONFIG = {
   website: {
     badge:             'Erstgespräch / Kennenlernen',
@@ -707,78 +701,59 @@ var CONTEXT_CONFIG = {
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 (function init() {
   var params  = new URLSearchParams(window.location.search);
   var context = params.get('context') || 'website';
-  var anrede  = params.get('anrede')  || 'du';
   var anlass  = params.get('anlass')  || '';
 
   if (!CONTEXT_CONFIG[context]) context = 'website';
-  if (anrede !== 'sie') anrede = 'du';
 
   var cfg = CONTEXT_CONFIG[context];
-  var txt = TEXTS[anrede];
 
-  // Hidden meta fields
   document.getElementById('field-context').value = context;
-  document.getElementById('field-anrede').value  = anrede;
   document.getElementById('field-anlass').value  = anlass;
 
-  // Badge + Title
   document.getElementById('context-badge').textContent = cfg.badge;
   document.getElementById('form-title').textContent    = cfg.title;
-  document.getElementById('form-subtitle').textContent =
-    txt['subtitle_' + context] || txt.subtitle_website;
+  document.getElementById('form-subtitle').textContent = TEXTS['subtitle_' + context] || TEXTS.subtitle_website;
+  document.getElementById('thankyou-heading').textContent = TEXTS.thankyou_heading;
+  document.getElementById('thankyou-text').textContent    = TEXTS['thankyou_' + context] || TEXTS.thankyou_website;
 
-  // Thank-you
-  document.getElementById('thankyou-heading').textContent =
-    txt.thankyou_heading;
-  document.getElementById('thankyou-text').textContent =
-    txt['thankyou_' + context] || txt.thankyou_website;
-  document.getElementById('submit-btn').textContent = txt.submit_label;
+  // Texte einsetzen
+  applyText('q1-label',             TEXTS.q1_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label',       TEXTS.q1_email_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label-warm',  TEXTS.q1_email_label + ' <span class="required-mark">*</span>');
+  applyText('q1-email-label-group', TEXTS.q1_email_label + ' (optional, für Kopie)');
+  applyText('q3-label',             TEXTS.q3_label);
+  applyText('q3-nutzungsart-label', TEXTS.q3_nutzungsart);
+  applyText('q5-label',             TEXTS.q5_label);
+  applyText('q6-label',             TEXTS.q6_label + ' <span class="required-mark">*</span>');
+  applyText('q7-label',             TEXTS.q7_label);
+  applyText('q8a-label',            TEXTS.q8a_label);
+  applyText('q8b-label',            TEXTS.q8b_label);
+  applyText('q9-label',             TEXTS.q9_label);
 
-  // ── Texte einsetzen (Du/Sie) ──
-  applyText('q1-label',   txt.q1_label + ' <span class="required-mark">*</span>');
-  applyText('q1-email-label',       txt.q1_email_label + ' <span class="required-mark">*</span>');
-  applyText('q1-email-label-warm',  txt.q1_email_label + ' <span class="required-mark">*</span>');
-  applyText('q1-email-label-group', txt.q1_email_label + ' (optional, für Kopie)');
-  applyText('q3-label',  txt.q3_label);
-  applyText('q3-nutzungsart-label', txt.q3_nutzungsart);
-  applyText('q5-label',  txt.q5_label);
-  applyText('q6-label',  txt.q6_label + ' <span class="required-mark">*</span>');
-  applyText('q7-label',  txt.q7_label);
-  applyText('q8a-label', txt.q8a_label);
-  applyText('q8b-label', txt.q8b_label);
-  applyText('q9-label',  txt.q9_label);
-  applyText('dsgvo-text', txt.dsgvo_text);
-
-  // Group-Variante überschreibt Q6 + Q8b Label
   if (context === 'group') {
-    applyText('q6-label',  txt.q6_group_label + ' <span class="required-mark">*</span>');
-    applyText('q8b-label', txt.q8b_group_label);
+    applyText('q6-label',  TEXTS.q6_group_label + ' <span class="required-mark">*</span>');
+    applyText('q8b-label', TEXTS.q8b_group_label);
   }
 
-  // ── Q1 Variante einblenden ──
-  var q1Website = document.getElementById('q1-website');
-  var q1Warm    = document.getElementById('q1-warm');
-  var q1Group   = document.getElementById('q1-group');
-
+  // Q1 Variante einblenden
   if (context === 'warm') {
-    q1Website.style.display = 'none';
-    q1Warm.style.display    = '';
-    q1Group.style.display   = 'none';
+    document.getElementById('q1-website').style.display = 'none';
+    document.getElementById('q1-warm').style.display    = '';
+    document.getElementById('q1-group').style.display   = 'none';
   } else if (context === 'group') {
-    q1Website.style.display = 'none';
-    q1Warm.style.display    = 'none';
-    q1Group.style.display   = '';
-    var anlassEl = document.getElementById('field-anlass-label');
-    anlassEl.value = anlass || 'KI-Session';
+    document.getElementById('q1-website').style.display = 'none';
+    document.getElementById('q1-warm').style.display    = 'none';
+    document.getElementById('q1-group').style.display   = '';
+    document.getElementById('field-anlass-label').value = anlass || 'KI-Session';
   }
 
-  // ── Fragen ausblenden ──
+  // Fragen ausblenden
   cfg.hiddenQuestions.forEach(function(qId) {
     var el = document.getElementById(qId);
     if (el) el.classList.add('hidden');
@@ -788,37 +763,27 @@ var CONTEXT_CONFIG = {
     if (el) el.style.display = 'none';
   });
 
-  // Cluster-Header ausblenden wenn alle Fragen dahinter hidden sind
   updateClusterHeaders(cfg.hiddenQuestions);
 
-  // ── Interaktions-Handler ──
-  var cbAndere = document.getElementById('cb-tools-andere');
-  cbAndere.addEventListener('change', function() {
-    document.getElementById('field-tools-andere')
-      .classList.toggle('visible', cbAndere.checked);
+  // Interaktions-Handler
+  document.getElementById('cb-tools-andere').addEventListener('change', function() {
+    document.getElementById('field-tools-andere').classList.toggle('visible', this.checked);
   });
-
   document.getElementById('cb-prio-andere').addEventListener('change', function() {
-    document.getElementById('field-prio-andere')
-      .classList.toggle('visible', this.checked);
+    document.getElementById('field-prio-andere').classList.toggle('visible', this.checked);
   });
 
-  // ── Submit ──
   document.getElementById('intake-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    if (validateForm(context, cfg, anrede)) {
-      submitForm(context, anrede);
-    }
+    if (validateForm(context, cfg)) submitForm(context);
   });
 })();
 
-// ─── Hilfsfunktion: Text in Element setzen ───────────────────
 function applyText(id, html) {
   var el = document.getElementById(id);
   if (el) el.innerHTML = html;
 }
 
-// ─── Cluster-Header ausblenden ───────────────────────────────
 function updateClusterHeaders(hiddenQuestions) {
   var clusters = {
     'cluster2-header': ['q3','q4','q5','q6','q7'],
@@ -835,16 +800,13 @@ function updateClusterHeaders(hiddenQuestions) {
   });
 }
 
-// ─── Validierung ─────────────────────────────────────────────
-function validateForm(context, cfg, anrede) {
-  var valid = true;
+function validateForm(context, cfg) {
+  var valid   = true;
+  var hidden  = cfg.hiddenQuestions;
   var required = cfg.requiredQuestions;
-  var hidden   = cfg.hiddenQuestions;
 
-  // Q1 (Name + E-Mail)
   if (hidden.indexOf('q1') === -1 && required.indexOf('q1') !== -1) {
-    var nameVal = '';
-    var emailVal = '';
+    var nameVal = '', emailVal = '';
     if (context === 'website') {
       nameVal  = (document.getElementById('field-name').value || '').trim();
       emailVal = (document.getElementById('field-email').value || '').trim();
@@ -852,34 +814,25 @@ function validateForm(context, cfg, anrede) {
       nameVal  = (document.getElementById('field-name-warm').value || '').trim();
       emailVal = (document.getElementById('field-email-warm').value || '').trim();
     } else {
-      nameVal = 'group'; // Gruppe: kein Pflichtname
-      emailVal = 'skip';
+      nameVal = 'group'; emailVal = 'skip';
     }
     var q1ok = nameVal.length > 0 && (emailVal === 'skip' || emailVal.length > 0);
-    setError('q1', !q1ok,
-      anrede === 'sie'
-        ? 'Bitte füllen Sie Name und E-Mail-Adresse aus.'
-        : 'Bitte füll Name und E-Mail-Adresse aus.');
+    setError('q1', !q1ok, TEXTS.q1_error);
     if (!q1ok) valid = false;
   }
 
-  // Q6 — Pflichtfreitext
   if (hidden.indexOf('q6') === -1 && required.indexOf('q6') !== -1) {
     var v6 = (document.getElementById('field-anwendungsfall').value || '').trim();
-    setError('q6', v6.length === 0,
-      anrede === 'sie' ? 'Bitte füllen Sie dieses Feld aus.' : 'Bitte füll dieses Feld aus.');
+    setError('q6', !v6.length, TEXTS.field_error);
     if (!v6.length) valid = false;
   }
 
-  // Q10 — Pflichtfreitext
   if (hidden.indexOf('q10') === -1 && required.indexOf('q10') !== -1) {
     var v10 = (document.getElementById('field-vertiefung').value || '').trim();
-    setError('q10', v10.length === 0,
-      anrede === 'sie' ? 'Bitte füllen Sie dieses Feld aus.' : 'Bitte füll dieses Feld aus.');
+    setError('q10', !v10.length, TEXTS.field_error);
     if (!v10.length) valid = false;
   }
 
-  // DSGVO
   var dsgvo = document.getElementById('dsgvo-consent').checked;
   document.getElementById('dsgvo-error').style.display = dsgvo ? 'none' : 'block';
   if (!dsgvo) valid = false;
@@ -889,35 +842,27 @@ function validateForm(context, cfg, anrede) {
 
 function setError(qId, show, msg) {
   var errEl = document.getElementById(qId + '-error');
-  if (errEl) {
-    errEl.textContent = msg || '';
-    errEl.style.display = show ? 'block' : 'none';
-  }
+  if (errEl) { errEl.textContent = msg || ''; errEl.style.display = show ? 'block' : 'none'; }
   var qEl = document.getElementById(qId);
   if (qEl) qEl.classList.toggle('has-error', show);
 }
 
-// ─── Formulardaten sammeln ────────────────────────────────────
 function collectData(context) {
   var d = {};
-
-  // Meta
   d['_context'] = context;
-  d['_anrede']  = document.getElementById('field-anrede').value;
   d['_anlass']  = document.getElementById('field-anlass').value;
 
-  // E-Mail (für FormSubmit auto-reply: Feld muss "email" heißen)
   var emailEl;
-  if (context === 'website') emailEl = document.getElementById('field-email');
-  else if (context === 'warm') emailEl = document.getElementById('field-email-warm');
-  else emailEl = document.getElementById('field-email-group');
+  if (context === 'website')    emailEl = document.getElementById('field-email');
+  else if (context === 'warm')  emailEl = document.getElementById('field-email-warm');
+  else                          emailEl = document.getElementById('field-email-group');
   d['email'] = emailEl ? (emailEl.value || '') : '';
 
-  // Q1 — sichtbare Felder
   var nameEl = context === 'warm'
     ? document.getElementById('field-name-warm')
     : document.getElementById('field-name');
   if (nameEl) d['name'] = nameEl.value;
+
   ['field-rolle','field-branche','field-pseudonym','field-anlass-label'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el && el.closest('[style*="display: none"]') === null
@@ -926,13 +871,11 @@ function collectData(context) {
     }
   });
 
-  // Radios (Einfachauswahl)
   ['unternehmensgroesse','datenlage','zeithorizont','zeitbudget','format'].forEach(function(n) {
     var el = document.querySelector('input[name="' + n + '"]:checked');
     d[n] = el ? el.value : '';
   });
 
-  // Checkboxes — Tools (Mehrfachauswahl)
   var toolsChecked = [];
   document.querySelectorAll('input[name="tools"]:checked').forEach(function(cb) {
     toolsChecked.push(cb.value);
@@ -940,11 +883,9 @@ function collectData(context) {
   d['tools'] = toolsChecked.join(', ');
   d['tools_andere'] = document.getElementById('field-tools-andere').value;
 
-  // Tools — Free/Paid
   var nutzungsartEl = document.querySelector('input[name="tools_nutzungsart"]:checked');
   d['tools_nutzungsart'] = nutzungsartEl ? nutzungsartEl.value : '';
 
-  // Checkboxes — Priorität (Mehrfachauswahl)
   var prioChecked = [];
   document.querySelectorAll('input[name="prioritaet"]:checked').forEach(function(cb) {
     prioChecked.push(cb.value);
@@ -952,15 +893,14 @@ function collectData(context) {
   d['prioritaet'] = prioChecked.join(', ');
   d['prioritaet_andere'] = document.getElementById('field-prio-andere').value;
 
-  // Textareas
   [
-    ['einschraenkungen',   'field-einschraenkungen'],
-    ['anwendungsfall',     'field-anwendungsfall'],
-    ['erfahrungen',        'field-erfahrungen'],
-    ['ziel_koennen',       'field-ziel-koennen'],
-    ['erfolgsmessung',     'field-erfolgsmessung'],
-    ['vertiefung',         'field-vertiefung'],
-    ['vertiefung_beispiel','field-vertiefung-beispiel']
+    ['einschraenkungen',    'field-einschraenkungen'],
+    ['anwendungsfall',      'field-anwendungsfall'],
+    ['erfahrungen',         'field-erfahrungen'],
+    ['ziel_koennen',        'field-ziel-koennen'],
+    ['erfolgsmessung',      'field-erfolgsmessung'],
+    ['vertiefung',          'field-vertiefung'],
+    ['vertiefung_beispiel', 'field-vertiefung-beispiel']
   ].forEach(function(pair) {
     var el = document.getElementById(pair[1]);
     d[pair[0]] = el ? el.value : '';
@@ -969,23 +909,18 @@ function collectData(context) {
   return d;
 }
 
-// ─── Absenden via FormSubmit ──────────────────────────────────
-function submitForm(context, anrede) {
+function submitForm(context) {
   var btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'Wird gesendet…';
 
   var data = collectData(context);
-
   var submittedEmail = data['email'];
 
   fetch(WORKER_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(data)
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body:    JSON.stringify(data)
   })
   .then(function(res) {
     return res.json().then(function(json) {
@@ -997,20 +932,19 @@ function submitForm(context, anrede) {
     document.getElementById('form-view').style.display = 'none';
     var ty = document.getElementById('thank-you-view');
     ty.style.display = 'block';
-    // Kopie-Hinweis einblenden wenn E-Mail vorhanden
     if (submittedEmail) {
-      var copyEl = document.getElementById('thankyou-copy');
-      var copyTmpl = TEXTS[anrede].thankyou_copy || '';
-      copyEl.textContent = copyTmpl.replace('{email}', submittedEmail);
+      var copyEl   = document.getElementById('thankyou-copy');
+      var copyTmpl = TEXTS.thankyou_copy || '';
+      copyEl.textContent  = copyTmpl.replace('{email}', submittedEmail);
       copyEl.style.display = 'block';
     }
     window.scrollTo(0, 0);
   })
   .catch(function(err) {
-    btn.disabled = false;
-    btn.textContent = TEXTS[anrede].submit_label;
+    btn.disabled    = false;
+    btn.textContent = 'Fragebogen absenden';
     alert('Fehler beim Senden: ' + err.message
-      + '\n\nBitte versuche es erneut oder schreib direkt an info@integri.de');
+      + '\n\nBitte versuchen Sie es erneut oder schreiben Sie direkt an info@integri.de');
   });
 }
 </script>
