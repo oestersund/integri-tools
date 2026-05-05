@@ -112,25 +112,17 @@
   <div id="form-sections">
 
     <!-- Kontakt -->
-    <div class="section">
+    <div class="section" id="kontakt-section">
       <div class="section-header">
         <span class="section-badge">Kontakt</span>
         <div><div class="section-title">Ihre Angaben</div></div>
       </div>
-      <div class="two-col">
-        <div class="question">
-          <label class="q-label" for="f-name">Name <span class="required-mark">*</span></label>
-          <input type="text" id="f-name" placeholder="Dr. Vorname Nachname" />
-        </div>
-        <div class="question">
-          <label class="q-label" for="f-email">E-Mail <span class="required-mark">*</span></label>
-          <input type="email" id="f-email" placeholder="ihre@praxis.de" />
-        </div>
-      </div>
       <div class="question" style="margin-bottom:0">
-        <label class="q-label" for="f-praxis">Praxisname</label>
-        <input type="text" id="f-praxis" placeholder="z. B. Functional Med GbR" />
+        <label class="q-label" for="f-email">E-Mail <span class="required-mark">*</span></label>
+        <input type="email" id="f-email" placeholder="ihre@praxis.de" />
       </div>
+      <input type="hidden" id="f-name" value="" />
+      <input type="hidden" id="f-praxis" value="" />
     </div>
 
     <!-- Block A: Einrichten -->
@@ -257,7 +249,7 @@
             <tr>
               <th style="width:28%">Parameter</th>
               <th style="width:24%">Ihr Zielwert</th>
-              <th style="width:28%">Bedingung (z. B. Sportler)</th>
+              <th style="width:28%">Profil</th>
               <th style="width:20%">Angepasster Wert</th>
             </tr>
           </thead>
@@ -265,7 +257,7 @@
             <tr>
               <td><input type="text" value="Vitamin D" /></td>
               <td><input type="text" value="40-50 ng/ml" /></td>
-              <td><input type="text" value="Leistungssportler" /></td>
+              <td><input type="text" value="Sportler / Athleten" /></td>
               <td><input type="text" value="40-60 ng/ml" /></td>
             </tr>
             <tr>
@@ -277,7 +269,7 @@
             <tr>
               <td><input type="text" value="Ferritin" /></td>
               <td><input type="text" placeholder="" /></td>
-              <td><input type="text" value="Leistungssportler" /></td>
+              <td><input type="text" value="Sportler / Athleten" /></td>
               <td><input type="text" value="80-120 ng/ml" /></td>
             </tr>
             <tr>
@@ -405,7 +397,7 @@ function addMatrixRow() {
   var tr = document.createElement('tr');
   tr.innerHTML = '<td><input type="text" placeholder="Parameter" /></td>' +
     '<td><input type="text" placeholder="" /></td>' +
-    '<td><input type="text" placeholder="Bedingung" /></td>' +
+    '<td><input type="text" placeholder="Profil" /></td>' +
     '<td><input type="text" placeholder="Wert" /></td>';
   tbody.appendChild(tr);
 }
@@ -475,7 +467,7 @@ function submitForm() {
     '',
     'Patientenprofile:    ' + profile,
     '',
-    'Individualisierungsmatrix (Parameter | Zielwert | Bedingung | Wert):',
+    'Individualisierungsmatrix (Parameter | Zielwert | Profil | Wert):',
     readMatrix(),
     '',
     'Go-to Blutwerte:',
