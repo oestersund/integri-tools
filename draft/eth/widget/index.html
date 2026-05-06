@@ -112,7 +112,7 @@
     font-weight: 900; font-size: 16px;
   }
   .package-volume {
-    color: var(--rot); font-weight: 900; font-size: 13px;
+    color: var(--rot); font-weight: 900; font-size: 20px;
     text-transform: uppercase; letter-spacing: 1px;
     margin-bottom: 6px;
   }
@@ -134,16 +134,16 @@
     list-style: none; margin-top: 20px; flex: 1;
   }
   .package-features li {
-    padding: 6px 0 6px 24px;
-    position: relative;
-    color: var(--text-mid);
-    font-size: 14px;
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 5px 0;
+    color: var(--text);
+    font-size: 15px;
   }
   .package-features li::before {
     content: '•';
-    position: absolute; left: 0; top: 6px;
     color: var(--rot);
-    font-size: 16px; line-height: 1;
+    font-size: 22px; font-weight: 900;
+    line-height: 1; flex-shrink: 0;
   }
 
   /* ─────────────────── ADDONS ─────────────────── */
