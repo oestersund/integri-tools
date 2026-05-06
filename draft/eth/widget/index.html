@@ -121,7 +121,7 @@
     margin-bottom: 8px;
   }
   .package-tagline {
-    font-style: italic; color: var(--text-mid); font-size: 14px;
+    font-style: italic; color: var(--rot); font-size: 17px;
     margin-bottom: 20px; min-height: 2.6em;
   }
   .package-price {
@@ -140,11 +140,10 @@
     font-size: 14px;
   }
   .package-features li::before {
-    content: '';
-    position: absolute; left: 0; top: 13px;
-    width: 12px; height: 11px;
-    background: var(--rot);
-    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    content: '•';
+    position: absolute; left: 0; top: 6px;
+    color: var(--rot);
+    font-size: 16px; line-height: 1;
   }
 
   /* ─────────────────── ADDONS ─────────────────── */
