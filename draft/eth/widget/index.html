@@ -559,7 +559,7 @@
         <strong>Ihre Auswahl:</strong> <span id="form-summary-text">Bitte oben Paket auswählen.</span>
       </div>
 
-      <button type="submit" class="form-submit">Anfrage jetzt absenden</button>
+      <button type="submit" class="form-submit" id="form-submit-btn">Anfrage jetzt absenden</button>
     </form>
   </div>
 </section>
@@ -674,27 +674,54 @@
     document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
   }
 
-  function submitForm() {
-    const data = new FormData(document.getElementById('anfrage-form'));
-    const payload = {
-      _tool: 'eth-sperrmuell',
-      kontakt: Object.fromEntries(data.entries()),
-      auswahl: {
-        plz: state.plz,
-        plzInArea: state.plzInArea,
-        package: state.package,
-        packageName: state.package ? PRICES.packages[state.package].name : null,
-        packagePrice: state.package ? PRICES.packages[state.package].price : null,
-        addons: { ...state.addons }
+  async function submitForm() {
+    // ── Konfiguration ──────────────────────────────────────────────
+    const WEB3FORMS_KEY = 'DEIN-KEY-HIER'; // ← web3forms.com → Key eintragen
+    // ───────────────────────────────────────────────────────────────
+
+    const form   = document.getElementById('anfrage-form');
+    const btn    = document.getElementById('form-submit-btn');
+    const pkg    = state.package ? PRICES.packages[state.package] : null;
+    const isMega = state.package === 'mega';
+
+    let addonTotal = 0;
+    const addonLines = Object.entries(state.addons)
+      .filter(([,count]) => count > 0)
+      .map(([key, count]) => {
+        const a = PRICES.addons[key];
+        addonTotal += a.price * count;
+        return `${count}× ${a.name} (${fmt(a.price * count)})`;
+      });
+
+    const gesamtpreis = isMega
+      ? `Aufmaß erforderlich${addonTotal > 0 ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''}`
+      : fmt((pkg ? pkg.price : 0) + addonTotal);
+
+    const fd = new FormData(form);
+    fd.append('access_key',  WEB3FORMS_KEY);
+    fd.append('subject',     `Sperrmüll-Anfrage – ${pkg ? pkg.name : '?'} – ${gesamtpreis}`);
+    fd.append('from_name',   'ETH Sperrmüll Widget');
+    fd.append('paket',       pkg ? pkg.name : '–');
+    fd.append('gesamtpreis', gesamtpreis);
+    fd.append('addons',      addonLines.length ? addonLines.join(', ') : 'keine');
+    fd.append('plz_bereich', state.plzInArea ? 'Hamburg (Standardbereich)' : 'außerhalb / nicht geprüft');
+
+    btn && (btn.disabled = true, btn.textContent = 'Wird gesendet …');
+
+    try {
+      const res  = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('thankyou').classList.add('show');
+        form.reset();
+      } else {
+        alert('Fehler beim Senden: ' + (data.message || 'Bitte erneut versuchen.'));
       }
-    };
-
-    // PRODUCTION-NOTIZ: Hier in echten Endpoint posten (z.B. ETH-Mailservice)
-    console.log('[ETH Sperrmüll] Anfrage-Payload:', payload);
-
-    // Bestätigungs-Overlay anzeigen
-    document.getElementById('thankyou').classList.add('show');
-    document.getElementById('anfrage-form').reset();
+    } catch (e) {
+      alert('Verbindungsfehler. Bitte erneut versuchen.');
+    } finally {
+      btn && (btn.disabled = false, btn.textContent = 'Anfrage jetzt absenden');
+    }
   }
 
   function closeThankyou() {
