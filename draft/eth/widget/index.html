@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!--
+  ETH Solutions — Sperrmüll-Konfigurator Widget
+  Stand: 2026-05-06
+  Self-contained Widget: Schritt 1 (Pakete + Add-ons + Summary) +
+  Schritt 2 (Anfrageformular) + Thankyou-Overlay.
+  Für Einbettung via iframe in WordPress.
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sperrmüll-Konfigurator | ETH Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rot: #d51224;
+    --rot-dark: #a80d1c;
+    --rot-light: rgba(213, 18, 36, 0.08);
+    --anthrazit: #3d4548;
+    --anthrazit-mid: #5a6166;
+    --silbergrau: #d8dada;
+    --grau-bg: #f4f5f5;
+    --weiss: #ffffff;
+    --text: #3d4548;
+    --text-mid: #7a8186;
+    --erfolg: #2c8c4a;
+    --erfolg-bg: #e8f5ec;
+    --warn: #d68a00;
+    --warn-bg: #fdf3e0;
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.14);
+    --radius: 6px;
+    --container: 1240px;
+    --transition: 0.2s ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.6;
+    background: var(--weiss);
+  }
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, h4 { color: var(--anthrazit); font-weight: 700; line-height: 1.2; }
+  a { color: var(--rot); text-decoration: none; }
+  a:hover { color: var(--rot-dark); }
+  button { font-family: inherit; cursor: pointer; }
+  img { max-width: 100%; height: auto; display: block; }
+
+  /* ─────────────────── KONFIGURATOR ─────────────────── */
+  .konfigurator { padding: 80px 0 40px; }
+  .section-head {
+    text-align: center; margin-bottom: 48px;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 3.5vw, 34px);
+    margin-bottom: 12px;
+  }
+  .section-head .kicker {
+    color: var(--rot); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; font-size: 13px; margin-bottom: 12px; display: block;
+  }
+  .section-head p {
+    color: var(--text-mid); font-size: 17px; max-width: 640px; margin: 0 auto;
+  }
+
+  .config-grid {
+    display: grid; grid-template-columns: 1fr 380px; gap: 40px;
+  }
+  @media (max-width: 1024px) { .config-grid { grid-template-columns: 1fr; } }
+
+  /* ─────────────────── PAKETE ─────────────────── */
+  .packages {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  @media (max-width: 600px) { .packages { grid-template-columns: 1fr; } }
+
+  .package {
+    background: var(--weiss);
+    border: 2px solid var(--silbergrau);
+    border-radius: 12px;
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .package:hover {
+    border-color: var(--rot);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .package.selected {
+    border-color: var(--rot);
+    background: linear-gradient(180deg, var(--rot-light) 0%, var(--weiss) 60%);
+    box-shadow: var(--shadow-lg);
+  }
+  .package.selected::before {
+    content: '✓';
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    background: var(--rot); color: var(--weiss);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px;
+  }
+  .package-volume {
+    color: var(--rot); font-weight: 900; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .package-name {
+    font-size: 22px; font-weight: 700; color: var(--anthrazit);
+    margin-bottom: 8px;
+  }
+  .package-tagline {
+    font-style: italic; color: var(--text-mid); font-size: 14px;
+    margin-bottom: 20px; min-height: 2.6em;
+  }
+  .package-price {
+    font-size: 32px; font-weight: 900; color: var(--anthrazit);
+    margin-bottom: 4px;
+  }
+  .package-price .small { font-size: 14px; font-weight: 400; color: var(--text-mid); }
+  .package-price.no-price { font-size: 18px; color: var(--rot); font-weight: 700; }
+  .package-features {
+    list-style: none; margin-top: 20px; flex: 1;
+  }
+  .package-features li {
+    padding: 6px 0 6px 24px;
+    position: relative;
+    color: var(--text-mid);
+    font-size: 14px;
+  }
+  .package-features li::before {
+    content: '';
+    position: absolute; left: 0; top: 13px;
+    width: 12px; height: 11px;
+    background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+
+  /* ─────────────────── ADDONS ─────────────────── */
+  .addons {
+    margin-top: 48px;
+    background: var(--grau-bg);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .addons h3 {
+    font-size: 22px; margin-bottom: 8px;
+  }
+  .addons-sub {
+    color: var(--text-mid); font-size: 15px; margin-bottom: 24px;
+  }
+  .addon-list { list-style: none; }
+  .addon-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--silbergrau);
+  }
+  .addon-row:last-child { border-bottom: none; }
+  .addon-info-name { font-weight: 500; color: var(--anthrazit); font-size: 16px; }
+  .addon-info-desc { color: var(--text-mid); font-size: 13px; margin-top: 2px; }
+  .addon-price { font-weight: 700; color: var(--anthrazit); white-space: nowrap; }
+  .addon-stepper {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--weiss); border-radius: 999px; padding: 4px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stepper-btn {
+    width: 32px; height: 32px;
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: 50%;
+    font-size: 18px; font-weight: 700; line-height: 1;
+    transition: background var(--transition);
+  }
+  .stepper-btn:hover { background: var(--rot-dark); }
+  .stepper-btn:disabled { background: var(--silbergrau); cursor: not-allowed; }
+  .stepper-count {
+    min-width: 24px; text-align: center; font-weight: 700; color: var(--anthrazit);
+  }
+  @media (max-width: 540px) {
+    .addon-row { grid-template-columns: 1fr auto; grid-template-rows: auto auto; }
+    .addon-stepper { grid-column: 2; grid-row: 1 / span 2; }
+    .addon-price { grid-column: 1; }
+  }
+
+  /* ─────────────────── SUMMARY ─────────────────── */
+  .summary-wrap { position: relative; }
+  .summary {
+    position: sticky; top: 110px;
+    background: var(--weiss);
+    border: 2px solid var(--rot);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .summary h3 {
+    font-size: 20px; margin-bottom: 16px; color: var(--rot);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .summary h3::before {
+    content: '';
+    width: 18px; height: 16px; background: var(--rot);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .summary-empty {
+    color: var(--text-mid); font-size: 14px; padding: 16px 0;
+    text-align: center; font-style: italic;
+  }
+  .summary-line {
+    display: flex; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px dashed var(--silbergrau);
+    font-size: 15px;
+  }
+  .summary-line:last-of-type { border-bottom: none; }
+  .summary-line .label { color: var(--text-mid); }
+  .summary-line .value { color: var(--anthrazit); font-weight: 500; }
+  .summary-line.package .label { color: var(--anthrazit); font-weight: 500; }
+  .summary-total {
+    display: flex; justify-content: space-between;
+    padding-top: 16px; margin-top: 8px;
+    border-top: 2px solid var(--anthrazit);
+    font-size: 18px; font-weight: 700; color: var(--anthrazit);
+  }
+  .summary-total.mega .total-value { color: var(--rot); font-size: 14px; }
+  .summary-cta {
+    display: block; width: 100%;
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 16px;
+    font-size: 17px; font-weight: 700;
+    margin-top: 20px;
+    transition: all var(--transition);
+  }
+  .summary-cta:hover:not(:disabled) {
+    background: var(--rot-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  .summary-cta:disabled { background: var(--silbergrau); cursor: not-allowed; }
+  .summary-note {
+    font-size: 12px; color: var(--text-mid); margin-top: 10px; text-align: center;
+  }
+
+  /* ─────────────────── FORM ─────────────────── */
+  .form-section {
+    background: var(--grau-bg);
+    padding: 80px 0;
+    scroll-margin-top: 80px;
+  }
+  .form-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 720px; margin: 0 auto;
+    box-shadow: var(--shadow);
+  }
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label {
+    font-size: 14px; font-weight: 500; color: var(--anthrazit);
+    margin-bottom: 6px;
+  }
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    padding: 12px 14px;
+    border: 1px solid var(--silbergrau);
+    border-radius: var(--radius);
+    font-size: 15px; font-family: inherit;
+    transition: border-color var(--transition);
+  }
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    outline: none; border-color: var(--rot);
+  }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+  .form-summary-box {
+    background: var(--rot-light); padding: 16px; border-radius: var(--radius);
+    margin: 20px 0; font-size: 14px;
+  }
+  .form-submit {
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 16px 32px;
+    font-size: 17px; font-weight: 700;
+    transition: all var(--transition);
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--rot-dark); }
+
+  /* ─────────────────── THANKYOU ─────────────────── */
+  .thankyou {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(61, 69, 72, 0.95);
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .thankyou.show { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .thankyou-card {
+    background: var(--weiss);
+    border-radius: 12px;
+    padding: 48px;
+    max-width: 520px; width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .thankyou-icon {
+    width: 80px; height: 70px;
+    margin: 0 auto 24px;
+    background: var(--erfolg);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--weiss); font-size: 36px; font-weight: 900;
+  }
+  .thankyou h2 { font-size: 28px; margin-bottom: 12px; }
+  .thankyou p { color: var(--text-mid); margin-bottom: 24px; }
+  .thankyou-btn {
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 12px 28px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<script>
+  // PostMessage Height Reporter für iframe-Einbettung in WordPress
+  function reportHeight() {
+    window.parent.postMessage({ height: document.body.scrollHeight }, '*');
+  }
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+  // MutationObserver für dynamische Höhenänderungen
+  new MutationObserver(reportHeight).observe(document.body, { subtree: true, childList: true, attributes: true });
+</script>
+
+<!-- ─────────────────── KONFIGURATOR (Schritt 1) ─────────────────── -->
+<section class="konfigurator" id="konfigurator">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Schritt 1 von 2</span>
+      <h2>Wählen Sie Ihr Paket</h2>
+    </div>
+
+    <div class="config-grid">
+      <div>
+        <!-- PAKETE -->
+        <div class="packages" id="packages">
+          <div class="package" data-package="small" data-price="172" onclick="selectPackage('small')">
+            <span class="package-volume">1 – 3 m³ · Klein</span>
+            <h3 class="package-name">Kleine Mengen</h3>
+            <p class="package-tagline">"Ein Hauch von 'das reicht schon'."</p>
+            <div class="package-price">172,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Einzelne Möbelstücke, Elektrogeräte, Kartonagen</li>
+              <li>Kurze Einsatzzeiten</li>
+              <li>Ideal für Privatkunden</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="medium" data-price="273.64" onclick="selectPackage('medium')">
+            <span class="package-volume">4 – 8 m³ · Mittel</span>
+            <h3 class="package-name">Mittlere Mengen</h3>
+            <p class="package-tagline">"Eine ordentliche Portion Chaos."</p>
+            <div class="package-price">273,64 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Keller, Garagen, Lagerräume, Teilräumungen</li>
+              <li>Effiziente Zwei-Mann-Teams</li>
+              <li>Sortenreine Trennung inklusive</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="large" data-price="473" onclick="selectPackage('large')">
+            <span class="package-volume">8 – 12 m³ · Groß</span>
+            <h3 class="package-name">Große Mengen</h3>
+            <p class="package-tagline">"Ein Sprinter voll Überraschungen."</p>
+            <div class="package-price">473,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <ul class="package-features">
+              <li>Haushaltsauflösungen, Firmenräumungen</li>
+              <li>Planung & Durchführung aus einer Hand</li>
+              <li>Inkl. Dokumentation & Nachweis</li>
+            </ul>
+          </div>
+
+          <div class="package" data-package="mega" data-price="0" onclick="selectPackage('mega')">
+            <span class="package-volume">ab 12 m³ · Mega</span>
+            <h3 class="package-name">Mega Mengen</h3>
+            <p class="package-tagline">"Eine Galaxie voll To-dos."</p>
+            <div class="package-price no-price">Aufmaß erforderlich</div>
+            <ul class="package-features">
+              <li>Komplette Haushaltsauflösungen, Großräumungen</li>
+              <li>Container- und Logistiklösungen</li>
+              <li>Individuelles Angebot innerhalb von 24 h</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ADDONS -->
+        <div class="addons">
+          <h3>Zusätzliche Stücke?</h3>
+          <p class="addons-sub">Großgeräte, Kühlschränke und Co. werden separat berechnet – einfach passende Stückzahl wählen.</p>
+
+          <ul class="addon-list">
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Großgeräte</div>
+                <div class="addon-info-desc">Waschmaschine, Herd, Spülmaschine – braucht zwei Leute und ein stilles Gebet</div>
+              </div>
+              <div class="addon-price">19,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('grossgeraet', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-grossgeraet">0</span>
+                <button class="stepper-btn" onclick="updateAddon('grossgeraet', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Kleingeräte</div>
+                <div class="addon-info-desc">Drucker, Mikrowelle, Kaffeemaschine – alles, was irgendwann mal gepiept hat</div>
+              </div>
+              <div class="addon-price">6,30 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('kleingeraet', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-kleingeraet">0</span>
+                <button class="stepper-btn" onclick="updateAddon('kleingeraet', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Kühlschränke</div>
+                <div class="addon-info-desc">Leer, halb leer oder „Überraschung des Monats" – ohne FCKW</div>
+              </div>
+              <div class="addon-price">31,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('kuehlschrank', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-kuehlschrank">0</span>
+                <button class="stepper-btn" onclick="updateAddon('kuehlschrank', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Monitore & Fernseher</div>
+                <div class="addon-info-desc">Vom Röhrenmonster bis zum Smart-TV</div>
+              </div>
+              <div class="addon-price">6,30 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('monitor', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-monitor">0</span>
+                <button class="stepper-btn" onclick="updateAddon('monitor', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+
+            <li class="addon-row">
+              <div>
+                <div class="addon-info-name">Autoreifen</div>
+                <div class="addon-info-desc">Rund, schwarz, schwer. Nehmen wir. Punkt.</div>
+              </div>
+              <div class="addon-price">15,00 € / Stück</div>
+              <div class="addon-stepper">
+                <button class="stepper-btn" onclick="updateAddon('reifen', -1)" aria-label="weniger">−</button>
+                <span class="stepper-count" id="count-reifen">0</span>
+                <button class="stepper-btn" onclick="updateAddon('reifen', 1)" aria-label="mehr">+</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SUMMARY (sticky rechts) -->
+      <div class="summary-wrap">
+        <div class="summary" id="summary">
+          <h3>Ihre Auswahl</h3>
+          <div id="summary-body">
+            <p class="summary-empty">Wählen Sie ein Paket, um zu starten.</p>
+          </div>
+          <button class="summary-cta" id="summary-cta" onclick="goToForm()" disabled>
+            Anfrage absenden
+          </button>
+          <p class="summary-note">Unverbindlich · keine Vorab-Zahlung · Antwort innerhalb von 24 h</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── FORM (Schritt 2) ─────────────────── -->
+<section class="form-section" id="form-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Schritt 2 von 2</span>
+      <h2>Anfrage senden</h2>
+      <p>Wir melden uns innerhalb von 24 Stunden mit Terminvorschlag und Festpreis-Bestätigung.</p>
+    </div>
+    <form class="form-card" id="anfrage-form" onsubmit="event.preventDefault(); submitForm();">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="form-name">Name *</label>
+          <input type="text" id="form-name" name="name" required>
+        </div>
+        <div class="form-field">
+          <label for="form-email">E-Mail *</label>
+          <input type="email" id="form-email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label for="form-tel">Telefon</label>
+          <input type="tel" id="form-tel" name="tel">
+        </div>
+        <div class="form-field">
+          <label for="form-plz">Postleitzahl *</label>
+          <input type="text" id="form-plz" name="plz" required maxlength="5" pattern="[0-9]{5}">
+        </div>
+        <div class="form-field full">
+          <label for="form-adresse">Abholadresse</label>
+          <input type="text" id="form-adresse" name="adresse" placeholder="Straße, Hausnummer, Stadtteil">
+        </div>
+        <div class="form-field">
+          <label for="form-termin">Wunschtermin</label>
+          <input type="date" id="form-termin" name="termin">
+        </div>
+        <div class="form-field">
+          <label for="form-zugang">Zugang</label>
+          <select id="form-zugang" name="zugang">
+            <option>Erdgeschoss / Hof</option>
+            <option>Obergeschoss (Treppe)</option>
+            <option>Keller</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label for="form-notiz">Notiz / Fotos</label>
+          <textarea id="form-notiz" name="notiz" placeholder="Kurze Beschreibung, gerne auch Link zu Fotos"></textarea>
+        </div>
+      </div>
+
+      <div class="form-summary-box" id="form-summary-box">
+        <strong>Ihre Auswahl:</strong> <span id="form-summary-text">Bitte oben Paket auswählen.</span>
+      </div>
+
+      <button type="submit" class="form-submit">Anfrage jetzt absenden</button>
+    </form>
+  </div>
+</section>
+
+<!-- ─────────────────── THANKYOU OVERLAY ─────────────────── -->
+<div class="thankyou" id="thankyou">
+  <div class="thankyou-card">
+    <div class="thankyou-icon">✓</div>
+    <h2>Vielen Dank!</h2>
+    <p>Ihre Anfrage ist bei uns eingegangen. Wir melden uns innerhalb von 24 Stunden mit Termin und Festpreis-Bestätigung.</p>
+    <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
+  </div>
+</div>
+
+<!-- ─────────────────── JAVASCRIPT ─────────────────── -->
+<script>
+  // ───────── State ─────────
+  const state = {
+    plz: '',
+    plzValid: false,
+    plzInArea: false,
+    package: null,
+    addons: { grossgeraet: 0, kleingeraet: 0, kuehlschrank: 0, monitor: 0, reifen: 0 }
+  };
+
+  const PRICES = {
+    packages: {
+      small:  { name: 'Kleine Mengen (1–3 m³)',   price: 172.00 },
+      medium: { name: 'Mittlere Mengen (4–8 m³)', price: 273.64 },
+      large:  { name: 'Große Mengen (8–12 m³)',   price: 473.00 },
+      mega:   { name: 'Mega Mengen (ab 12 m³)',   price: null }
+    },
+    addons: {
+      grossgeraet:  { name: 'Großgeräte',     price: 19.00 },
+      kleingeraet:  { name: 'Kleingeräte',    price:  6.30 },
+      kuehlschrank: { name: 'Kühlschränke',   price: 31.00 },
+      monitor:      { name: 'Monitore/TVs',   price:  6.30 },
+      reifen:       { name: 'Autoreifen',     price: 15.00 }
+    }
+  };
+
+  const PLZ_RANGES = [[20000, 22999]]; // Hamburg + direkter Umkreis (Mock)
+
+  // ───────── Paket-Auswahl ─────────
+  function selectPackage(name) {
+    state.package = name;
+    document.querySelectorAll('.package').forEach(p => p.classList.remove('selected'));
+    document.querySelector(`.package[data-package="${name}"]`).classList.add('selected');
+    updateSummary();
+  }
+
+  // ───────── Add-ons ─────────
+  function updateAddon(key, delta) {
+    state.addons[key] = Math.max(0, state.addons[key] + delta);
+    document.getElementById(`count-${key}`).textContent = state.addons[key];
+    updateSummary();
+  }
+
+  // ───────── Summary ─────────
+  function fmt(n) {
+    return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  }
+
+  function updateSummary() {
+    const body = document.getElementById('summary-body');
+    const cta = document.getElementById('summary-cta');
+    const formSummary = document.getElementById('form-summary-text');
+
+    if (!state.package) {
+      body.innerHTML = '<p class="summary-empty">Wählen Sie ein Paket, um zu starten.</p>';
+      cta.disabled = true;
+      formSummary.textContent = 'Bitte oben Paket auswählen.';
+      return;
+    }
+
+    const pkg = PRICES.packages[state.package];
+    const isMega = state.package === 'mega';
+    let html = `<div class="summary-line package"><span class="label">${pkg.name}</span><span class="value">${isMega ? 'Aufmaß' : fmt(pkg.price)}</span></div>`;
+
+    let addonTotal = 0;
+    let hasAddons = false;
+    for (const key of Object.keys(state.addons)) {
+      const count = state.addons[key];
+      if (count > 0) {
+        hasAddons = true;
+        const a = PRICES.addons[key];
+        const sum = a.price * count;
+        addonTotal += sum;
+        html += `<div class="summary-line"><span class="label">${count}× ${a.name}</span><span class="value">${fmt(sum)}</span></div>`;
+      }
+    }
+
+    if (isMega) {
+      html += `<div class="summary-total mega"><span>Zwischensumme</span><span class="total-value">individuelles Angebot${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}</span></div>`;
+    } else {
+      const total = pkg.price + addonTotal;
+      html += `<div class="summary-total"><span>Gesamtpreis</span><span>${fmt(total)}</span></div>`;
+    }
+
+    body.innerHTML = html;
+    cta.disabled = false;
+
+    // Form-Summary synchronisieren
+    const summaryText = isMega
+      ? `${pkg.name}${hasAddons ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''} (Aufmaß folgt)`
+      : `${pkg.name} – ${fmt(pkg.price + addonTotal)}`;
+    formSummary.textContent = summaryText;
+  }
+
+  // ───────── Form ─────────
+  function goToForm() {
+    document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function submitForm() {
+    const data = new FormData(document.getElementById('anfrage-form'));
+    const payload = {
+      _tool: 'eth-sperrmuell',
+      kontakt: Object.fromEntries(data.entries()),
+      auswahl: {
+        plz: state.plz,
+        plzInArea: state.plzInArea,
+        package: state.package,
+        packageName: state.package ? PRICES.packages[state.package].name : null,
+        packagePrice: state.package ? PRICES.packages[state.package].price : null,
+        addons: { ...state.addons }
+      }
+    };
+
+    // PRODUCTION-NOTIZ: Hier in echten Endpoint posten (z.B. ETH-Mailservice)
+    console.log('[ETH Sperrmüll] Anfrage-Payload:', payload);
+
+    // Bestätigungs-Overlay anzeigen
+    document.getElementById('thankyou').classList.add('show');
+    document.getElementById('anfrage-form').reset();
+  }
+
+  function closeThankyou() {
+    document.getElementById('thankyou').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
