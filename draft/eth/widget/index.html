@@ -591,10 +591,10 @@
 
   const PRICES = {
     packages: {
-      small:  { name: 'Kleine Mengen (1–3 m³)',   price: 172.00 },
-      medium: { name: 'Mittlere Mengen (4–8 m³)', price: 273.64 },
-      large:  { name: 'Große Mengen (8–12 m³)',   price: 473.00 },
-      mega:   { name: 'Mega Mengen (ab 12 m³)',   price: null }
+      small:  { name: 'Kleine Mengen',   volume: '1–3 m³',   price: 172.00 },
+      medium: { name: 'Mittlere Mengen', volume: '4–8 m³',   price: 273.64 },
+      large:  { name: 'Große Mengen',    volume: '8–12 m³',  price: 473.00 },
+      mega:   { name: 'Mega Mengen',     volume: 'ab 12 m³', price: null }
     },
     addons: {
       grossgeraet:  { name: 'Großgeräte',     price: 19.00 },
@@ -641,7 +641,7 @@
 
     const pkg = PRICES.packages[state.package];
     const isMega = state.package === 'mega';
-    let html = `<div class="summary-line package"><span class="label">${pkg.name}</span><span class="value">${isMega ? 'Aufmaß' : fmt(pkg.price)}</span></div>`;
+    let html = `<div class="summary-line package"><span class="label">${pkg.name} (${pkg.volume})</span><span class="value">${isMega ? 'Aufmaß' : fmt(pkg.price)}</span></div>`;
 
     let addonTotal = 0;
     let hasAddons = false;
@@ -668,8 +668,8 @@
 
     // Form-Summary synchronisieren
     const summaryText = isMega
-      ? `${pkg.name}${hasAddons ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''} (Aufmaß folgt)`
-      : `${pkg.name} – ${fmt(pkg.price + addonTotal)}`;
+      ? `${pkg.name} (${pkg.volume})${hasAddons ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''} (Aufmaß folgt)`
+      : `${pkg.name} (${pkg.volume}) – ${fmt(pkg.price + addonTotal)}`;
     formSummary.textContent = summaryText;
   }
 
@@ -679,14 +679,14 @@
   }
 
   async function submitForm() {
-    const ENDPOINT = 'https://formsubmit.co/ajax/info@integri.de';
+    const CF7_URL = 'https://www.eth-solutions.de/wp-json/contact-form-7/v1/contact-forms/3255/feedback';
 
     const form   = document.getElementById('anfrage-form');
     const btn    = document.getElementById('form-submit-btn');
     const pkg    = state.package ? PRICES.packages[state.package] : null;
     const isMega = state.package === 'mega';
 
-    // Auswahl zusammenrechnen
+    // Add-ons berechnen
     let addonTotal = 0;
     const addonLines = Object.entries(state.addons)
       .filter(([, count]) => count > 0)
@@ -700,49 +700,41 @@
       ? `Aufmaß erforderlich${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}`
       : fmt((pkg ? pkg.price : 0) + addonTotal);
 
-    const auswahl = [
-      `Paket: ${pkg ? pkg.name : '–'}`,
-      addonLines.length ? `Add-ons: ${addonLines.join(', ')}` : null,
-      `Gesamtpreis: ${gesamtpreis}`,
-      `PLZ-Bereich: ${state.plzInArea ? 'Hamburg (Standardbereich)' : 'außerhalb / nicht geprüft'}`
-    ].filter(Boolean).join('\n');
-
+    // FormData aus sichtbarem Formular (name, email, tel, plz, adresse, termin, zugang, notiz, fotos)
     const fd = new FormData(form);
 
-    // Berechnete Felder
-    fd.append('Paket',        pkg ? pkg.name : '–');
-    fd.append('Add-ons',      addonLines.length ? addonLines.join(', ') : 'keine');
-    fd.append('Gesamtpreis',  gesamtpreis);
-    fd.append('PLZ-Bereich',  state.plzInArea ? 'Hamburg (Standardbereich)' : 'außerhalb');
+    // CF7-Pflichtfelder
+    fd.set('_wpcf7',          '3255');
+    fd.set('_wpcf7_unit_tag', 'wpcf7-f3255-p0-o1');
 
-    // Formsubmit-Steuerfelder
-    fd.append('_subject',      `Sperrmüll-Anfrage – ${pkg ? pkg.name : '?'} – ${gesamtpreis}`);
-    fd.append('_template',     'table');
-    fd.append('_captcha',      'false');
-    fd.append('_autoresponse', `Vielen Dank für Ihre Anfrage!
-
-Wir haben folgende Angaben erhalten:
-
-${auswahl}
-
-Wir melden uns innerhalb von 24 Stunden mit einem verbindlichen Terminvorschlag und Festpreis-Bestätigung.
-
-Ihr ETH Solutions Team
-www.eth-solutions.de`);
+    // Berechnete Hidden-Felder (passend zu CF7-Formular)
+    fd.set('paket-name',       pkg ? pkg.name : '–');
+    fd.set('paket-volumen',    pkg ? pkg.volume : '–');
+    fd.set('paket-preis',      pkg && !isMega ? fmt(pkg.price) : 'Aufmaß erforderlich');
+    fd.set('addon-grossgeraet',  String(state.addons.grossgeraet));
+    fd.set('addon-kleingeraet',  String(state.addons.kleingeraet));
+    fd.set('addon-kuehlschrank', String(state.addons.kuehlschrank));
+    fd.set('addon-monitor',      String(state.addons.monitor));
+    fd.set('addon-reifen',       String(state.addons.reifen));
+    fd.set('gesamtpreis',      gesamtpreis);
+    fd.set('plz-im-bereich',   state.plzInArea ? 'Hamburg (Standardbereich)' : 'außerhalb');
+    fd.set('dsgvo',            'ja');
+    fd.set('honeypot',         ''); // immer leer lassen
 
     btn && (btn.disabled = true, btn.textContent = 'Wird gesendet …');
 
     try {
-      const res  = await fetch(ENDPOINT, {
+      const res  = await fetch(CF7_URL, {
         method: 'POST', body: fd,
         headers: { 'Accept': 'application/json' }
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.status === 'mail_sent') {
         document.getElementById('thankyou').classList.add('show');
         form.reset();
       } else {
-        alert('Fehler beim Senden. Bitte erneut versuchen.');
+        const msg = data.message || 'Fehler beim Senden. Bitte erneut versuchen.';
+        alert(msg);
       }
     } catch (e) {
       alert('Verbindungsfehler. Bitte erneut versuchen.');
