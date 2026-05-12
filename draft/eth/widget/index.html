@@ -358,7 +358,7 @@
 <section class="konfigurator" id="konfigurator">
   <div class="container">
     <div class="section-head">
-      <span class="kicker">Schritt 1 von 2</span>
+      <span class="kicker">Schritt 1 von 2:</span>
       <h2>Wählen Sie Ihr Paket</h2>
     </div>
 
@@ -510,9 +510,9 @@
 <section class="form-section" id="form-section">
   <div class="container">
     <div class="section-head">
-      <span class="kicker">Schritt 2 von 2</span>
+      <span class="kicker">Schritt 2 von 2:</span>
       <h2>Anfrage senden</h2>
-      <p>Wir prüfen die Verfügbarkeit dieses Services an der von Ihnen gewünschten Adresse / zu Ihrem Wunschtermin und melden uns innerhalb von 24 Stunden mit einer Festpreis-Bestätigung.</p>
+      <p>Wir prüfen die Verfügbarkeit dieses Services an der von Ihnen gewünschten Adresse / zu Ihrem Wunschtermin und melden uns innerhalb von 24 Stunden mit einer Festpreisbestätigung.</p>
     </div>
     <form class="form-card" id="anfrage-form" onsubmit="event.preventDefault(); submitForm();">
       <div class="form-grid">
@@ -560,7 +560,7 @@
       </div>
 
       <div class="form-summary-box" id="form-summary-box">
-        <strong>Ihre Auswahl:</strong> <span id="form-summary-text">Bitte oben Paket auswählen.</span>
+        <strong>Ihre Auswahl:</strong> <span id="form-summary-text">Bitte oben ein Paket auswählen.</span>
       </div>
 
       <button type="submit" class="form-submit" id="form-submit-btn">Anfrage jetzt absenden</button>
@@ -573,7 +573,7 @@
   <div class="thankyou-card">
     <div class="thankyou-icon">✓</div>
     <h2>Vielen Dank!</h2>
-    <p>Ihre Anfrage ist bei uns eingegangen. Wir melden uns innerhalb von 24 Stunden mit Termin und Festpreis-Bestätigung.</p>
+    <p>Ihre Anfrage ist bei uns eingegangen. Wir melden uns innerhalb von 24 Stunden mit Termin und Festpreisbestätigung.</p>
     <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
   </div>
 </div>
@@ -635,7 +635,7 @@
     if (!state.package) {
       body.innerHTML = '<p class="summary-empty">Wählen Sie ein Paket, um zu starten.</p>';
       cta.disabled = true;
-      formSummary.textContent = 'Bitte oben Paket auswählen.';
+      formSummary.textContent = 'Bitte oben ein Paket auswählen.';
       return;
     }
 
