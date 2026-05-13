@@ -308,11 +308,10 @@
   /* ─────────────────── THANKYOU ─────────────────── */
   .thankyou {
     display: none;
-    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
-    z-index: 200; width: calc(100% - 48px); max-width: 640px;
+    max-width: 720px; margin: 0 auto 32px; padding: 0 0;
   }
-  .thankyou.show { display: block; animation: slideDown 0.35s ease; }
-  @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  .thankyou.show { display: block; animation: fadeSlide 0.35s ease; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   .thankyou-card {
     background: var(--weiss);
     border-radius: 12px;
@@ -507,6 +506,18 @@
 <!-- ─────────────────── FORM (Schritt 2) ─────────────────── -->
 <section class="form-section" id="form-section">
   <div class="container">
+    <!-- THANKYOU BANNER -->
+    <div class="thankyou" id="thankyou">
+      <div class="thankyou-card">
+        <div class="thankyou-icon">✓</div>
+        <div class="thankyou-text">
+          <h2>Vielen Dank!</h2>
+          <p>Ihre Anfrage ist eingegangen. Wir melden uns innerhalb von 24 Stunden mit Festpreisbestätigung.</p>
+        </div>
+        <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
+      </div>
+    </div>
+
     <div class="section-head">
       <span class="kicker">Schritt 2 von 2:</span>
       <h2>Anfrage senden</h2>
@@ -565,18 +576,6 @@
     </form>
   </div>
 </section>
-
-<!-- ─────────────────── THANKYOU BANNER ─────────────────── -->
-<div class="thankyou" id="thankyou">
-  <div class="thankyou-card">
-    <div class="thankyou-icon">✓</div>
-    <div class="thankyou-text">
-      <h2>Vielen Dank!</h2>
-      <p>Ihre Anfrage ist eingegangen. Wir melden uns innerhalb von 24 Stunden mit Festpreisbestätigung.</p>
-    </div>
-    <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
-  </div>
-</div>
 
 <!-- ─────────────────── JAVASCRIPT ─────────────────── -->
 <script>
@@ -667,9 +666,13 @@
     cta.disabled = false;
 
     // Form-Summary synchronisieren
+    const addonDetails = Object.entries(state.addons)
+      .filter(([, count]) => count > 0)
+      .map(([key, count]) => `${count}× ${PRICES.addons[key].name}`)
+      .join(', ');
     const summaryText = isMega
-      ? `${pkg.name} (${pkg.volume})${hasAddons ? ' + ' + fmt(addonTotal) + ' Add-ons' : ''} (Aufmaß folgt)`
-      : `${pkg.name} (${pkg.volume}) – ${fmt(pkg.price + addonTotal)}`;
+      ? `${pkg.name} (${pkg.volume})${addonDetails ? ' + ' + addonDetails : ''} – Aufmaß erforderlich`
+      : `${pkg.name} (${pkg.volume})${addonDetails ? ' + ' + addonDetails : ''} – ${fmt(pkg.price + addonTotal)}`;
     formSummary.textContent = summaryText;
   }
 
@@ -731,7 +734,7 @@
       });
       const data = await res.json();
       if (data.status === 'mail_sent') {
-        document.getElementById('thankyou').classList.add('show');
+        showThankyou();
         form.reset();
       } else {
         const msg = data.message || 'Fehler beim Senden. Bitte erneut versuchen.';
@@ -744,9 +747,14 @@
     }
   }
 
+  function showThankyou() {
+    const el = document.getElementById('thankyou');
+    el.classList.add('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function closeThankyou() {
     document.getElementById('thankyou').classList.remove('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
 
