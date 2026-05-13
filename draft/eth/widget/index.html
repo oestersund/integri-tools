@@ -708,6 +708,7 @@
     fd.set('_wpcf7_unit_tag', 'wpcf7-f3255-p0-o1');
 
     // Berechnete Hidden-Felder (passend zu CF7-Formular)
+    fd.set('kunden-email',     fd.get('email') || '');
     fd.set('paket-name',       pkg ? pkg.name : '–');
     fd.set('paket-volumen',    pkg ? pkg.volume : '–');
     fd.set('paket-preis',      pkg && !isMega ? fmt(pkg.price) : 'Aufmaß erforderlich');
