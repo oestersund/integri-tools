@@ -308,37 +308,35 @@
   /* ─────────────────── THANKYOU ─────────────────── */
   .thankyou {
     display: none;
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(61, 69, 72, 0.95);
-    align-items: center; justify-content: center;
-    padding: 24px;
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 200; width: calc(100% - 48px); max-width: 640px;
   }
-  .thankyou.show { display: flex; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .thankyou.show { display: block; animation: slideDown 0.35s ease; }
+  @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
   .thankyou-card {
     background: var(--weiss);
     border-radius: 12px;
-    padding: 48px;
-    max-width: 520px; width: 100%;
-    text-align: center;
+    padding: 28px 32px;
+    display: flex; align-items: center; gap: 20px;
     box-shadow: var(--shadow-lg);
+    border-left: 5px solid var(--erfolg);
   }
   .thankyou-icon {
-    width: 80px; height: 70px;
-    margin: 0 auto 24px;
+    width: 48px; height: 48px; flex-shrink: 0;
     background: var(--erfolg);
-    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    color: var(--weiss); font-size: 36px; font-weight: 900;
+    color: var(--weiss); font-size: 22px; font-weight: 900;
   }
-  .thankyou h2 { font-size: 28px; margin-bottom: 12px; }
-  .thankyou p { color: var(--text-mid); margin-bottom: 24px; }
+  .thankyou-text { flex: 1; }
+  .thankyou h2 { font-size: 20px; margin-bottom: 4px; }
+  .thankyou p { color: var(--text-mid); font-size: 14px; margin: 0; }
   .thankyou-btn {
-    background: var(--rot); color: var(--weiss);
-    border: none; border-radius: var(--radius);
-    padding: 12px 28px; font-weight: 700;
+    background: transparent; color: var(--text-mid);
+    border: 1px solid var(--silbergrau); border-radius: var(--radius);
+    padding: 8px 16px; font-size: 13px; font-weight: 500; flex-shrink: 0;
   }
+  .thankyou-btn:hover { border-color: var(--anthrazit); color: var(--anthrazit); }
 </style>
 </head>
 <body>
@@ -568,12 +566,14 @@
   </div>
 </section>
 
-<!-- ─────────────────── THANKYOU OVERLAY ─────────────────── -->
+<!-- ─────────────────── THANKYOU BANNER ─────────────────── -->
 <div class="thankyou" id="thankyou">
   <div class="thankyou-card">
     <div class="thankyou-icon">✓</div>
-    <h2>Vielen Dank!</h2>
-    <p>Ihre Anfrage ist bei uns eingegangen. Wir melden uns innerhalb von 24 Stunden mit Termin und Festpreisbestätigung.</p>
+    <div class="thankyou-text">
+      <h2>Vielen Dank!</h2>
+      <p>Ihre Anfrage ist eingegangen. Wir melden uns innerhalb von 24 Stunden mit Festpreisbestätigung.</p>
+    </div>
     <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
   </div>
 </div>
