@@ -657,7 +657,10 @@
   // ───────── PLZ-Zonen (direkt im Code pflegbar) ─────────
   const TRANSPORT = {
     zuschlag: { 1: 0, 2: 15, 3: 30 },
-    label:    { 1: 'Transportzone I (kein Zuschlag)', 2: 'Transportzone II (+15,00 €)', 3: 'Transportzone III (+30,00 €)' }
+    label:    { 1: 'Transportzone I (kein Zuschlag)', 2: 'Transportzone II (+15,00 €)', 3: 'Transportzone III (+30,00 €)' },
+    mailtext: { 1: 'Transportzone I – Transport inklusive',
+                2: 'Transportzone II – Zuschlag +15,00 €',
+                3: 'Transportzone III – Zuschlag +30,00 €' }
   };
 
   // PLZ-Zonen (bereinigt 2026-05 — Zonenkarte_bereinigt.xlsx)
@@ -839,6 +842,7 @@
     fd.set('plz-im-bereich',     state.plzZone ? `Zone ${state.plzZone} – ${TRANSPORT.label[state.plzZone]}` : 'außerhalb Servicegebiet');
     fd.set('transport-zone',     state.plzZone ? String(state.plzZone) : 'außerhalb');
     fd.set('transport-zuschlag', state.plzZone ? fmt(state.transportZuschlag) : '–');
+    fd.set('transport-info',     state.plzZone ? TRANSPORT.mailtext[state.plzZone] : 'PLZ außerhalb Servicegebiet – individuelles Angebot');
     fd.set('dsgvo',              'ja');
     fd.set('honeypot',         ''); // immer leer lassen
 
