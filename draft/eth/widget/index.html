@@ -613,8 +613,8 @@
           <textarea id="form-notiz" name="notiz" placeholder="Kurze Beschreibung der Situation"></textarea>
         </div>
         <div class="form-field full">
-          <label for="form-fotos">Fotos hochladen (optional, max. 3 Bilder)</label>
-          <input type="file" id="form-fotos" name="fotos" accept="image/*" multiple>
+          <label for="form-fotos">Foto hochladen (optional, max. 1 Bild)</label>
+          <input type="file" id="form-fotos" name="fotos" accept="image/*">
         </div>
       </div>
 
@@ -821,8 +821,12 @@
       ? `Aufmaß erforderlich${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}`
       : fmt((pkg ? pkg.price : 0) + addonTotal + tz);
 
-    // FormData aus sichtbarem Formular (name, email, tel, plz, adresse, termin, zugang, notiz, fotos)
-    const fd = new FormData(form);
+    // FormData aufbauen — ohne Datei (die wird explizit unten gesetzt)
+    const fd = new FormData();
+    ['name','email','tel','plz','adresse','termin','zugang','notiz'].forEach(f => {
+      const el = form.elements[f];
+      if (el) fd.set(f, el.value || '');
+    });
 
     // CF7-Pflichtfelder
     fd.set('_wpcf7',          '3255');
@@ -845,6 +849,12 @@
     fd.set('transport-info',     state.plzZone ? TRANSPORT.mailtext[state.plzZone] : 'PLZ außerhalb Servicegebiet – individuelles Angebot');
     fd.set('dsgvo',              'ja');
     fd.set('honeypot',         ''); // immer leer lassen
+
+    // Datei-Anhang explizit zuletzt setzen
+    const fileInput = document.getElementById('form-fotos');
+    if (fileInput && fileInput.files.length > 0) {
+      fd.set('fotos', fileInput.files[0], fileInput.files[0].name);
+    }
 
     btn && (btn.disabled = true, btn.textContent = 'Wird gesendet …');
 
