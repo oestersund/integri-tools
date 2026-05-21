@@ -54,6 +54,44 @@
   button { font-family: inherit; cursor: pointer; }
   img { max-width: 100%; height: auto; display: block; }
 
+  /* ─────────────────── PLZ-CHECK ─────────────────── */
+  .plz-check {
+    background: var(--grau-bg);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .plz-check h3 { font-size: 20px; margin-bottom: 8px; }
+  .plz-check p { color: var(--text-mid); font-size: 15px; margin-bottom: 20px; }
+  .plz-input-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .plz-input {
+    padding: 12px 18px; border: 2px solid var(--silbergrau);
+    border-radius: var(--radius); font-size: 18px; font-weight: 700;
+    letter-spacing: 2px; width: 140px; text-align: center;
+    font-family: inherit; transition: border-color var(--transition);
+  }
+  .plz-input:focus { outline: none; border-color: var(--rot); }
+  .plz-btn {
+    background: var(--rot); color: var(--weiss);
+    border: none; border-radius: var(--radius);
+    padding: 12px 24px; font-size: 16px; font-weight: 700;
+    font-family: inherit; cursor: pointer; transition: background var(--transition);
+  }
+  .plz-btn:hover { background: var(--rot-dark); }
+  .plz-result {
+    margin-top: 20px; display: none;
+    padding: 16px 24px; border-radius: var(--radius);
+    font-size: 15px; font-weight: 500;
+  }
+  .plz-result.zone1 { background: var(--erfolg-bg); color: var(--erfolg); border: 1px solid var(--erfolg); }
+  .plz-result.zone2 { background: #fff8e1; color: #b07800; border: 1px solid #f0c040; }
+  .plz-result.zone3 { background: #fff3e0; color: #b05000; border: 1px solid #f0a040; }
+  .plz-result.outside { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
+  .plz-result.show { display: block; }
+
   /* ─────────────────── KONFIGURATOR ─────────────────── */
   .konfigurator { padding: 80px 0 40px; }
   .section-head {
@@ -354,6 +392,17 @@
 <!-- ─────────────────── KONFIGURATOR (Schritt 1) ─────────────────── -->
 <section class="konfigurator" id="konfigurator">
   <div class="container">
+    <!-- PLZ-CHECK -->
+    <div class="plz-check" id="plz-check">
+      <h3>Wo soll der Sperrmüll abgeholt werden?</h3>
+      <p>Bitte geben Sie Ihre Postleitzahl ein — wir prüfen sofort die Verfügbarkeit und berechnen den Transportzuschlag.</p>
+      <div class="plz-input-row">
+        <input type="text" class="plz-input" id="plz-input" maxlength="5" pattern="[0-9]{5}" placeholder="PLZ" inputmode="numeric">
+        <button class="plz-btn" onclick="checkPlz()">Prüfen</button>
+      </div>
+      <div class="plz-result" id="plz-result"></div>
+    </div>
+
     <div class="section-head">
       <span class="kicker">Schritt 1 von 2:</span>
       <h2>Was brauchen Sie? Wählen Sie Ihr Paket:</h2>
@@ -582,8 +631,8 @@
   // ───────── State ─────────
   const state = {
     plz: '',
-    plzValid: false,
-    plzInArea: false,
+    plzZone: null,
+    transportZuschlag: 0,
     package: null,
     addons: { grossgeraet: 0, kleingeraet: 0, kuehlschrank: 0, monitor: 0, reifen: 0 }
   };
@@ -604,7 +653,60 @@
     }
   };
 
-  const PLZ_RANGES = [[20000, 22999]]; // Hamburg + direkter Umkreis (Mock)
+  // ───────── PLZ-Zonen (direkt im Code pflegbar) ─────────
+  const TRANSPORT = {
+    zuschlag: { 1: 0, 2: 15, 3: 30 },
+    label:    { 1: 'Transportzone I (kein Zuschlag)', 2: 'Transportzone II (+15,00 €)', 3: 'Transportzone III (+30,00 €)' }
+  };
+
+  const PLZ_ZONEN = {
+    1: new Set(['20095','20097','20099','20144','20146','20148','20149','20249','20251',
+                '20354','20355','20357','20359','20457','20459','20535','20537','20539',
+                '21107','21109','21129','22081','22083','22085','22087','22089','22111',
+                '22113','22115','22117','22119','22297','22299','22301','22303','22305',
+                '22529','22767','22769','27499']),
+    2: new Set(['20253','20255','20257','20259','21029','21031','21033','21035','21037',
+                '21039','21073','21075','21077','21079','21147','21465','21521','22307',
+                '22309','22525','22527']),
+    3: new Set(['21149','21217','21218','21220','21493','21502','22049','22335','22337',
+                '22339','22391','22415','22417','22419','22453','22455','22457','22459',
+                '22523','22547'])
+  };
+
+  function getZone(plz) {
+    for (const z of [1, 2, 3]) {
+      if (PLZ_ZONEN[z].has(plz)) return z;
+    }
+    return null;
+  }
+
+  // ───────── PLZ-Check ─────────
+  function checkPlz() {
+    const input = document.getElementById('plz-input').value.trim();
+    const result = document.getElementById('plz-result');
+    if (!/^\d{5}$/.test(input)) {
+      result.className = 'plz-result outside show';
+      result.textContent = 'Bitte eine gültige 5-stellige Postleitzahl eingeben.';
+      return;
+    }
+    const zone = getZone(input);
+    state.plz = input;
+    state.plzZone = zone;
+    state.transportZuschlag = zone ? TRANSPORT.zuschlag[zone] : 0;
+    if (zone) {
+      result.className = `plz-result zone${zone} show`;
+      const zuschlag = TRANSPORT.zuschlag[zone];
+      result.innerHTML = `✓ <strong>${TRANSPORT.label[zone]}</strong> — Service in PLZ ${input} verfügbar.${zuschlag > 0 ? ` Transportzuschlag: <strong>${fmt(zuschlag)}</strong>` : ' Kein Transportzuschlag.'}`;
+    } else {
+      result.className = 'plz-result outside show';
+      result.innerHTML = `<strong>PLZ ${input} liegt außerhalb unseres Standardgebiets.</strong><br>Wir prüfen gerne ein individuelles Angebot für Sie — füllen Sie das Formular aus und wir melden uns.`;
+      state.transportZuschlag = 0;
+    }
+    updateSummary();
+  }
+
+  // Enter-Taste im PLZ-Feld
+  document.getElementById('plz-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPlz(); });
 
   // ───────── Paket-Auswahl ─────────
   function selectPackage(name) {
@@ -655,10 +757,18 @@
       }
     }
 
+    // Transportzuschlag
+    const tz = state.transportZuschlag;
+    if (tz > 0) {
+      html += `<div class="summary-line"><span class="label">${TRANSPORT.label[state.plzZone]}</span><span class="value">+${fmt(tz)}</span></div>`;
+    } else if (state.plzZone) {
+      html += `<div class="summary-line"><span class="label">${TRANSPORT.label[state.plzZone]}</span><span class="value">inklusive</span></div>`;
+    }
+
     if (isMega) {
       html += `<div class="summary-total mega"><span>Zwischensumme</span><span class="total-value">individuelles Angebot${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}</span></div>`;
     } else {
-      const total = pkg.price + addonTotal;
+      const total = pkg.price + addonTotal + tz;
       html += `<div class="summary-total"><span>Gesamtpreis</span><span>${fmt(total)}</span></div>`;
     }
 
@@ -670,9 +780,10 @@
       .filter(([, count]) => count > 0)
       .map(([key, count]) => `${count}× ${PRICES.addons[key].name}`)
       .join(', ');
+    const total = isMega ? null : pkg.price + addonTotal + tz;
     const summaryText = isMega
       ? `${pkg.name} (${pkg.volume})${addonDetails ? ' + ' + addonDetails : ''} – Aufmaß erforderlich`
-      : `${pkg.name} (${pkg.volume})${addonDetails ? ' + ' + addonDetails : ''} – ${fmt(pkg.price + addonTotal)}`;
+      : `${pkg.name} (${pkg.volume})${addonDetails ? ' + ' + addonDetails : ''} – ${fmt(total)}`;
     formSummary.textContent = summaryText;
   }
 
@@ -699,9 +810,10 @@
         return `${count}× ${a.name} (${fmt(a.price * count)})`;
       });
 
+    const tz = state.transportZuschlag;
     const gesamtpreis = isMega
       ? `Aufmaß erforderlich${addonTotal > 0 ? ' + ' + fmt(addonTotal) : ''}`
-      : fmt((pkg ? pkg.price : 0) + addonTotal);
+      : fmt((pkg ? pkg.price : 0) + addonTotal + tz);
 
     // FormData aus sichtbarem Formular (name, email, tel, plz, adresse, termin, zugang, notiz, fotos)
     const fd = new FormData(form);
@@ -720,9 +832,11 @@
     fd.set('addon-kuehlschrank', String(state.addons.kuehlschrank));
     fd.set('addon-monitor',      String(state.addons.monitor));
     fd.set('addon-reifen',       String(state.addons.reifen));
-    fd.set('gesamtpreis',      gesamtpreis);
-    fd.set('plz-im-bereich',   state.plzInArea ? 'Hamburg (Standardbereich)' : 'außerhalb');
-    fd.set('dsgvo',            'ja');
+    fd.set('gesamtpreis',        gesamtpreis);
+    fd.set('plz-im-bereich',     state.plzZone ? `Zone ${state.plzZone} – ${TRANSPORT.label[state.plzZone]}` : 'außerhalb Servicegebiet');
+    fd.set('transport-zone',     state.plzZone ? String(state.plzZone) : 'außerhalb');
+    fd.set('transport-zuschlag', state.plzZone ? fmt(state.transportZuschlag) : '–');
+    fd.set('dsgvo',              'ja');
     fd.set('honeypot',         ''); // immer leer lassen
 
     btn && (btn.disabled = true, btn.textContent = 'Wird gesendet …');
