@@ -347,12 +347,12 @@
   /* ─────────────────── THANKYOU ─────────────────── */
   .thankyou {
     display: none;
-    max-width: 720px; margin: 0 auto 32px; padding: 0 0;
+    max-width: 720px; margin: 24px auto 0;
   }
   .thankyou.show { display: block; animation: fadeSlide 0.35s ease; }
   @keyframes fadeSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   .thankyou-card {
-    background: var(--weiss);
+    background: var(--erfolg-bg);
     border-radius: 12px;
     padding: 28px 32px;
     display: flex; align-items: center; gap: 20px;
@@ -367,8 +367,8 @@
     color: var(--weiss); font-size: 22px; font-weight: 900;
   }
   .thankyou-text { flex: 1; }
-  .thankyou h2 { font-size: 20px; margin-bottom: 4px; }
-  .thankyou p { color: var(--text-mid); font-size: 14px; margin: 0; }
+  .thankyou h2 { font-size: 22px; margin-bottom: 8px; color: #1a1a1a; font-weight: 900; }
+  .thankyou p { color: #1a1a1a; font-size: 16px; margin: 0; line-height: 1.6; }
   .thankyou-btn {
     background: transparent; color: var(--text-mid);
     border: 1px solid var(--silbergrau); border-radius: var(--radius);
@@ -556,18 +556,6 @@
 <!-- ─────────────────── FORM (Schritt 2) ─────────────────── -->
 <section class="form-section" id="form-section">
   <div class="container">
-    <!-- THANKYOU BANNER -->
-    <div class="thankyou" id="thankyou">
-      <div class="thankyou-card">
-        <div class="thankyou-icon">✓</div>
-        <div class="thankyou-text">
-          <h2>Vielen Dank!</h2>
-          <p>Ihre Anfrage ist eingegangen. Wir melden uns innerhalb von 24 Stunden mit Festpreisbestätigung.</p>
-        </div>
-        <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
-      </div>
-    </div>
-
     <div class="section-head">
       <span class="kicker">Schritt 2 von 2:</span>
       <h2>Anfrage senden</h2>
@@ -623,6 +611,18 @@
       </div>
 
       <button type="submit" class="form-submit" id="form-submit-btn">Anfrage jetzt absenden</button>
+
+      <!-- THANKYOU BANNER -->
+      <div class="thankyou" id="thankyou">
+        <div class="thankyou-card">
+          <div class="thankyou-icon">✓</div>
+          <div class="thankyou-text">
+            <h2>Vielen Dank!</h2>
+            <p>Ihre Anfrage ist eingegangen. Wir melden uns innerhalb von 24 Stunden mit einer Festpreisbestätigung. Vielen Dank!</p>
+          </div>
+          <button class="thankyou-btn" onclick="closeThankyou()">Schließen</button>
+        </div>
+      </div>
     </form>
   </div>
 </section>
@@ -702,7 +702,8 @@
     if (zone) {
       result.className = `plz-result zone${zone} show`;
       const zuschlag = TRANSPORT.zuschlag[zone];
-      result.innerHTML = `✓ <strong>${TRANSPORT.label[zone]}</strong> — Service in PLZ ${input} verfügbar.${zuschlag > 0 ? ` Transportzuschlag: <strong>${fmt(zuschlag)}</strong>` : ' Kein Transportzuschlag.'}`;
+      const zoneLabel = zone === 1 ? `Zone I (kein Transportzuschlag)` : `Zone ${['','I','II','III'][zone]} (+${fmt(zuschlag)} Transportzuschlag)`;
+      result.innerHTML = `✓ Prima. Wir bieten diesen Service in der PLZ-Region ${input}. Sie liegt in <strong>${zoneLabel}</strong>.`;
     } else {
       result.className = 'plz-result outside show';
       result.innerHTML = `<strong>PLZ ${input} liegt außerhalb unseres Standardgebiets.</strong><br>Wir prüfen gerne ein individuelles Angebot für Sie — füllen Sie das Formular aus und wir melden uns.`;
