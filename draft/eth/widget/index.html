@@ -167,6 +167,7 @@
     margin-bottom: 4px;
   }
   .package-price .small { font-size: 14px; font-weight: 400; color: var(--text-mid); }
+  .package-ab { font-size: 16px; font-weight: 400; color: var(--text-mid); margin-right: 4px; }
   .package-price.no-price { font-size: 18px; color: var(--rot); font-weight: 700; }
   .package-features {
     list-style: none; margin-top: 20px; flex: 1;
@@ -395,7 +396,7 @@
     <!-- PLZ-CHECK -->
     <div class="plz-check" id="plz-check">
       <h3>Wo soll der Sperrmüll abgeholt werden?</h3>
-      <p>Bitte geben Sie Ihre Postleitzahl ein — wir prüfen sofort die Verfügbarkeit und berechnen den Transportzuschlag.</p>
+      <p>Bitte geben Sie Ihre PLZ hier ein. Wir prüfen sofort die Verfügbarkeit und berechnen die Transportkosten.</p>
       <div class="plz-input-row">
         <input type="text" class="plz-input" id="plz-input" maxlength="5" pattern="[0-9]{5}" placeholder="PLZ" inputmode="numeric">
         <button class="plz-btn" onclick="checkPlz()">Prüfen</button>
@@ -416,7 +417,7 @@
             <span class="package-volume">1 – 3 m³ · Klein</span>
             <h3 class="package-name">Kleine Mengen</h3>
             <p class="package-tagline">"Ein Hauch von 'das reicht schon'."</p>
-            <div class="package-price">172,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <div class="package-price"><span class="package-ab">ab</span> 172,00 €<div class="small">pauschal inkl. Entsorgung, Transportzone I</div></div>
             <ul class="package-features">
               <li>Einzelne Möbelstücke, Elektrogeräte, Kartonagen</li>
               <li>Kurze Einsatzzeiten</li>
@@ -428,7 +429,7 @@
             <span class="package-volume">4 – 8 m³ · Mittel</span>
             <h3 class="package-name">Mittlere Mengen</h3>
             <p class="package-tagline">"Eine ordentliche Portion Chaos."</p>
-            <div class="package-price">273,64 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <div class="package-price"><span class="package-ab">ab</span> 273,64 €<div class="small">pauschal inkl. Entsorgung, Transportzone I</div></div>
             <ul class="package-features">
               <li>Keller, Garagen, Lagerräume, Teilräumungen</li>
               <li>Effiziente Zwei-Mann-Teams</li>
@@ -440,7 +441,7 @@
             <span class="package-volume">8 – 12 m³ · Groß</span>
             <h3 class="package-name">Große Mengen</h3>
             <p class="package-tagline">"Ein Sprinter voll Überraschungen."</p>
-            <div class="package-price">473,00 €<div class="small">pauschal, inkl. Entsorgung</div></div>
+            <div class="package-price"><span class="package-ab">ab</span> 473,00 €<div class="small">pauschal inkl. Entsorgung, Transportzone I</div></div>
             <ul class="package-features">
               <li>Haushaltsauflösungen, Firmenräumungen</li>
               <li>Planung & Durchführung aus einer Hand</li>
@@ -570,7 +571,7 @@
     <div class="section-head">
       <span class="kicker">Schritt 2 von 2:</span>
       <h2>Anfrage senden</h2>
-      <p>Wir prüfen die Verfügbarkeit dieses Services an der von Ihnen gewünschten Adresse / zu Ihrem Wunschtermin und melden uns innerhalb von 24 Stunden mit einer Festpreisbestätigung.</p>
+      <p>Geben Sie hier Ihre Daten und den Wunschtermin an. Wir prüfen die Verfügbarkeit und melden uns innerhalb von 24 Stunden mit einer Festpreisbestätigung. Vielen Dank und beste Grüße, Ihr ETH Team.</p>
     </div>
     <form class="form-card" id="anfrage-form" onsubmit="event.preventDefault(); submitForm();">
       <div class="form-grid">
@@ -659,18 +660,20 @@
     label:    { 1: 'Transportzone I (kein Zuschlag)', 2: 'Transportzone II (+15,00 €)', 3: 'Transportzone III (+30,00 €)' }
   };
 
+  // PLZ-Zonen (bereinigt 2026-05 — Zonenkarte_bereinigt.xlsx)
+  // Regel: PLZ in 2 Zonen → teurere Zone; PLZ in 3 Zonen → mittlere Zone (II)
   const PLZ_ZONEN = {
-    1: new Set(['20095','20097','20099','20144','20146','20148','20149','20249','20251',
-                '20354','20355','20357','20359','20457','20459','20535','20537','20539',
-                '21107','21109','21129','22081','22083','22085','22087','22089','22111',
-                '22113','22115','22117','22119','22297','22299','22301','22303','22305',
-                '22529','22767','22769','27499']),
-    2: new Set(['20253','20255','20257','20259','21029','21031','21033','21035','21037',
-                '21039','21073','21075','21077','21079','21147','21465','21521','22307',
-                '22309','22525','22527']),
-    3: new Set(['21149','21217','21218','21220','21493','21502','22049','22335','22337',
-                '22339','22391','22415','22417','22419','22453','22455','22457','22459',
-                '22523','22547'])
+    1: new Set(['20095','20097','20099','20354','20355','20359','20457','20459',
+                '20535','20537','20539','21107','21109','22083','22111','22117',
+                '22119','22767','27499']),
+    2: new Set(['20144','20146','20148','20149','20249','20251','20257','20259',
+                '20357','21029','21031','21033','21035','21037','21039','21073',
+                '21075','21077','21079','21129','21147','21465','21521','22113',
+                '22115','22297','22299','22301','22303','22305','22307','22529','22769']),
+    3: new Set(['20253','20255','21149','21217','21218','21220','21493','21502',
+                '22049','22081','22085','22087','22089','22309','22335','22337',
+                '22339','22391','22415','22417','22419','22453','22455','22457',
+                '22459','22523','22525','22527','22547'])
   };
 
   function getZone(plz) {
