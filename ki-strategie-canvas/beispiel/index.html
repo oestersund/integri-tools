@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KI-Strategie Canvas: Beispiel | Integri</title>
+  <style>
+    :root {
+      --petrol:      #033132;
+      --off-white:   #F7F7F5;
+      --white:       #FFFFFF;
+      --green:       #2D7D3E;
+      --terracotta:  #F08972;
+      --text:        #2C3E50;
+      --border:      #D1D5D8;
+      --apricot:     #FFF5F2;
+      --text-dim:    #5A6B7A;
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --c1: #033132; --c2: #054e50; --c3: #2D7D3E; --c4: #5A6B7A; --c5: #8D4E3A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+           font-size: 15px; line-height: 1.5; color: var(--text); background: var(--off-white); }
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+
+    /* ── Example badge ── */
+    .example-banner { background: var(--apricot); border: 1.5px solid var(--terracotta);
+      border-radius: var(--radius-md); padding: 12px 20px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px; }
+    .example-banner .badge { background: var(--terracotta); color: var(--white);
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+      padding: 3px 8px; border-radius: 3px; flex-shrink: 0; }
+    .example-banner span { font-size: 13.5px; color: var(--c5); }
+
+    /* ── Tool header ── */
+    .tool-header { background: var(--white); border-top: 4px solid var(--petrol);
+      border-radius: var(--radius-md); padding: 28px 32px 24px; margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(3,49,50,0.06); }
+    .tool-header h1 { font-size: 24px; font-weight: 700; color: var(--petrol);
+      letter-spacing: -0.01em; margin-bottom: 6px; }
+    .tool-header .company { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    .tool-header .subtitle { font-size: 15px; color: var(--text-dim); max-width: 680px; }
+
+    /* ── Canvas grid (read-only) ── */
+    .canvas-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .canvas-row  { display: flex; gap: 10px; }
+    .field { background: var(--white); border-radius: var(--radius-md);
+      box-shadow: 0 1px 4px rgba(3,49,50,0.06); overflow: hidden;
+      display: flex; flex-direction: column; flex: 1; }
+    .field-wide { flex: 2; } .field-narrow { flex: 1; }
+    .field-hdr { padding: 10px 16px 8px; color: var(--white); }
+    .field-hdr .num  { font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; opacity: .75; margin-bottom: 1px; }
+    .field-hdr .name { font-size: 14.5px; font-weight: 700; line-height: 1.2; }
+    .field-hdr .hint { font-size: 11.5px; opacity: .82; margin-top: 3px; font-style: italic; line-height: 1.35; }
+    --c6: #1a4d4f;
+    .field-c6 .field-hdr { background: #1a4d4f; }
+    .checkpoint-row { display: flex; gap: 24px; padding: 14px 16px 10px; background: #fafcfc; flex-wrap: wrap; }
+    .checkpoint-item { flex: 1; min-width: 200px; }
+    .checkpoint-item-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); margin-bottom: 5px; }
+    .checkpoint-item-value { font-size: 13.5px; color: var(--text); }
+    .field-c1 .field-hdr { background: var(--c1); }
+    .field-c2 .field-hdr { background: var(--c2); }
+    .field-c3 .field-hdr { background: var(--c3); }
+    .field-c4 .field-hdr { background: var(--c4); }
+    .field-c5 .field-hdr { background: var(--c5); }
+    .field-body { display: flex; flex: 1; }
+    .field-content { flex: 1; padding: 12px 14px; font-size: 13.5px; color: var(--text);
+      line-height: 1.55; background: #fafcfc; }
+    .field-content .dim-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--text-dim); margin-bottom: 5px; }
+    .grenzen-cols { display: flex; flex: 1; }
+    .grenzen-col { flex: 1; border-right: 1px solid var(--border);
+      padding: 10px 12px; font-size: 13px; color: var(--text);
+      line-height: 1.5; background: #fafcfc; }
+    .grenzen-col:last-child { border-right: none; }
+    .grenzen-col-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 5px; }
+    .grenzen-col-label.ok   { color: var(--green); }
+    .grenzen-col-label.warn { color: var(--c5); }
+    .grenzen-col-label.std  { color: var(--text-dim); }
+    .concrete-badge { display: inline-block; background: var(--green); color: var(--white);
+      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 3px;
+      text-transform: uppercase; letter-spacing: .06em; margin-top: 6px; }
+
+    /* ── Plan preview ── */
+    .plan-preview { margin-top: 20px; }
+    .plan-preview-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-dim); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px; }
+    .plan-preview-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .plan-first-step { background: var(--apricot); border-left: 4px solid var(--terracotta);
+      border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 14px; }
+    .plan-first-step .fs-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--c5); margin-bottom: 5px; }
+    .plan-first-step .fs-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+    .plan-phases { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+    .plan-phase { background: var(--white); border-radius: var(--radius-md);
+      box-shadow: 0 1px 4px rgba(3,49,50,0.06); overflow: hidden; }
+    .phase-hdr { background: var(--petrol); color: var(--white); padding: 12px 16px 10px; }
+    .phase-label { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .phase-focus { font-size: 11.5px; opacity: .8; line-height: 1.35; }
+    .phase-actions { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .action-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 2px; }
+    .action-note { font-size: 11.5px; color: var(--text-dim); line-height: 1.35; }
+
+    /* ── CTA box ── */
+    .cta-box { background: var(--petrol); color: var(--white); border-radius: var(--radius-md);
+      padding: 32px 36px; text-align: center; margin-top: 24px; }
+    .cta-box .cta-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+      opacity: .65; margin-bottom: 10px; }
+    .cta-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+    .cta-box p { font-size: 15px; opacity: .85; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    .cta-form { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .cta-form input[type="email"] { width: 100%; max-width: 380px; padding: 11px 16px;
+      border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 15px;
+      color: var(--text); outline: none; }
+    .cta-form input[type="email"]::placeholder { color: #8090A0; }
+    .btn-cta { background: var(--terracotta); color: var(--white); border: none;
+      border-radius: var(--radius-sm); padding: 12px 28px; font-family: inherit;
+      font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s;
+      width: 100%; max-width: 380px; }
+    .btn-cta:hover { opacity: .88; }
+    .cta-note { font-size: 11.5px; opacity: .6; margin-top: 4px; }
+
+    @media (max-width: 768px) {
+      .canvas-row { flex-direction: column; }
+      .field-body { flex-direction: column; }
+      .grenzen-cols { flex-direction: column; }
+      .grenzen-col { border-right: none; border-bottom: 1px solid var(--border); }
+      .grenzen-col:last-child { border-bottom: none; }
+      .plan-phases { grid-template-columns: 1fr; }
+      .tool-header, .cta-box { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<script>window.INTEGRI_CHROME = { docname: 'KI-Strategie Canvas: Beispiel' };</script>
+<script src="../../assets/tool-chrome.js"></script>
+
+<div class="wrapper">
+
+  <div class="example-banner">
+    <span class="badge">Beispiel</span>
+    <span>Ausgefülltes Canvas, fiktives Unternehmen Metallbau Huber GmbH. Die grünen <strong>Konkret</strong>-Badges zeigen den Ausfüllgrad: Im interaktiven Canvas bewertet das System Ihre Antworten live, von <em>offen</em> über <em>vage</em> bis <em>konkret</em>.</span>
+  </div>
+
+  <div class="tool-header">
+    <div class="company">Metallbau Huber GmbH · 80 Mitarbeiter · produzierendes Gewerbe</div>
+    <h1>KI-Strategie Canvas</h1>
+    <p class="subtitle">Fünf Entscheidungen, die über Erfolg oder Scheitern der KI-Einführung entscheiden.</p>
+  </div>
+
+  <!-- Canvas (read-only, pre-filled) -->
+  <div class="canvas-grid">
+
+    <div class="canvas-row">
+      <div class="field field-c1">
+        <div class="field-hdr">
+          <div class="num">01</div>
+          <div class="name">Ziel: Wo stehen wir in 12 Monaten?</div>
+          <div class="hint">Mit einem messbaren Ziel wissen alle, woran KI-Einführung sich messen lässt und ob sie sich gelohnt hat.</div>
+        </div>
+        <div class="field-body">
+          <div class="field-content">
+            <div class="dim-label">Antwort</div>
+            In 12 Monaten soll unsere Angebotserstellung von durchschnittlich 4 Stunden auf unter 1 Stunde gesunken sein. Das ermöglicht dem Vertrieb, 40 % mehr Anfragen zu bearbeiten, ohne zusätzliche Stellen.
+            <div><span class="concrete-badge">✓ Konkret</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-row">
+      <div class="field field-wide field-c2">
+        <div class="field-hdr">
+          <div class="num">02</div>
+          <div class="name">Hebel: Wo steckt das größte Potenzial?</div>
+          <div class="hint">Wer die richtigen Prozesse kennt, verhindert überall gleichzeitig zu starten und nirgends etwas zu erreichen.</div>
+        </div>
+        <div class="field-body">
+          <div class="field-content">
+            <div class="dim-label">Antwort</div>
+            <strong>Prozess 1:</strong> Angebotserstellung, 4h pro Stück, 3× pro Woche<br>
+            <strong>Prozess 2:</strong> Projektabschlussdokumentation, 2h pro Projekt, jede Woche<br>
+            <strong>Prozess 3:</strong> Eingangspost sortieren und weiterleiten, 45 Min täglich, immer dasselbe Schema
+            <div><span class="concrete-badge">✓ Konkret</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field field-narrow field-c3">
+        <div class="field-hdr">
+          <div class="num">03</div>
+          <div class="name">Mandat</div>
+          <div class="hint">Ohne namentlich benannte Verantwortung scheitern KI-Projekte nicht an der Technologie, sondern daran, dass es nie jemandes Aufgabe war.</div>
+        </div>
+        <div class="field-body">
+          <div class="field-content">
+            <div class="dim-label">Antwort</div>
+            <strong>Name / Rolle:</strong> Thomas Berger, Prokurist<br>
+            <strong>Std./Woche:</strong> 5h<br>
+            <strong>Sponsor:</strong> GF Michael Huber
+            <div><span class="concrete-badge">✓ Konkret</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field field-narrow field-c4">
+        <div class="field-hdr">
+          <div class="num">04</div>
+          <div class="name">Erfolg messen</div>
+          <div class="hint">Eine Kennzahl mit Termin verhindert, dass das Vorhaben im Tagesgeschäft versandet, und gibt Ihnen das Argument intern.</div>
+        </div>
+        <div class="field-body">
+          <div class="field-content">
+            <div class="dim-label">Antwort</div>
+            <strong>Kennzahl:</strong> Ø Angebotszeit in Stunden<br>
+            <strong>Messpunkt:</strong> 30.09.2026<br>
+            <strong>Minimum-Ziel:</strong> unter 2h pro Angebot
+            <div><span class="concrete-badge">✓ Konkret</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-row">
+      <div class="field field-c5">
+        <div class="field-hdr">
+          <div class="num">05</div>
+          <div class="name">Grenzen setzen: Was darf KI, was nicht?</div>
+          <div class="hint">Klare Spielregeln von Anfang an schützen vor Datenpannen, schaffen Vertrauen im Team und ersparen aufwendige Nachbesserungen.</div>
+        </div>
+        <div class="field-body">
+          <div class="grenzen-cols">
+            <div class="grenzen-col">
+              <div class="grenzen-col-label ok">KI darf nutzen</div>
+              Interne Prozessdokumentation, Angebotsvorlagen, allgemeine Preislisten
+            </div>
+            <div class="grenzen-col">
+              <div class="grenzen-col-label warn">KI darf NICHT</div>
+              Kundenstammdaten, Kreditlimits, Preisverhandlungen, Personalakten
+            </div>
+            <div class="grenzen-col">
+              <div class="grenzen-col-label std">Spielregeln Team</div>
+              Alle KI-Outputs werden vor Versand von einem Mitarbeiter geprüft. Keine externen KI-Dienste für Kundendaten.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-row">
+      <div class="field field-c6" style="--c6: #1a4d4f;">
+        <div class="field-hdr" style="background: #1a4d4f;">
+          <div class="num">06</div>
+          <div class="name">Checkpoint: Wann prüfen Sie den Stand?</div>
+          <div class="hint">Ohne festen Termin versandet der beste Plan. Zwei kurze Checks in 90 Tagen halten das Projekt am Leben.</div>
+        </div>
+        <div class="field-body">
+          <div class="checkpoint-row">
+            <div class="checkpoint-item">
+              <div class="checkpoint-item-label">Zwischenstand nach Monat 1</div>
+              <div class="checkpoint-item-value">31.07.2026, Team-Meeting mit Thomas Berger, Messung erste Angebotszeiten</div>
+              <div><span class="concrete-badge">✓ Konkret</span></div>
+            </div>
+            <div class="checkpoint-item">
+              <div class="checkpoint-item-label">Zwischenstand nach Monat 2</div>
+              <div class="checkpoint-item-value">29.08.2026, GF-Review mit Michael Huber: 5 Angebote ausgewertet, Entscheidung Ausrollung</div>
+              <div><span class="concrete-badge">✓ Konkret</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /canvas-grid -->
+
+  <!-- Plan preview -->
+  <div class="plan-preview">
+    <div class="plan-preview-label">So sieht der generierte 90-Tage-Plan aus</div>
+
+    <div class="plan-first-step">
+      <div class="fs-label">Nächster Schritt: diese Woche</div>
+      <div class="fs-text">Angebotserstellungs-Prozess von Schritt 1 bis Versand vollständig dokumentieren. Grundlage für alle weiteren Schritte.</div>
+    </div>
+
+    <div class="plan-phases">
+      <div class="plan-phase">
+        <div class="phase-hdr">
+          <div class="phase-label">Monat 1: Fundament</div>
+          <div class="phase-focus">Angebotsprozess KI-fähig machen.</div>
+        </div>
+        <div class="phase-actions">
+          <div>
+            <div class="action-text">Angebotsprozess vollständig dokumentieren</div>
+            <div class="action-note">Jeden Schritt erfassen: Vorlage, Datenquellen, Zeitbedarf. Basis für KI-Unterstützung.</div>
+          </div>
+          <div>
+            <div class="action-text">2 KI-Tools für Angebotserstellung evaluieren</div>
+            <div class="action-note">Copilot und Claude testen, mit einem echten Angebotsfall, nicht mit Demo-Daten.</div>
+          </div>
+          <div>
+            <div class="action-text">Thomas Berger als KI-Verantwortlichen offiziell einführen</div>
+            <div class="action-note">GF Michael Huber kommuniziert das Mandat im nächsten Team-Meeting.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plan-phase">
+        <div class="phase-hdr">
+          <div class="phase-label">Monat 2: Pilotbetrieb</div>
+          <div class="phase-focus">Angebotserstellung live testen, Zeit messen.</div>
+        </div>
+        <div class="phase-actions">
+          <div>
+            <div class="action-text">Pilotbetrieb mit gewähltem Tool starten</div>
+            <div class="action-note">5 echte Angebote mit KI-Unterstützung erstellen. Kein weiteres Testen, echter Betrieb.</div>
+          </div>
+          <div>
+            <div class="action-text">Angebotszeit pro Stück messen und dokumentieren</div>
+            <div class="action-note">Gegen Ausgangswert 4h vergleichen. Erste Daten für die Auswertung im September.</div>
+          </div>
+          <div>
+            <div class="action-text">Team-Feedback nach 3 Wochen einholen</div>
+            <div class="action-note">Akzeptanz ist genauso wichtig wie Zeitersparnis. Hindernisse früh identifizieren.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plan-phase">
+        <div class="phase-hdr">
+          <div class="phase-label">Monat 3: Auswertung</div>
+          <div class="phase-focus">Ergebnis gegen Ziel messen, Entscheidung treffen.</div>
+        </div>
+        <div class="phase-actions">
+          <div>
+            <div class="action-text">Angebotszeit gegen Ziel &lt;2h messen</div>
+            <div class="action-note">Stichtag 30.09.2026. Klare Antwort: Ziel erreicht oder nicht?</div>
+          </div>
+          <div>
+            <div class="action-text">Entscheidung: ausrollen, anpassen oder stoppen</div>
+            <div class="action-note">Alle drei Optionen sind valide. Ergebnis ehrlich bewerten.</div>
+          </div>
+          <div>
+            <div class="action-text">Nächsten Hebel festlegen: Projektdokumentation</div>
+            <div class="action-note">Prozess 2 aus dem Canvas, 2h/Projekt. Gleiche Methodik, nächste Runde.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <div class="cta-kicker">Ihr persönlicher Canvas</div>
+    <h2>Möchten Sie das jetzt für<br>Ihr Unternehmen?</h2>
+    <p>Tragen Sie Ihre E-Mail-Adresse ein. Sie erhalten einen Link zu Ihrem eigenen interaktiven Canvas und dazu Ihren persönlichen 90-Tage-Plan.</p>
+    <div class="cta-form">
+      <input type="email" id="cta-email" placeholder="ihre@adresse.de" autocomplete="email" />
+      <button class="btn-cta" id="btn-cta" type="button">Canvas freischalten →</button>
+      <span class="cta-note">Keine Werbung. Nur der Zugang zum Canvas und Ihr Plan.</span>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+(function() {
+  var WORKER_URL = 'https://integri-email.empty-unit-c43c.workers.dev';
+
+  document.getElementById('btn-cta').addEventListener('click', function() {
+    var email = (document.getElementById('cta-email').value || '').trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('cta-email').style.outline = '2px solid #F08972';
+      document.getElementById('cta-email').focus();
+      return;
+    }
+    document.getElementById('cta-email').style.outline = '';
+
+    var btn = document.getElementById('btn-cta');
+    btn.disabled = true;
+    btn.textContent = 'Einen Moment …';
+
+    fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        _tool: 'ki-strategie-canvas-optin'
+      })
+    })
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function() {
+      document.querySelector('.cta-form').innerHTML =
+        '<p style="font-size:15px;opacity:.9;">Geschafft. Bitte bestätigen Sie Ihre E-Mail-Adresse.<br>'
+        + 'Den Link finden Sie in wenigen Minuten in Ihrem Postfach.</p>';
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Canvas freischalten →';
+      alert('Leider ist ein Fehler aufgetreten. Bitte schreiben Sie uns: info@integri.de');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
