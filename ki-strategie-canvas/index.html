@@ -14,8 +14,8 @@
       --text:         #2C3E50;
       --border:       #D1D5D8;
       --apricot:      #FFF5F2;
-      --text-dim:     #5A6B7A;
-      --placeholder:  #8090A0;
+      --text-dim:     #3D4F60;
+      --placeholder:  #6A7A8A;
       --radius-sm:    4px;
       --radius-md:    8px;
       --c1: #033132; --c2: #054e50; --c3: #2D7D3E;
@@ -46,7 +46,7 @@
     .field-hdr .num  { font-size: 11px; font-weight: 600; letter-spacing: .12em;
       text-transform: uppercase; opacity: .75; margin-bottom: 1px; }
     .field-hdr .name { font-size: 14.5px; font-weight: 700; line-height: 1.2; }
-    .field-hdr .hint { font-size: 11.5px; opacity: .85; margin-top: 2px; font-style: italic; }
+    .field-hdr .hint { font-size: 12.5px; opacity: .92; margin-top: 2px; font-style: italic; }
     .field-c1 .field-hdr { background: var(--c1); }
     .field-c2 .field-hdr { background: var(--c2); }
     .field-c3 .field-hdr { background: var(--c3); }
@@ -68,7 +68,7 @@
     .field-qs { background: #f3f7f7; border-right: 1px solid var(--border);
       padding: 10px 12px 10px 14px; width: 190px; flex-shrink: 0; }
     .field-qs ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    .field-qs li { font-size: 12px; color: var(--text-dim); line-height: 1.35;
+    .field-qs li { font-size: 13px; color: var(--text-dim); line-height: 1.35;
       padding-left: 10px; position: relative; }
     .field-qs li::before { content: ''; position: absolute; left: 0; top: 6px;
       width: 4px; height: 4px; border-radius: 50%; background: var(--terracotta); }
@@ -85,14 +85,14 @@
     .grenzen-col { flex: 1; border-right: 1px solid var(--border);
       padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
     .grenzen-col:last-child { border-right: none; }
-    .grenzen-col-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    .grenzen-col-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase;
       letter-spacing: .08em; margin-bottom: 3px; }
     .grenzen-col-label.ok   { color: var(--green); }
     .grenzen-col-label.warn { color: var(--c5); }
     .grenzen-col-label.std  { color: var(--text-dim); }
     .grenzen-col textarea { flex: 1; width: 100%; min-height: 66px;
       border: 1px solid transparent; border-radius: var(--radius-sm);
-      padding: 5px 7px; font-family: inherit; font-size: 13px; color: var(--text);
+      padding: 5px 7px; font-family: inherit; font-size: 13.5px; color: var(--text);
       resize: vertical; outline: none; background: transparent; line-height: 1.5;
       transition: background .15s, border-color .15s; }
     .grenzen-col textarea::placeholder { color: var(--placeholder); font-style: italic; font-size: 12px; }
@@ -100,7 +100,7 @@
       box-shadow: 0 0 0 2px rgba(3,49,50,0.07); }
 
     .field-status { display: flex; align-items: center; gap: 5px;
-      font-size: 11.5px; font-weight: 600; padding: 2px 0 0 0; }
+      font-size: 12px; font-weight: 600; padding: 2px 0 0 0; }
     .field-status .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .status-0 .dot { background: var(--status-open); } .status-0 .label { color: var(--status-open); }
     .status-1 .dot { background: var(--status-vague); } .status-1 .label { color: var(--status-vague); }
@@ -117,7 +117,7 @@
       flex-shrink: 0; transition: background .3s; }
     .auswertung-dot.s0 { background: #dde0e3; } .auswertung-dot.s1 { background: #f5c842; }
     .auswertung-dot.s2 { background: #5b9bd5; } .auswertung-dot.s3 { background: var(--green); }
-    .auswertung-dim-label { font-size: 10.5px; color: var(--text-dim); line-height: 1.2; font-weight: 600; }
+    .auswertung-dim-label { font-size: 11.5px; color: var(--text-dim); line-height: 1.2; font-weight: 600; }
     .auswertung-summary { font-size: 13px; color: var(--text-dim);
       padding-top: 12px; border-top: 1px solid var(--border); }
     .auswertung-summary strong { color: var(--text); }
@@ -249,9 +249,9 @@
       </div>
     </div>
 
-    <!-- Row 2: Hebel | Mandat | Erfolg -->
+    <!-- Row 2: Hebel -->
     <div class="canvas-row">
-      <div class="field field-wide field-c2">
+      <div class="field field-c2">
         <div class="field-hdr">
           <div class="num">02</div>
           <div class="name">Hebel: Wo steckt das größte Potenzial?</div>
@@ -269,11 +269,14 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="field field-narrow field-c3">
+    <!-- Row 3: Verantwortung | Erfolg -->
+    <div class="canvas-row">
+      <div class="field field-c3">
         <div class="field-hdr">
           <div class="num">03</div>
-          <div class="name">Mandat</div>
+          <div class="name">Verantwortung</div>
           <div class="hint">Ohne namentlich benannte Verantwortung scheitern KI-Projekte nicht an der Technologie, sondern daran, dass es nie jemandes Aufgabe war.</div>
         </div>
         <div class="field-body">
@@ -289,7 +292,7 @@
         </div>
       </div>
 
-      <div class="field field-narrow field-c4">
+      <div class="field field-c4">
         <div class="field-hdr">
           <div class="num">04</div>
           <div class="name">Erfolg messen</div>
@@ -309,12 +312,12 @@
       </div>
     </div>
 
-    <!-- Row 3: Grenzen -->
+    <!-- Row 4: Grenzen -->
     <div class="canvas-row">
       <div class="field field-c5">
         <div class="field-hdr">
           <div class="num">05</div>
-          <div class="name">Grenzen setzen: Was darf KI, was nicht?</div>
+          <div class="name">Grenzen &amp; Gouvernance: Was darf KI, was nicht?</div>
           <div class="hint">Klare Spielregeln von Anfang an schützen vor Datenpannen, schaffen Vertrauen im Team und ersparen aufwendige Nachbesserungen.</div>
         </div>
         <div class="field-body">
@@ -346,7 +349,7 @@
       </div>
     </div>
 
-    <!-- Row 4: Checkpoint -->
+    <!-- Row 5: Checkpoint -->
     <div class="canvas-row">
       <div class="field field-c6">
         <div class="field-hdr">
@@ -380,7 +383,7 @@
     <div class="auswertung-grid">
       <div class="auswertung-dim"><div class="auswertung-dot s0" id="d1"></div><div class="auswertung-dim-label">01 Ziel</div></div>
       <div class="auswertung-dim"><div class="auswertung-dot s0" id="d2"></div><div class="auswertung-dim-label">02 Hebel</div></div>
-      <div class="auswertung-dim"><div class="auswertung-dot s0" id="d3"></div><div class="auswertung-dim-label">03 Mandat</div></div>
+      <div class="auswertung-dim"><div class="auswertung-dot s0" id="d3"></div><div class="auswertung-dim-label">03 Verant.</div></div>
       <div class="auswertung-dim"><div class="auswertung-dot s0" id="d4"></div><div class="auswertung-dim-label">04 Erfolg</div></div>
       <div class="auswertung-dim"><div class="auswertung-dot s0" id="d5"></div><div class="auswertung-dim-label">05 Grenzen</div></div>
       <div class="auswertung-dim"><div class="auswertung-dot s0" id="d6"></div><div class="auswertung-dim-label">06 Checkpoint</div></div>
@@ -575,6 +578,43 @@
         + 'Bitte schreiben Sie uns direkt: <a href="mailto:info@integri.de">info@integri.de</a></p>';
     });
   });
+
+
+  /* ── Autosave / Restore ── */
+  var STORAGE_KEY = 'ki-canvas-draft';
+  function saveToStorage() {
+    try {
+      var data = {
+        f1: v('f1'), f2: v('f2'), f3: v('f3'), f4: v('f4'),
+        f5a: v('f5a'), f5b: v('f5b'), f5c: v('f5c'),
+        f6a: document.getElementById('f6a') ? document.getElementById('f6a').value : '',
+        f6b: document.getElementById('f6b') ? document.getElementById('f6b').value : ''
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(e) {}
+  }
+  function restoreFromStorage() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      ['f1','f2','f3','f4','f5a','f5b','f5c','f6a','f6b'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && data[id]) el.value = data[id];
+      });
+      /* trigger score update after restore */
+      ['f1','f2','f3','f4','f5a','f5b','f5c','f6a','f6b'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.dispatchEvent(new Event('blur'));
+      });
+    } catch(e) {}
+  }
+  /* attach save to all inputs */
+  ['f1','f2','f3','f4','f5a','f5b','f5c','f6a','f6b'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', function() { clearTimeout(timers['_save']); timers['_save'] = setTimeout(saveToStorage, 600); });
+  });
+  restoreFromStorage();
 
 })();
 </script>
