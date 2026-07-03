@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex, nofollow">
+<title>Praxis Christiane Möller — Patientendoku (Klick-Dummy)</title>
+<style>
+  :root{
+    --akzent:#0e7c7b; --akzent-hell:#e6f2f2; --tinte:#1d2b2b; --grau:#6b7a7a;
+    --linie:#dde5e5; --bg:#f4f7f7; --karte:#fff; --warn:#b3541e; --ok:#2e7d32;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       background:var(--bg); color:var(--tinte); font-size:16px;}
+  .app{max-width:760px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column;}
+
+  header.top{position:sticky; top:0; z-index:10; background:var(--akzent); color:#fff;
+       padding:calc(env(safe-area-inset-top) + 14px) 16px 14px; display:flex; align-items:center; gap:10px;}
+  header.top .titel{font-size:17px; font-weight:600; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  header.top .sub{font-size:12px; opacity:.85; font-weight:400;}
+  .zurueck{background:rgba(255,255,255,.18); border:none; color:#fff; border-radius:8px;
+       padding:8px 12px; font-size:15px; cursor:pointer;}
+
+  .inhalt{flex:1; padding:14px 14px calc(env(safe-area-inset-bottom) + 90px);}
+
+  /* Suche + Liste */
+  .suchfeld{display:flex; gap:8px; margin-bottom:12px;}
+  .suchfeld input{flex:1; padding:13px 14px; font-size:17px; border:1px solid var(--linie);
+       border-radius:12px; background:#fff; outline:none;}
+  .suchfeld input:focus{border-color:var(--akzent);}
+  .p-liste{display:flex; flex-direction:column; gap:8px;}
+  .p-card{background:var(--karte); border:1px solid var(--linie); border-radius:12px;
+       padding:13px 14px; cursor:pointer; display:flex; align-items:center; gap:12px;}
+  .p-card:active{background:var(--akzent-hell);}
+  .initial{width:42px; height:42px; border-radius:50%; background:var(--akzent-hell);
+       color:var(--akzent); font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .p-card .name{font-weight:600;}
+  .p-card .meta{font-size:13px; color:var(--grau); margin-top:2px;}
+  .p-card .pfeil{margin-left:auto; color:var(--grau);}
+  .leer{text-align:center; color:var(--grau); padding:30px 10px;}
+
+  .aktionen{position:fixed; bottom:0; left:0; right:0; z-index:10;
+       background:linear-gradient(transparent, var(--bg) 30%);
+       padding:18px 14px calc(env(safe-area-inset-bottom) + 14px);}
+  .aktionen .innen{max-width:760px; margin:0 auto; display:flex; gap:10px;}
+  .btn{flex:1; padding:14px; border-radius:12px; border:none; font-size:16px; font-weight:600; cursor:pointer;}
+  .btn.primaer{background:var(--akzent); color:#fff;}
+  .btn.sekundaer{background:#fff; color:var(--akzent); border:1px solid var(--akzent);}
+
+  /* Patientenkopf */
+  .p-kopf{background:var(--karte); border:1px solid var(--linie); border-radius:14px;
+       padding:14px; margin-bottom:12px;}
+  .p-kopf h2{margin:0 0 2px; font-size:20px;}
+  .p-kopf .zeile{font-size:14px; color:var(--grau); margin-top:2px;}
+  .p-kopf a{color:var(--akzent); text-decoration:none; font-weight:600;}
+  .risiko{margin-top:8px; background:#fdf1e7; color:var(--warn); border-radius:8px;
+       padding:8px 10px; font-size:13.5px;}
+
+  /* Reiter */
+  .reiter{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:12px;
+       -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  .reiter::-webkit-scrollbar{display:none;}
+  .reiter button{flex-shrink:0; padding:9px 14px; border-radius:20px; border:1px solid var(--linie);
+       background:#fff; color:var(--tinte); font-size:14.5px; cursor:pointer; white-space:nowrap;}
+  .reiter button.aktiv{background:var(--akzent); color:#fff; border-color:var(--akzent); font-weight:600;}
+
+  .panel{display:none;}
+  .panel.aktiv{display:block;}
+  .karte{background:var(--karte); border:1px solid var(--linie); border-radius:12px;
+       padding:14px; margin-bottom:10px;}
+  .karte h3{margin:0 0 8px; font-size:15px; color:var(--akzent);}
+  .feld{display:flex; justify-content:space-between; gap:14px; padding:7px 0;
+       border-bottom:1px solid var(--linie); font-size:15px;}
+  .feld:last-child{border-bottom:none;}
+  .feld .k{color:var(--grau); flex-shrink:0;}
+  .feld .w{text-align:right; font-weight:500;}
+
+  /* Rezepte */
+  .rz-kopf{display:flex; justify-content:space-between; align-items:center; cursor:pointer;}
+  .rz-kopf .datum{font-weight:700;}
+  .rz-kopf .verordnung{font-size:14px; color:var(--grau); margin-top:2px;}
+  .zaehler{font-size:14px; font-weight:700; padding:5px 11px; border-radius:16px;}
+  .zaehler.offen{background:var(--akzent-hell); color:var(--akzent);}
+  .zaehler.voll{background:#e8f2e9; color:var(--ok);}
+  .balken{height:6px; background:var(--linie); border-radius:3px; margin-top:10px; overflow:hidden;}
+  .balken div{height:100%; background:var(--akzent); border-radius:3px;}
+  .rz-detail{display:none; margin-top:12px; border-top:1px solid var(--linie); padding-top:10px;}
+  .rz-detail.offen{display:block;}
+  .termin{display:flex; gap:10px; padding:6px 0; font-size:14.5px; border-bottom:1px dashed var(--linie);}
+  .termin:last-of-type{border-bottom:none;}
+  .termin .nr{color:var(--grau); width:26px;}
+  .rz-meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; font-size:13.5px;}
+  .chip{background:var(--bg); border:1px solid var(--linie); border-radius:8px; padding:5px 9px;}
+  .mini-btn{margin-top:10px; width:100%; padding:11px; border-radius:10px; border:1px dashed var(--akzent);
+       background:none; color:var(--akzent); font-size:14.5px; font-weight:600; cursor:pointer;}
+
+  /* Einträge */
+  .eintrag{border-left:3px solid var(--akzent); padding-left:11px; margin-bottom:14px;}
+  .eintrag .kopf{font-size:13px; color:var(--grau); margin-bottom:4px;}
+  .eintrag .quelle{background:var(--akzent-hell); color:var(--akzent); border-radius:6px;
+       padding:1px 7px; font-size:12px; margin-left:6px;}
+  .eintrag .text{font-size:15px; line-height:1.5; white-space:pre-line;}
+
+  /* Anlagen */
+  .anlagen-gruppe{margin-bottom:14px;}
+  .anlagen-gruppe h4{margin:0 0 8px; font-size:14px; color:var(--grau); text-transform:uppercase; letter-spacing:.4px;}
+  .thumbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:8px;}
+  .thumb{aspect-ratio:3/4; border-radius:10px; border:1px solid var(--linie); background:#fff;
+       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+       font-size:12px; color:var(--grau); text-align:center; padding:6px; cursor:pointer;}
+  .thumb .icon{font-size:26px;}
+
+  .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom) + 100px);
+       background:var(--tinte); color:#fff; padding:11px 18px; border-radius:10px; font-size:14.5px;
+       opacity:0; transition:opacity .25s; pointer-events:none; z-index:50; max-width:88%; text-align:center;}
+  .toast.sichtbar{opacity:1;}
+  .hinweis{font-size:12.5px; color:var(--grau); text-align:center; margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <button class="zurueck" id="btnZurueck" style="display:none" onclick="zeigeListe()">‹ Liste</button>
+    <div>
+      <div class="titel" id="kopfTitel">Patienten</div>
+      <div class="sub">Praxis Christiane Möller · Klick-Dummy</div>
+    </div>
+  </header>
+
+  <!-- ANSICHT: LISTE -->
+  <div class="inhalt" id="ansichtListe">
+    <div class="suchfeld">
+      <input type="search" id="suche" placeholder="Nachname suchen …" oninput="filtere()" autocomplete="off">
+    </div>
+    <div class="p-liste" id="liste"></div>
+    <p class="hinweis">Dummy mit fiktiven Beispieldaten. Keine echten Patientendaten.</p>
+  </div>
+
+  <!-- ANSICHT: PATIENT -->
+  <div class="inhalt" id="ansichtPatient" style="display:none">
+    <div class="p-kopf" id="pKopf"></div>
+    <div class="reiter" id="reiterLeiste"></div>
+    <div id="panels"></div>
+  </div>
+
+  <div class="aktionen" id="aktionenListe">
+    <div class="innen">
+      <button class="btn primaer" onclick="toast('Im MVP: Stammdatenmaske für neue Patienten')">+ Neuer Patient</button>
+      <button class="btn sekundaer" onclick="toast('Im MVP: Stammdaten minimal + Foto der Papierkarte')">+ Altkarte erfassen</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ---------- Fiktive Beispieldaten ----------
+const patienten = [
+  {
+    id:1, nachname:"Beispielmann", vorname:"Bernd", geb:"12.04.1957", geschlecht:"m",
+    adresse:"Musterweg 12, 21521 Beispielstadt", telefon:"04104 98765", mobil:"0171 2345678",
+    kasse:"vdek", versicherung:"gesetzlich", kassenNr:"—", versNr:"A123456789", gebuehr:"gebührenpflichtig",
+    arzt:"Dr. Mustermann (Orthopädie)", risiko:"Marcumar; Schulter-TEP rechts 2023",
+    anamnese:[
+      {typ:"Erstanamnese", datum:"30.09.2025", quelle:"Heidi",
+       text:"Vorstellungsgrund: Schmerzen LWS, ausstrahlend ins rechte Bein seit ca. 6 Wochen.\nVorerkrankungen: Hypertonie, Schulter-TEP rechts (2023).\nMedikation: Marcumar, Ramipril 5 mg.\nBisherige Behandlung: Hausarzt, Ibuprofen bei Bedarf.\nZiel: Schmerzfreiheit beim Gehen > 30 Min."},
+      {typ:"Befund", datum:"30.09.2025", quelle:"Heidi",
+       text:"Inspektion: leichte Schonhaltung rechts.\nPalpation: Hartspann paravertebral L3–L5.\nBeweglichkeit: Flexion eingeschränkt, FBA 25 cm.\nLasègue negativ beidseits."}
+    ],
+    anamneseDocs:[{icon:"📋", name:"Anamnesebogen (PDF)"}],
+    rezepte:[
+      {datum:"30.09.2025", verordnung:"10× MT", anzahl:10, rechnung:"R2 v. 13.11.25", betrag:"466,50 €", status:"abgerechnet",
+       termine:[["06.10.25","CM"],["14.10.25","CM"],["16.10.25","CM"],["20.10.25","CM"],["23.10.25","CM"],
+                ["27.10.25","CM"],["30.10.25","CM"],["03.11.25","CM"],["06.11.25","CM"],["10.11.25","CM"]]},
+      {datum:"20.11.2025", verordnung:"10× MT, 10× Eis", anzahl:10, rechnung:"", betrag:"", status:"offen",
+       termine:[["02.12.25","CM"],["04.12.25","CM"],["11.12.25","CM"],["17.12.25","CM"],["05.01.26","CM"],["08.01.26","CM"]]}
+    ],
+    doku:[
+      {datum:"08.01.2026", quelle:"Diktat", text:"Deutliche Besserung, Ausstrahlung nur noch nach langem Sitzen. Eigenübungen werden gemacht. Weiter MT, Fokus segmentale Mobilisation L4/L5."},
+      {datum:"02.12.2025", quelle:"manuell", text:"Neues Rezept mitgebracht (10× MT + Eis). Beschwerden nach Pause leicht zunehmend."}
+    ],
+    anlagen:{
+      "Rezepte":[{icon:"📄", name:"Rezept 30.09.25"},{icon:"📄", name:"Rezept 20.11.25"}],
+      "Anmeldung & Formulare":[{icon:"📝", name:"Anmeldebogen"},{icon:"✍️", name:"Zustimmung Hypnose"}],
+      "Befunde":[{icon:"🩻", name:"MRT-Bericht LWS 09/25"}],
+      "Altkarte":[{icon:"🗂️", name:"Papierkarte (Foto)"}]
+    }
+  },
+  {
+    id:2, nachname:"Musterfrau", vorname:"Marianne", geb:"03.11.1968", geschlecht:"w",
+    adresse:"Beispielallee 4, 21521 Beispielstadt", telefon:"04104 12345", mobil:"",
+    kasse:"PKV", versicherung:"privat", kassenNr:"", versNr:"", gebuehr:"—",
+    arzt:"Dr. Probe (Hausärztin)", risiko:"",
+    anamnese:[
+      {typ:"Erstanamnese", datum:"15.06.2026", quelle:"Heidi",
+       text:"Vorstellungsgrund: Spannungskopfschmerz, Verspannung Nacken/Schulter.\nArbeitsplatz: Bildschirmarbeit, 8 h/Tag.\nMedikation: keine.\nZiel: Reduktion der Kopfschmerztage."}
+    ],
+    rezepte:[
+      {datum:"15.06.2026", verordnung:"6× KG", anzahl:6, rechnung:"", betrag:"", status:"offen",
+       termine:[["18.06.26","CM"],["25.06.26","CM"]]}
+    ],
+    doku:[
+      {datum:"25.06.2026", quelle:"manuell", text:"Zweite Behandlung. HWS-Rotation verbessert. Hausaufgabe: Dehnung Trapezius 2×/Tag."}
+    ],
+    anlagen:{
+      "Rezepte":[{icon:"📄", name:"Rezept 15.06.26"}],
+      "Anmeldung & Formulare":[{icon:"📝", name:"Anmeldebogen"}]
+    }
+  },
+  {
+    id:3, nachname:"Testmann", vorname:"Theo", geb:"27.03.1938", geschlecht:"m",
+    adresse:"Probenstraße 7, 21521 Beispielstadt", telefon:"04104 5752", mobil:"",
+    kasse:"AOK", versicherung:"gesetzlich", kassenNr:"", versNr:"", gebuehr:"gebührenfrei",
+    arzt:"Dr. Hausbesuch", risiko:"Sturzgefahr; Hörgerät",
+    anamnese:[],
+    rezepte:[],
+    doku:[],
+    anlagen:{ "Altkarte":[{icon:"🗂️", name:"Papierkarte (Foto)"}] }
+  },
+  {
+    id:4, nachname:"Beispielkind", vorname:"Klara", geb:"14.02.2016", geschlecht:"w",
+    adresse:"Musterweg 12, 21521 Beispielstadt", telefon:"", mobil:"",
+    kasse:"BKK", versicherung:"gesetzlich", kassenNr:"", versNr:"K987654321", gebuehr:"gebührenfrei (Kind)",
+    arzt:"Dr. Kinder (Pädiatrie)", risiko:"Erdnussallergie",
+    bezugspersonen:[
+      {rolle:"Mutter", name:"Maria Beispielkind", telefon:"0170 1111111"},
+      {rolle:"Vater", name:"Max Beispielkind", telefon:"0170 2222222"}
+    ],
+    rechnungsempfaenger:"Maria & Max Beispielkind, Musterweg 12, 21521 Beispielstadt",
+    anamnese:[
+      {typ:"Erstanamnese", datum:"10.05.2026", quelle:"Heidi",
+       text:"Anamnese über die Mutter erhoben.\nVorstellungsgrund: Haltungsauffälligkeit, Empfehlung des Kinderarztes.\nSchwangerschaft/Geburt: unauffällig.\nEntwicklung: altersgerecht.\nSport: Turnen 1×/Woche."}
+    ],
+    anamneseDocs:[{icon:"👪", name:"Elternfragebogen (PDF)"}],
+    rezepte:[
+      {datum:"12.05.2026", verordnung:"6× KG", anzahl:6, rechnung:"", betrag:"", status:"offen",
+       termine:[["19.05.26","CM"],["02.06.26","CM"],["16.06.26","CM"]]}
+    ],
+    doku:[
+      {datum:"16.06.2026", quelle:"manuell", text:"Dritte Behandlung, Mutter anwesend. Übungsprogramm für zuhause mitgegeben und erklärt."}
+    ],
+    anlagen:{
+      "Anmeldung & Formulare":[
+        {icon:"📝", name:"Anmeldebogen"},
+        {icon:"👪", name:"Elternbogen"},
+        {icon:"✍️", name:"Einverständnis Behandlung Minderjährige"}
+      ]
+    }
+  }
+];
+
+const REITER = ["Stammdaten","Anamnese / Befund","Rezepte","Dokumentation","Anlagen"];
+let aktiverPatient = null;
+
+// ---------- Liste ----------
+function renderListe(filter=""){
+  const el = document.getElementById("liste");
+  const f = filter.trim().toLowerCase();
+  const treffer = patienten
+    .filter(p => !f || p.nachname.toLowerCase().startsWith(f))
+    .sort((a,b)=>a.nachname.localeCompare(b.nachname,"de"));
+  el.innerHTML = treffer.length ? treffer.map(p => `
+    <div class="p-card" onclick="zeigePatient(${p.id})">
+      <div class="initial">${p.nachname[0]}${p.vorname[0]}</div>
+      <div>
+        <div class="name">${p.nachname}, ${p.vorname}</div>
+        <div class="meta">geb. ${p.geb} · ${p.versicherung==="privat" ? "privat" : "gesetzlich ("+p.kasse+")"}${p.bezugspersonen ? " · Kind" : ""}</div>
+      </div>
+      <div class="pfeil">›</div>
+    </div>`).join("")
+    : `<div class="leer">Kein Patient mit „${filter}“ gefunden.</div>`;
+}
+function filtere(){ renderListe(document.getElementById("suche").value); }
+
+// ---------- Patientenansicht ----------
+function zeigePatient(id){
+  aktiverPatient = patienten.find(p=>p.id===id);
+  document.getElementById("ansichtListe").style.display="none";
+  document.getElementById("aktionenListe").style.display="none";
+  document.getElementById("ansichtPatient").style.display="block";
+  document.getElementById("btnZurueck").style.display="block";
+  document.getElementById("kopfTitel").textContent = aktiverPatient.nachname + ", " + aktiverPatient.vorname;
+  renderKopf(); renderReiter(0);
+  window.scrollTo(0,0);
+}
+function zeigeListe(){
+  document.getElementById("ansichtPatient").style.display="none";
+  document.getElementById("btnZurueck").style.display="none";
+  document.getElementById("ansichtListe").style.display="block";
+  document.getElementById("aktionenListe").style.display="block";
+  document.getElementById("kopfTitel").textContent="Patienten";
+}
+
+function renderKopf(){
+  const p = aktiverPatient;
+  document.getElementById("pKopf").innerHTML = `
+    <h2>${p.nachname}, ${p.vorname}</h2>
+    <div class="zeile">geb. ${p.geb} · ${p.geschlecht} · ${p.versicherung} (${p.kasse}) · ${p.gebuehr}</div>
+    ${p.telefon ? `<div class="zeile">📞 <a href="#" onclick="toast('Im MVP: ruft ${p.telefon} an');return false">${p.telefon}</a>
+      ${p.mobil ? " · 📱 <a href='#' onclick=\"toast('Im MVP: ruft "+p.mobil+" an');return false\">"+p.mobil+"</a>" : ""}</div>` : ""}
+    ${p.bezugspersonen ? `<div class="zeile">👪 ${p.bezugspersonen.map(b=>`${b.rolle}: ${b.name} · <a href="#" onclick="toast('Im MVP: ruft ${b.telefon} an');return false">${b.telefon}</a>`).join("&nbsp; | &nbsp;")}</div>` : ""}
+    ${p.risiko ? `<div class="risiko">⚠️ ${p.risiko}</div>` : ""}`;
+}
+
+function renderReiter(aktivIdx){
+  document.getElementById("reiterLeiste").innerHTML = REITER.map((r,i)=>
+    `<button class="${i===aktivIdx?'aktiv':''}" onclick="renderReiter(${i})">${r}</button>`).join("");
+  const panels = [renderStammdaten, renderAnamnese, renderRezepte, renderDoku, renderAnlagen];
+  document.getElementById("panels").innerHTML = panels[aktivIdx]();
+}
+
+function renderStammdaten(){
+  const p = aktiverPatient;
+  const feld = (k,w)=>`<div class="feld"><span class="k">${k}</span><span class="w">${w||"—"}</span></div>`;
+  return `<div class="karte">
+      ${feld("Adresse",p.adresse)}${feld("Telefon",p.telefon)}${feld("Mobil",p.mobil)}
+      ${feld("Geburtsdatum",p.geb)}${feld("Geschlecht",p.geschlecht)}
+    </div>
+    <div class="karte"><h3>Versicherung & Arzt</h3>
+      ${feld("Versicherung",p.versicherung)}${feld("Kasse",p.kasse)}${feld("Kassen-Nr.",p.kassenNr)}${feld("Versicherten-Nr.",p.versNr)}
+      ${feld("Gebühr",p.gebuehr)}${feld("Überweisender Arzt",p.arzt)}
+    </div>
+    ${p.bezugspersonen ? `<div class="karte"><h3>Bezugspersonen & Rechnungsempfänger</h3>
+      ${p.bezugspersonen.map(b=>feld(b.rolle, b.name+" · "+b.telefon)).join("")}
+      ${feld("Rechnungsempfänger", p.rechnungsempfaenger)}
+    </div>` : ""}
+    <div class="karte"><h3>Risikofaktoren / Unverträglichkeiten</h3>
+      <div style="font-size:15px">${p.risiko||"Keine erfasst."}</div></div>
+    <button class="mini-btn" onclick="toast('Im MVP: Stammdaten bearbeiten')">✎ Bearbeiten</button>`;
+}
+
+function renderAnamnese(){
+  const e = aktiverPatient.anamnese;
+  const docs = aktiverPatient.anamneseDocs || [];
+  return (e.length ? e.map(a=>`
+    <div class="karte"><div class="eintrag">
+      <div class="kopf"><strong>${a.typ}</strong> · ${a.datum}<span class="quelle">${a.quelle}</span></div>
+      <div class="text">${a.text}</div>
+    </div></div>`).join("") : `<div class="karte leer">Noch keine Anamnese erfasst.</div>`)
+    + (docs.length ? `<div class="anlagen-gruppe"><h4>Dokumente zur Anamnese</h4>
+        <div class="thumbs">${docs.map(a=>`
+          <div class="thumb" onclick="toast('Im MVP: öffnet ${a.name} in Großansicht')">
+            <span class="icon">${a.icon}</span><span>${a.name}</span>
+          </div>`).join("")}
+        </div></div>` : "")
+    + `<button class="mini-btn" onclick="toast('Im MVP: Textfeld — Paste aus Heidi-Mail, Formatierung bleibt erhalten')">+ Aus Heidi einfügen</button>
+       <button class="mini-btn" onclick="toast('Im MVP: PDF/Foto direkt zur Anamnese hochladen')">+ Dokument hinzufügen</button>`;
+}
+
+function renderRezepte(){
+  const rz = aktiverPatient.rezepte;
+  return (rz.length ? rz.map((r,i)=>{
+    const n = r.termine.length, voll = n >= r.anzahl;
+    return `<div class="karte">
+      <div class="rz-kopf" onclick="document.getElementById('rzd${i}').classList.toggle('offen')">
+        <div><div class="datum">Rezept vom ${r.datum}</div>
+             <div class="verordnung">${r.verordnung}</div></div>
+        <div class="zaehler ${voll?'voll':'offen'}">${n} / ${r.anzahl}</div>
+      </div>
+      <div class="balken"><div style="width:${Math.min(100, n/r.anzahl*100)}%"></div></div>
+      <div class="rz-detail" id="rzd${i}">
+        ${r.termine.map((t,j)=>`<div class="termin"><span class="nr">${j+1})</span><span>${t[0]}</span><span style="color:var(--grau)">${t[1]}</span></div>`).join("")}
+        <div class="rz-meta">
+          <span class="chip">Status: ${r.status}</span>
+          ${r.rechnung?`<span class="chip">Rg.: ${r.rechnung}</span>`:""}
+          ${r.betrag?`<span class="chip">Betrag: ${r.betrag}</span>`:""}
+          <span class="chip">📷 Rezeptfoto</span>
+        </div>
+        ${voll?"":`<button class="mini-btn" onclick="terminHinzu(${i});event.stopPropagation()">+ Behandlung heute eintragen</button>`}
+      </div>
+    </div>`;}).join("") : `<div class="karte leer">Kein Rezept erfasst.</div>`)
+    + `<button class="mini-btn" onclick="toast('Im MVP: Rezept anlegen — Datum, Verordnung, Anzahl, Foto')">+ Neues Rezept</button>`;
+}
+
+function terminHinzu(i){
+  const r = aktiverPatient.rezepte[i];
+  const d = new Date();
+  r.termine.push([d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"2-digit"}),"CM"]);
+  renderReiter(2);
+  document.getElementById('rzd'+i).classList.add('offen');
+  toast(`Behandlung ${r.termine.length} / ${r.anzahl} eingetragen`);
+}
+
+function renderDoku(){
+  const e = aktiverPatient.doku;
+  return (e.length ? `<div class="karte">` + e.map(d=>`
+    <div class="eintrag">
+      <div class="kopf">${d.datum}<span class="quelle">${d.quelle}</span></div>
+      <div class="text">${d.text}</div>
+    </div>`).join("") + `</div>` : `<div class="karte leer">Noch keine Verlaufsdokumentation.</div>`)
+    + `<button class="mini-btn" onclick="toast('Im MVP: Textfeld mit iOS-Diktat — einfach einsprechen')">+ Neuer Eintrag (tippen oder diktieren)</button>`;
+}
+
+function renderAnlagen(){
+  const gruppen = aktiverPatient.anlagen;
+  const keys = Object.keys(gruppen);
+  return (keys.length ? keys.map(g=>`
+    <div class="anlagen-gruppe"><h4>${g}</h4>
+      <div class="thumbs">${gruppen[g].map(a=>`
+        <div class="thumb" onclick="toast('Im MVP: öffnet ${a.name} in Großansicht')">
+          <span class="icon">${a.icon}</span><span>${a.name}</span>
+        </div>`).join("")}
+      </div>
+    </div>`).join("") : `<div class="karte leer">Keine Anlagen.</div>`)
+    + `<button class="mini-btn" onclick="toast('Im MVP: Kamera öffnet sich direkt — Foto wird der gewählten Kategorie zugeordnet')">📷 Foto aufnehmen / hochladen</button>`;
+}
+
+// ---------- Toast ----------
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("sichtbar");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("sichtbar"), 2600);
+}
+
+renderListe();
+</script>
+</body>
+</html>
