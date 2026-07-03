@@ -101,6 +101,8 @@
   .eintrag .kopf{font-size:13px; color:var(--grau); margin-bottom:4px;}
   .eintrag .quelle{background:var(--akzent-hell); color:var(--akzent); border-radius:6px;
        padding:1px 7px; font-size:12px; margin-left:6px;}
+  .eintrag .edit{float:right; background:none; border:none; color:var(--akzent);
+       font-size:15px; cursor:pointer; padding:0 2px;}
   .eintrag .text{font-size:15px; line-height:1.5; white-space:pre-line;}
 
   /* Anlagen */
@@ -148,8 +150,8 @@
 
   <div class="aktionen" id="aktionenListe">
     <div class="innen">
-      <button class="btn primaer" onclick="toast('Im MVP: Stammdatenmaske für neue Patienten')">+ Neuer Patient</button>
-      <button class="btn sekundaer" onclick="toast('Im MVP: Stammdaten minimal + Foto der Papierkarte')">+ Altkarte erfassen</button>
+      <button class="btn primaer" onclick="toast('Im MVP: Stammdatenmaske — leer ausfüllen ODER Website-Anmeldung als Text einfügen, Felder werden vorbefüllt')">+ Neuer Patient</button>
+      <button class="btn sekundaer" onclick="toast('Im MVP: Foto der Papierkarte UND/ODER GrandTotal-Notiz einfügen — Stammdaten werden aus dem Text vorbefüllt')">+ Altkarte erfassen</button>
     </div>
   </div>
 
@@ -337,6 +339,7 @@ function renderAnamnese(){
   const docs = aktiverPatient.anamneseDocs || [];
   return (e.length ? e.map(a=>`
     <div class="karte"><div class="eintrag">
+      <button class="edit" onclick="toast('Im MVP: ${a.typ} bearbeiten — Text ändern, ergänzen oder weiterdiktieren')">✎</button>
       <div class="kopf"><strong>${a.typ}</strong> · ${a.datum}<span class="quelle">${a.quelle}</span></div>
       <div class="text">${a.text}</div>
     </div></div>`).join("") : `<div class="karte leer">Noch keine Anamnese erfasst.</div>`)
@@ -346,7 +349,8 @@ function renderAnamnese(){
             <span class="icon">${a.icon}</span><span>${a.name}</span>
           </div>`).join("")}
         </div></div>` : "")
-    + `<button class="mini-btn" onclick="toast('Im MVP: Textfeld — Paste aus Heidi-Mail, Formatierung bleibt erhalten')">+ Aus Heidi einfügen</button>
+    + `<button class="mini-btn" onclick="toast('Im MVP: Textfeld mit iOS-Diktat — Anamnese oder Befund tippen, einfügen oder einsprechen')">+ Neuer Eintrag (tippen oder diktieren)</button>
+       <button class="mini-btn" onclick="toast('Im MVP: Textfeld — Paste aus Heidi-Mail, Formatierung bleibt erhalten')">+ Aus Heidi einfügen</button>
        <button class="mini-btn" onclick="toast('Im MVP: PDF/Foto direkt zur Anamnese hochladen')">+ Dokument hinzufügen</button>`;
 }
 
@@ -388,6 +392,7 @@ function renderDoku(){
   const e = aktiverPatient.doku;
   return (e.length ? `<div class="karte">` + e.map(d=>`
     <div class="eintrag">
+      <button class="edit" onclick="toast('Im MVP: Eintrag bearbeiten — Text ändern, ergänzen oder weiterdiktieren')">✎</button>
       <div class="kopf">${d.datum}<span class="quelle">${d.quelle}</span></div>
       <div class="text">${d.text}</div>
     </div>`).join("") + `</div>` : `<div class="karte leer">Noch keine Verlaufsdokumentation.</div>`)
