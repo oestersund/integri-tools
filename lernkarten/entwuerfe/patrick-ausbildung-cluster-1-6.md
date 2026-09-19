@@ -9,6 +9,8 @@ Ausgeschlossen (siehe Absprache): Patricks/Daniels persönliche Ausarbeitungen (
 
 Plausibilitätsprüfung durchgeführt: Karte „Elternvertretung" korrigiert (SGB VIII regelt das nicht bundeseinheitlich, Landesrecht entscheidet). Karte zum Freud-Zitat „lieben und arbeiten können" entfernt — Attribution unter Freud-Forscher:innen nicht eindeutig belegt, für ein Lernprodukt zu unsicher. Ein offener Punkt bleibt unverändert: ob „Transfer" eine reguläre sechste Phase des Handlungszyklus-Modells ist, konnte ich nicht sicher genug klären, daher bleibt es bei den 5 belegten Phasen.
 
+Cluster 3 erweitert um die sechs Diskriminierungsform-Kapitel der Broschüre „Kita gerecht" (Adultismus, Klassismus, Sexismus, Rassismus, Antisemitismus, Ableismus), Karten 56–63. Nummerierung nicht durchgehend fortlaufend (Cluster-Zugehörigkeit zählt, nicht die Reihenfolge der Vergabe).
+
 ---
 
 ## Cluster 1: Wahrnehmung, Ko-Konstruktion, Lernarrangements (LF1)
@@ -45,6 +47,14 @@ Plausibilitätsprüfung durchgeführt: Karte „Elternvertretung" korrigiert (SG
 | 18 | Was bedeutet „Othering"? | Ein „Wir" wird als Norm gesetzt, alles Abweichende wird zur „Abweichung" erklärt und abgewertet. | Wolter, B., a. a. O. |
 | 19 | Warum kann auch unbeabsichtigtes Verhalten diskriminierend sein? | Weil bei Diskriminierung die tatsächliche Wirkung zählt, nicht die Absicht der handelnden Person. | Wolter, B., a. a. O. |
 | 20 | Was bedeutet Intersektionalität im Diskriminierungskontext? | Diskriminierungsformen können sich bei einer Person überschneiden und gegenseitig verstärken — niemand ist auf ein einziges Identitätsmerkmal reduzierbar. | Wolter, B., a. a. O. |
+| 56 | Was ist Adultismus? | Das Machtungleichgewicht zwischen jungen Menschen und Erwachsenen: Erwachsene gehen aufgrund ihres Alters von größerer Kompetenz aus und setzen sich über die Meinungen von Kindern hinweg. | Ritz (2023), zitiert in Wolter, B. 2023 |
+| 57 | Was ist Klassismus? | Diskriminierung aufgrund von Klassenherkunft oder Klassenzugehörigkeit — zeigt sich z. B., wenn automatisch vorausgesetzt wird, dass sich alle Familien denselben Konsum leisten können. | Seeck (2020), zitiert in Wolter, B. 2023 |
+| 58 | Was ist Sexismus laut der Broschüre „Kita gerecht"? | Die Benachteiligung von als „weiblich" eingeordneten Menschen, Eigenschaften und Interessen gegenüber „männlichen" — z. B. wenn bei Mädchen das Aussehen, bei Jungen die Fähigkeiten kommentiert werden. | Wolter, B. 2023 |
+| 59 | Was unterscheidet Cis-, Hetero- und Endo-Sexismus? | Cis-Sexismus setzt Cisgeschlechtlichkeit als Norm (benachteiligt trans* und nicht-binäre Personen), Hetero-Sexismus setzt Heterosexualität als Norm, Endo-Sexismus setzt eindeutige Körpermerkmale als Norm (benachteiligt intergeschlechtliche Menschen). | Wolter, B. 2023 |
+| 60 | Was ist Rassismus laut der Broschüre „Kita gerecht"? | Keine Frage der Hautfarbe, sondern der Macht: die bewusste und unbewusste Ungleichbehandlung nicht-weißer Menschen auf zwischenmenschlicher, gesellschaftlicher und institutioneller Ebene. | Rouamba (2023), zitiert in Wolter, B. 2023 |
+| 61 | Was bedeutet die Abkürzung BIPoC? | Black, Indigenous, People of Color — politische Selbstbezeichnungen; „People of Color" wird im Deutschen nicht übersetzt. | Migrationsrat Berlin, zitiert in Wolter, B. 2023 |
+| 62 | Was ist Antisemitismus? | Diskriminierung und Feindschaft gegenüber Juden und Jüdinnen — in Deutschland historisch tief verankert und weiterhin ein aktuelles, kein rein historisches Thema. | Allgemein anerkannte Definition; Kontext Wolter, B. 2023 |
+| 63 | Was ist Ableismus? | Diskriminierung von Menschen mit Behinderung — äußert sich oft nicht in bewusster Entscheidung, sondern darin, dass ihre Bedürfnisse bei Planungen schlicht nicht mitgedacht werden. | Schumann (2023), zitiert in Wolter, B. 2023 |
 
 ## Cluster 4: Projektarbeit (Lernfeld-übergreifend)
 
