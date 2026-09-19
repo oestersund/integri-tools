@@ -7,6 +7,8 @@ Format je Karte: Frage | Antwort | Quelle
 
 Ausgeschlossen (siehe Absprache): Patricks/Daniels persönliche Ausarbeitungen (SMART-Ziele, Musikprojekt-Begründung) und alle drei Semesterplan-Dateien. Aus den Ko-Konstruktion- und Lernzettel-Dateien wurden nur die Sachfragen übernommen, Antworten unabhängig verfasst — keine Namen, keine Originalantworten der Schüler.
 
+Plausibilitätsprüfung durchgeführt: Karte „Elternvertretung" korrigiert (SGB VIII regelt das nicht bundeseinheitlich, Landesrecht entscheidet). Karte zum Freud-Zitat „lieben und arbeiten können" entfernt — Attribution unter Freud-Forscher:innen nicht eindeutig belegt, für ein Lernprodukt zu unsicher. Ein offener Punkt bleibt unverändert: ob „Transfer" eine reguläre sechste Phase des Handlungszyklus-Modells ist, konnte ich nicht sicher genug klären, daher bleibt es bei den 5 belegten Phasen.
+
 ---
 
 ## Cluster 1: Wahrnehmung, Ko-Konstruktion, Lernarrangements (LF1)
@@ -68,7 +70,6 @@ Ausgeschlossen (siehe Absprache): Patricks/Daniels persönliche Ausarbeitungen (
 | # | Frage | Antwort | Quelle |
 |---|---|---|---|
 | 35 | Wie definiert die WHO Gesundheit (1946)? | Als Zustand vollkommenen körperlichen, geistigen und sozialen Wohlbefindens — nicht nur als Abwesenheit von Krankheit. | WHO-Verfassung, 1946 |
-| 36 | Wie definierte Sigmund Freud Gesundheit? | Als die Fähigkeit, lieben und arbeiten zu können. | Freud (zugeschriebenes Zitat, Ausbildungsunterlagen) |
 | 37 | Was ist das Grundprinzip der Salutogenese nach Antonovsky? | Statt zu fragen, wie Krankheit entsteht (Pathogenese), fragt die Salutogenese, wie Gesundheit trotz Belastungen entsteht und erhalten bleibt. | Antonovsky, A. (1997): Salutogenese |
 | 38 | Was ist das Kohärenzgefühl (Sense of Coherence) nach Antonovsky? | Ein stabiles Vertrauen, das eigene Leben als verstehbar, handhabbar und sinnhaft zu erleben — es besteht aus genau diesen drei Komponenten. | Antonovsky 1997 |
 | 39 | Was sind „generalisierte Widerstandsressourcen" nach Antonovsky? | Innere und äußere Ressourcen (z. B. soziale Unterstützung, Wissen, finanzielle Mittel), die helfen, Gesundheit trotz Belastungen zu erhalten. | Antonovsky 1997 |
@@ -79,5 +80,5 @@ Ausgeschlossen (siehe Absprache): Patricks/Daniels persönliche Ausarbeitungen (
 | # | Frage | Antwort | Quelle |
 |---|---|---|---|
 | 41 | Was regelt § 1 Abs. 3 Nr. 3 SGB VIII? | Dass die Jugendhilfe Eltern und andere Erziehungsberechtigte bei der Erziehung berät und unterstützt. | § 1 Abs. 3 Nr. 3 SGB VIII (Fassung nach KJSG-Reform 2021) |
-| 42 | Darf eine Kita ohne gewählte Elternvertretung betrieben werden? | Nein — eine demokratisch gewählte Elternvertretung ist verpflichtend. | Ausbildungsunterlagen LF5, Bezug §§ 22 ff. SGB VIII |
+| 42 | Ist eine Elternvertretung in Kitas gesetzlich vorgeschrieben? | In den meisten Bundesländern ja — geregelt im jeweiligen Landes-Kita-Gesetz, nicht bundeseinheitlich im SGB VIII. Sie gilt als Sprachrohr der Elternschaft gegenüber der Einrichtung. | Ausbildungsunterlagen LF5; Regelung variiert nach Bundesland |
 | 43 | Was kennzeichnet die Weiterentwicklung einer Kita zum Familienzentrum? | Ein niederschwelliges Angebot, das Familien unabhängig von kulturellem Hintergrund und Lebenslage fördert und unterstützt. | Ausbildungsunterlagen LF5 |
