@@ -1,0 +1,360 @@
+<meta name="robots" content="noindex, nofollow">
+<title>Prüfbogen Persona 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EAE8E5; --surface:#FFFFFF; --primary:#24395E; --primary-hover:#16233B;
+  --ink:#1C2430; --muted:#4B5566; --on-primary:#FFFFFF;
+  --accent:#943527; --accent-hover:#7E2D21; --border:#DCE2E8;
+  --ok:#3F6B52; --warn:#8F5F0C;
+  --sage:color-mix(in srgb, #24395E 8%, #FFFFFF);
+  --accent-tint:color-mix(in srgb, #943527 10%, #FFFFFF);
+  --ok-tint:color-mix(in srgb, #3F6B52 12%, #FFFFFF);
+  --warn-tint:color-mix(in srgb, #8F5F0C 12%, #FFFFFF);
+  --shadow:0 1px 2px rgba(28,36,48,.04), 0 10px 26px rgba(28,36,48,.08);
+  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  --serif:'Newsreader','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#15191F; --surface:#1E242D; --primary:#9DB4DA; --primary-hover:#B8CBE8;
+    --ink:#E6E9EE; --muted:#A3ACB9; --on-primary:#10151C;
+    --accent:#E08A78; --accent-hover:#EBA293; --border:#333C48;
+    --ok:#8BC2A2; --warn:#E0B462;
+    --sage:#232C3A; --accent-tint:#35231F; --ok-tint:#1F3027; --warn-tint:#352B18;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#15191F; --surface:#1E242D; --primary:#9DB4DA; --primary-hover:#B8CBE8;
+  --ink:#E6E9EE; --muted:#A3ACB9; --on-primary:#10151C;
+  --accent:#E08A78; --accent-hover:#EBA293; --border:#333C48;
+  --ok:#8BC2A2; --warn:#E0B462;
+  --sage:#232C3A; --accent-tint:#35231F; --ok-tint:#1F3027; --warn-tint:#352B18;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:680px;margin-inline:auto;display:flex;flex-direction:column;gap:20px}
+header.kopf{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.marke{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--primary);letter-spacing:.01em}
+.marke span{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-left:10px}
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.status.ok::before{background:var(--ok)}
+.status.lokal::before{background:var(--warn)}
+.fortschritt{display:flex;flex-direction:column;gap:6px}
+.fortschritt .leiste{height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+.fortschritt .leiste i{display:block;height:100%;background:var(--primary);width:0;transition:width .25s ease}
+.fortschritt .text{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.karte{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:28px;display:flex;flex-direction:column;gap:20px}
+@media (max-width:480px){.karte{padding:20px}}
+.abschnitt{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.2;margin:0;text-wrap:balance}
+.aussage{font-family:var(--serif);font-size:24px;line-height:1.35;font-weight:500;margin:0;text-wrap:balance}
+@media (max-width:480px){.aussage{font-size:21px} h1{font-size:26px}}
+p{margin:0;max-width:62ch}
+.leise{color:var(--muted);font-size:14px}
+.szene{border-left:3px solid var(--border);padding-left:16px;font-family:var(--serif);font-size:17px;line-height:1.55;color:var(--ink)}
+.wahl{display:flex;border:1px solid var(--primary);border-radius:11px;overflow:hidden;width:max-content;max-width:100%}
+.wahl button{appearance:none;border:0;border-right:1px solid var(--primary);background:var(--surface);color:var(--primary);font:600 16px var(--sans);padding:12px 26px;cursor:pointer;min-height:48px}
+.wahl button:last-child{border-right:0}
+.wahl button:hover{background:var(--sage)}
+.wahl button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+@media (max-width:420px){.wahl{width:100%}.wahl button{flex:1;padding:12px 8px}}
+label.feld{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500;color:var(--muted)}
+textarea,input[type="number"]{font:16px/1.5 var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 12px;width:100%}
+textarea{min-height:88px;resize:vertical}
+textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.zahl{display:flex;align-items:center;gap:10px;max-width:260px}
+.zahl input{flex:1}
+.zahl .einheit{color:var(--muted);font-size:15px;white-space:nowrap}
+.pflicht{color:var(--accent);font-size:13px}
+.navi{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{appearance:none;font:600 15px var(--sans);border-radius:11px;padding:11px 20px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink);min-height:44px}
+.btn:hover{background:var(--sage)}
+.btn.vor{background:var(--accent-tint);color:var(--accent);border-color:color-mix(in srgb, var(--accent) 30%, var(--surface))}
+.btn.vor:hover{background:color-mix(in srgb, var(--accent) 20%, var(--surface))}
+.btn.cta{background:var(--accent);color:#FFFFFF;border-color:var(--accent)}
+.btn.cta:hover{background:var(--accent-hover)}
+:root[data-theme="dark"] .btn.cta{color:#1A1111}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.cta{color:#1A1111}}
+.btn:disabled{opacity:.45;cursor:default}
+.uebersicht{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border)}
+.uebersicht button{appearance:none;background:none;border:0;border-bottom:1px solid var(--border);text-align:left;display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:baseline;padding:10px 4px;font:15px/1.4 var(--sans);color:var(--ink);cursor:pointer}
+.uebersicht button:hover{background:var(--sage)}
+.uebersicht .nr{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.uebersicht .kurz{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.chip{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;white-space:nowrap}
+.chip.ja{background:var(--ok-tint);color:var(--ok)}
+.chip.nein{background:var(--accent-tint);color:var(--accent)}
+.chip.anders{background:var(--warn-tint);color:var(--warn)}
+.chip.leer{background:var(--sage);color:var(--muted)}
+.chip.wert{background:var(--sage);color:var(--primary)}
+.hinweis{background:var(--sage);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--ink)}
+.kopie{font:13px/1.5 ui-monospace,Menlo,monospace;min-height:160px}
+.fertig-marke{font-family:var(--serif);font-size:22px;color:var(--ok)}
+@media (prefers-reduced-motion:reduce){.fortschritt .leiste i{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="kopf">
+    <div class="marke">Kartesa<span>Prüfbogen Persona 1</span></div>
+    <div class="status" id="status" role="status">Wird verbunden …</div>
+  </header>
+  <div class="fortschritt" id="fortschritt" hidden>
+    <div class="leiste"><i id="balken"></i></div>
+    <div class="text"><span id="schrittText"></span><span id="abschnittText"></span></div>
+  </div>
+  <main class="karte" id="karte" aria-live="polite"></main>
+</div>
+
+<script>
+const SZENE = "Auf dem Tisch liegen drei Karteikarten, der Laptop zeigt den Kalender der Woche. Für jede Rechnung öffnet sie den Termin, wechselt in die Abrechnung, sucht den Patienten noch einmal und klickt sich durch den Katalog, rund zehn Minuten je Rechnung. Bei einer Patientin fällt ihr ein, dass der Laborbericht noch im Postfach liegt. Die Notizen vom Donnerstag hat sie sich vorgenommen und nicht geschrieben. Eine Kollegin hat im Qualitätszirkel erzählt, sie spreche ihre Notizen inzwischen ein. Aber wohin gehen die Aufnahmen?";
+
+const FRAGEN = [
+  {id:"C0", art:"text", abschnitt:"Zum Einstieg", text:"An welche Kolleginnen denkst du beim Beantworten? Wie viele sind es ungefähr, und wie arbeiten sie?", hilfe:"Ein paar Stichworte reichen. Bitte keine Namen."},
+  {id:"C1", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Die meisten Kolleginnen führen ihre Praxis allein, ohne Mitarbeitende, und machen Termine und Rechnungen selbst."},
+  {id:"C2", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Viele nutzen eine Praxissoftware für Termine und Rechnungen, aber kaum deren Dokumentationsteil."},
+  {id:"C3", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Mischformen sind häufig: Software für die Rechnung, die Akte auf Papier, dazu Mails und Sprachnotizen."},
+  {id:"C4", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Der stärkste Grund, etwas Neues zu suchen, ist, dass die heutige Software umständlich ist und Zeit kostet. Das wiegt schwerer als verstreute Unterlagen, schwerer als Sprache und KI und schwerer als der Preis."},
+  {id:"C5", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Viele Kolleginnen verbinden KI noch gar nicht mit ihrer Patientenakte."},
+  {id:"C6", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Wer Transkription kennt, zum Beispiel Heidi, hat Bedenken, wo die Daten landen."},
+  {id:"C7", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Eine neue Software würden Kolleginnen vor allem auf Empfehlung aus dem Kollegenkreis ausprobieren."},
+  {id:"C8", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Ein Angebot über den Berufsverband, etwa ein Mitgliedercode beim FDH, würde Vertrauen schaffen."},
+  {id:"C9", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Heilpraktikerschulen sind ein Ort, an dem Kolleginnen über Praxissoftware sprechen."},
+  {id:"C10", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Vor dem Kauf wollen Kolleginnen lieber ein kostenloses Gespräch mit Vorführung, als allein etwas auszuprobieren."},
+  {id:"C11", art:"urteil", abschnitt:"Was sie zögern lässt", text:"Der größte Einwand ist: „Dann habe ich zwei Programme.“ Erst danach kommen Datenumzug, Datenschutz, Vertrauen in den Anbieter, Einarbeitung und Preis."},
+  {id:"C12", art:"urteil", abschnitt:"Was sie zögern lässt", text:"Kolleginnen beurteilen eine neue Software an dem, was ihre alte kann. Den Nutzen einer anders gebauten Akte können sie sich schwer vorstellen."},
+  {id:"C13", art:"urteil", abschnitt:"Was sie zögern lässt", text:"„Ich gebe jeden Versand selbst frei“ und „Absender ist meine Praxisadresse“ sind Bedingungen. Ohne sie kauft niemand."},
+  {id:"C14", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Kolleginnen möchten auf einer Website mit „Sie“ angesprochen werden, aber im Ton einer Kollegin."},
+  {id:"C15", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Die Wörter stimmen: Patientin, Karteikarte, Akte, Behandlung, Anamnese. Begriffe wie „Workflow“ oder „KI-Assistent“ schrecken eher ab."},
+  {id:"C16", art:"urteil", abschnitt:"Die Szene", text:"Diese Szene könnte von vielen Kolleginnen stammen.", szene:true, hilfe:"Was fehlt, was stimmt nicht?"},
+  {id:"C17", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Was zahlen Kolleginnen heute im Monat für ihre Praxissoftware, einschließlich Zusatzdiensten wie Unterschrift oder Formularen?"},
+  {id:"C18", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Bei welchem Monatspreis wäre Kartesa so günstig, dass Kolleginnen an der Qualität zweifeln?", hilfe:"Gemeint ist das Paket aus Akte, Terminen und Rechnungen."},
+  {id:"C19a", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre günstig?"},
+  {id:"C19b", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre teuer, aber noch vertretbar?"},
+  {id:"C20", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Ab welchem Monatspreis käme Kartesa gar nicht mehr in Frage?"},
+  {id:"C21", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"Wochen", text:"Wie lang muss eine kostenlose Testphase sein, damit eine Kollegin sich einen echten Eindruck machen kann?"},
+  {id:"C22", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"% Rabatt", text:"Wie hoch muss ein Rabatt für Verbandsmitglieder sein, damit er als echtes Angebot wirkt?"},
+  {id:"C23", art:"text", abschnitt:"Zum Schluss", text:"Gibt es eine Gruppe von Kolleginnen, die aus einem ganz anderen Grund kaufen würde als die Heilpraktikerin in der Szene?", hilfe:"Zum Beispiel wegen der Abrechnung, weil sie neu gründen oder weil sie die Akte mit anderen teilen. Wer, und warum?"}
+];
+
+const s = {antworten:{}, schritt:-1, fertig:false};
+let db = null, docRef = null, verbunden = false, speichernAktiv = false, speichernNochmal = false, lokalerSchluessel = "kartesa-pruefbogen-p1";
+const $ = id => document.getElementById(id);
+const karte = $("karte");
+
+function lokalLesen(){ try{ const r = localStorage.getItem(lokalerSchluessel); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function lokalSchreiben(){ try{ localStorage.setItem(lokalerSchluessel, JSON.stringify({antworten:s.antworten, fertig:s.fertig})); }catch(e){} }
+
+function setzeStatus(art, text){ const el=$("status"); el.className="status "+art; el.textContent=text; }
+
+async function speichern(){
+  lokalSchreiben();
+  if(!docRef){ return; }
+  if(speichernAktiv){ speichernNochmal = true; return; }
+  speichernAktiv = true;
+  try{
+    await docRef.set({antworten:s.antworten, fertig:s.fertig, stand:new Date().toISOString(), bogen:"IV-149 Persona 1 v0.9"});
+    setzeStatus("ok","Gespeichert");
+  }catch(e){
+    setzeStatus("lokal","Antworten bleiben auf diesem Gerät");
+    docRef = null;
+  }
+  speichernAktiv = false;
+  if(speichernNochmal){ speichernNochmal = false; speichern(); }
+}
+
+function beantwortet(f){
+  const a = s.antworten[f.id];
+  if(!a) return false;
+  if(f.art==="urteil") return !!a.wahl && (a.wahl!=="Anders" || (a.notiz||"").trim().length>0);
+  if(f.art==="zahl") return a.wert!=null && a.wert!=="";
+  return (a.notiz||"").trim().length>0;
+}
+
+function fortschritt(){
+  const box=$("fortschritt");
+  if(s.schritt<0 || s.schritt>=FRAGEN.length){ box.hidden = s.schritt<0; }
+  else box.hidden=false;
+  const erledigt = FRAGEN.filter(beantwortet).length;
+  $("balken").style.width = (erledigt/FRAGEN.length*100)+"%";
+  if(s.schritt>=0 && s.schritt<FRAGEN.length){
+    $("schrittText").textContent = "Frage "+(s.schritt+1)+" von "+FRAGEN.length;
+    $("abschnittText").textContent = erledigt+" beantwortet";
+  } else {
+    $("schrittText").textContent = "Übersicht";
+    $("abschnittText").textContent = erledigt+" von "+FRAGEN.length+" beantwortet";
+  }
+}
+
+function el(tag, attrs, ...kinder){
+  const e=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k==="class") e.className=v; else if(k==="text") e.textContent=v;
+    else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v);
+  }
+  for(const k of kinder){ if(k!=null) e.append(k); }
+  return e;
+}
+
+function zeigeStart(){
+  s.schritt=-1; fortschritt();
+  karte.replaceChildren(
+    el("div",{class:"abschnitt",text:"Für Christiane"}),
+    el("h1",{text:"Stimmt unser Bild von deinen Kolleginnen?"}),
+    el("p",{text:"Wir haben für die neue Kartesa-Website beschrieben, wie eine typische Heilpraktikerin arbeitet, was sie stört und was sie zögern lässt. Du kennst viele Kolleginnen. Bitte sag uns zu jeder Aussage, ob sie stimmt."}),
+    el("p",{text:"Es gibt 25 kurze Fragen, das dauert etwa 20 Minuten. Bei den Aussagen wählst du Ja, Nein oder Anders und schreibst bei Bedarf einen Satz dazu. Am Ende kommen ein paar Fragen zum Preis."}),
+    el("div",{class:"hinweis",text: docRef
+      ? "Deine Antworten werden nach jeder Frage gespeichert. Du kannst jederzeit aufhören und später weitermachen. Bitte schreib keine Namen von Patientinnen oder Kolleginnen hinein."
+      : "Deine Antworten bleiben auf diesem Gerät und in diesem Browser. Du kannst aufhören und später hier weitermachen. Am Ende kopierst du alle Antworten mit einem Knopf und schickst sie Tilman per Mail oder Nachricht. Bitte schreib keine Namen von Patientinnen oder Kolleginnen hinein."}),
+    el("div",{class:"navi"}, el("span"), el("button",{class:"btn cta",type:"button",id:"startBtn",text: FRAGEN.some(beantwortet) ? "Weitermachen" : "Los geht’s", onclick:()=>{
+      const offen = FRAGEN.findIndex(f=>!beantwortet(f));
+      zeigeFrage(offen<0 ? 0 : offen);
+    }}))
+  );
+}
+
+function zeigeFrage(i){
+  s.schritt=i; fortschritt();
+  const f=FRAGEN[i];
+  const a = s.antworten[f.id] || (s.antworten[f.id]={});
+  const teile=[ el("div",{class:"abschnitt",text:f.abschnitt}) ];
+  if(f.szene){ teile.push(el("p",{class:"leise",text:"Sonntagabend bei einer Heilpraktikerin:"}), el("div",{class:"szene",text:SZENE})); }
+  teile.push(el("p",{class:"aussage",id:"aussage",text:f.text}));
+  if(f.hilfe && f.art!=="urteil") teile.push(el("p",{class:"leise",text:f.hilfe}));
+
+  let notiz;
+  const pflichtHinweis = el("span",{class:"pflicht",text:"Bitte schreib kurz dazu, wie es anders ist."});
+  pflichtHinweis.hidden = true;
+
+  if(f.art==="urteil"){
+    const gruppe=el("div",{class:"wahl",role:"group","aria-labelledby":"aussage"});
+    for(const w of ["Ja","Nein","Anders"]){
+      const b=el("button",{type:"button","aria-pressed":String(a.wahl===w),text:w,onclick:()=>{
+        a.wahl=w; for(const x of gruppe.children) x.setAttribute("aria-pressed",String(x.textContent===w));
+        if(!f.hilfe) notizLabel.firstChild.textContent = w==="Ja" ? "Anmerkung (freiwillig)" : w==="Nein" ? "Was stimmt nicht? (freiwillig)" : "Wie ist es stattdessen?";
+        pruefe(); speichern();
+      }});
+      gruppe.append(b);
+    }
+    teile.push(gruppe);
+  }
+  if(f.art==="zahl"){
+    const inp=el("input",{type:"number",id:"wert-"+f.id,inputmode:"decimal",min:"0",step:"any"});
+    if(a.wert!=null) inp.value=a.wert;
+    inp.addEventListener("input",()=>{ a.wert = inp.value==="" ? null : Number(inp.value); pruefe(); });
+    inp.addEventListener("change",speichern);
+    teile.push(el("label",{class:"feld",for:"wert-"+f.id}, "Betrag", el("div",{class:"zahl"}, inp, el("span",{class:"einheit",text:f.einheit}))));
+  }
+  notiz=el("textarea",{id:"notiz-"+f.id,rows:"3"});
+  notiz.value=a.notiz||"";
+  notiz.addEventListener("input",()=>{ a.notiz=notiz.value; pruefe(); });
+  notiz.addEventListener("change",speichern);
+  const notizText = f.art==="text" ? "Deine Antwort" : f.art==="zahl" ? "Begründung oder Spanne (freiwillig)" : (f.hilfe || (a.wahl==="Anders" ? "Wie ist es stattdessen?" : "Anmerkung (freiwillig)"));
+  const notizLabel=el("label",{class:"feld",for:"notiz-"+f.id}, notizText, notiz);
+  teile.push(notizLabel, pflichtHinweis);
+
+  const zurueck=el("button",{class:"btn",type:"button",text:"Zurück",onclick:()=>{ speichern(); i===0 ? zeigeStart() : zeigeFrage(i-1); }});
+  const weiter=el("button",{class:"btn vor",type:"button",id:"weiterBtn",text: i===FRAGEN.length-1 ? "Zur Übersicht" : "Weiter",onclick:()=>{ speichern(); i===FRAGEN.length-1 ? zeigeUebersicht() : zeigeFrage(i+1); }});
+  const auslassen=el("button",{class:"btn",type:"button",text:"Überspringen",onclick:()=>{ speichern(); i===FRAGEN.length-1 ? zeigeUebersicht() : zeigeFrage(i+1); }});
+  teile.push(el("div",{class:"navi"}, zurueck, el("div",{style:"display:flex;gap:10px;flex-wrap:wrap"}, auslassen, weiter)));
+  karte.replaceChildren(...teile);
+
+  function pruefe(){
+    const anders = f.art==="urteil" && a.wahl==="Anders" && !(a.notiz||"").trim();
+    pflichtHinweis.hidden = !anders;
+    weiter.disabled = !beantwortet(f);
+    auslassen.hidden = beantwortet(f) || anders;
+    fortschritt();
+  }
+  pruefe();
+  (f.art==="zahl" ? karte.querySelector("input") : f.art==="text" ? notiz : karte.querySelector(".wahl button"))?.focus({preventScroll:true});
+}
+
+function chipFuer(f){
+  const a=s.antworten[f.id]||{};
+  if(f.art==="urteil" && a.wahl) return el("span",{class:"chip "+a.wahl.toLowerCase(),text:a.wahl});
+  if(f.art==="zahl" && a.wert!=null && a.wert!=="") return el("span",{class:"chip wert",text:a.wert+" "+f.einheit});
+  if(f.art==="text" && (a.notiz||"").trim()) return el("span",{class:"chip ja",text:"beantwortet"});
+  return el("span",{class:"chip leer",text:"offen"});
+}
+
+function alsText(){
+  const z=["Prüfbogen Persona 1 (IV-149), Stand "+new Date().toLocaleString("de-DE"),""];
+  for(const f of FRAGEN){
+    const a=s.antworten[f.id]||{};
+    let w = f.art==="urteil" ? (a.wahl||"offen") : f.art==="zahl" ? (a.wert!=null&&a.wert!=="" ? a.wert+" "+f.einheit : "offen") : "";
+    z.push(f.id+" · "+f.text);
+    if(w) z.push("   Antwort: "+w);
+    if((a.notiz||"").trim()) z.push("   Notiz: "+a.notiz.trim());
+    z.push("");
+  }
+  return z.join("\n");
+}
+
+function zeigeUebersicht(){
+  s.schritt=FRAGEN.length; fortschritt();
+  const offen=FRAGEN.filter(f=>!beantwortet(f)).length;
+  const liste=el("div",{class:"uebersicht"});
+  FRAGEN.forEach((f,i)=>liste.append(el("button",{type:"button",onclick:()=>zeigeFrage(i)},
+    el("span",{class:"nr",text:f.id}), el("span",{class:"kurz",text:f.text}), chipFuer(f))));
+  const kopieFeld=el("textarea",{class:"kopie",id:"kopie",readonly:"",rows:"8"}); kopieFeld.value=alsText();
+  const kopierHinweis=el("span",{class:"leise",id:"kopierHinweis"});
+  const kopierKnopf=el("button",{class: docRef ? "btn" : "btn cta",type:"button",text:"Antworten kopieren",onclick:async()=>{
+      try{ await navigator.clipboard.writeText(kopieFeld.value); kopierHinweis.textContent="Kopiert. Jetzt in eine Mail oder Nachricht an Tilman einfügen."; }
+      catch(e){ kopieFeld.focus(); kopieFeld.select(); kopierHinweis.textContent="Der Text ist markiert. Kopiere ihn jetzt und füge ihn in eine Mail oder Nachricht an Tilman ein."; }
+      if(!docRef){ s.fertig=true; lokalSchreiben(); }
+    }});
+  const teile=[
+    el("div",{class:"abschnitt",text:"Übersicht"}),
+    (docRef && s.fertig) ? el("p",{class:"fertig-marke",text:"Danke, Christiane. Deine Antworten sind angekommen."}) : el("h1",{text: offen ? "Fast fertig" : "Alles beantwortet"}),
+    el("p",{text: offen ? offen+" Fragen sind noch offen. Tipp auf eine Zeile, um sie zu beantworten oder etwas zu ändern." : (docRef ? "Tipp auf eine Zeile, wenn du noch etwas ändern möchtest. Sonst schick den Bogen ab." : "Tipp auf eine Zeile, wenn du noch etwas ändern möchtest. Sonst kopiere deine Antworten unten und schick sie Tilman.")}),
+    liste,
+    el("div",{class:"navi"},
+      el("button",{class:"btn",type:"button",text:"Zurück zur letzten Frage",onclick:()=>zeigeFrage(FRAGEN.length-1)}),
+      docRef ? el("button",{class:"btn cta",type:"button",id:"abschickenBtn",text: s.fertig ? "Erneut abschicken" : "Bogen abschicken",onclick:async()=>{ s.fertig=true; await speichern(); zeigeUebersicht(); }}) : null)
+  ];
+  if(!docRef){
+    teile.push(el("div",{class:"hinweis",text:"So kommen deine Antworten zu Tilman: Tipp auf „Antworten kopieren“ und füge den Text in eine Mail oder eine Nachricht an ihn ein."}));
+  }
+  teile.push(el("label",{class:"feld",for:"kopie"},"Alle Antworten als Text", kopieFeld),
+    el("div",{class:"navi"}, kopierHinweis, kopierKnopf));
+  karte.replaceChildren(...teile);
+}
+
+async function verbinden(){
+  const lokal=lokalLesen();
+  if(lokal){ Object.assign(s.antworten, lokal.antworten||{}); s.fertig=!!lokal.fertig; }
+  zeigeStart();
+  try{
+    db = await window.claude?.use?.("db");
+    const user = await window.claude?.use?.("user");
+    const uid = user ? await user.id() : null;
+    if(db && uid){
+      docRef = db.doc("antworten/"+uid);
+      const snap = await docRef.get();
+      if(snap.exists){
+        const d = snap.data();
+        Object.assign(s.antworten, d.antworten||{});
+        s.fertig = !!d.fertig;
+      }
+      setzeStatus("ok", snap.exists ? "Verbunden, Antworten geladen" : "Verbunden");
+      if(s.schritt<0) zeigeStart();
+    } else {
+      setzeStatus("lokal","Antworten bleiben auf diesem Gerät");
+      if(s.schritt<0) zeigeStart();
+    }
+  }catch(e){
+    docRef=null;
+    setzeStatus("lokal","Antworten bleiben auf diesem Gerät");
+    if(s.schritt<0) zeigeStart();
+  }
+}
+verbinden();
+</script>
