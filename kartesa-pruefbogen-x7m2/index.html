@@ -129,20 +129,25 @@ const SZENE = "Auf dem Tisch liegen drei Karteikarten, der Laptop zeigt den Kale
 
 const FRAGEN = [
   // A · Gibt es sie?
-  {id:"W1", art:"text", abschnitt:"Gibt es sie?", text:"Kennst du Kolleginnen, die eine Praxissoftware für Termine und Rechnungen nutzen, bei denen die Dokumentation aber liegen bleibt oder auf Papier läuft? Woran erkennst du sie?", hilfe:"Ein paar Stichworte reichen. Wenn du keine kennst, schreib das. Dann stimmt unser Bild nicht."},
+  {id:"W1", art:"text", abschnitt:"Gibt es sie?", text:"Welchen Kolleginnen würde Kartesa am meisten helfen? Woran erkennst du sie?", hilfe:"Egal, ob sie heute mit Papier arbeiten, mit einer Praxissoftware oder mit beidem. Ein paar Stichworte reichen, bitte keine Namen."},
   {id:"W2", art:"auswahl", abschnitt:"Gibt es sie?", text:"Wie viele deiner Kolleginnen gehören ungefähr zu dieser Gruppe?", optionen:["Fast keine","Etwa ein Viertel","Etwa die Hälfte","Die meisten"]},
   {id:"W3", art:"urteil", abschnitt:"Gibt es sie?", text:"Sie führt ihre Praxis allein, ohne Mitarbeitende, und macht Termine und Rechnungen selbst."},
-  {id:"W4", art:"urteil", abschnitt:"Gibt es sie?", text:"Ihre Akte ist ein Mix: Software für die Rechnung, dazu Karteikarte, Mails, Laborberichte und Notizen."},
+  {id:"W4", art:"rang", abschnitt:"Gibt es sie?", text:"Wie arbeiten diese Kolleginnen heute? Was am häufigsten vorkommt, nach oben.", optionen:[
+    "Alles auf Papier, höchstens ein Terminkalender am Computer",
+    "Praxissoftware für Termine und Rechnungen, die Akte auf Papier oder verstreut",
+    "Praxissoftware für fast alles, aber unzufrieden damit",
+    "Ein Mix aus Papier, Mails, Laborberichten und Notizen ohne feste Ordnung"]},
   // B · Pains
   {id:"P1", art:"rang", abschnitt:"Was sie drückt", text:"Was ärgert sie am meisten? Bring die Punkte in ihre Reihenfolge, das Schlimmste nach oben.", optionen:[
     "Die Dokumentation bleibt liegen, sie schreibt abends oder am Wochenende nach",
     "Unterlagen liegen verstreut: Papier, Mail, Laborbericht, Mappe",
     "Rechnungen schreiben dauert lange, manche werden vergessen",
-    "Die Software ist umständlich: viel bezahlt, wenig genutzt",
+    "Ihre Werkzeuge sind umständlich oder veraltet, ob Software oder Papier",
     "Unsicherheit beim Datenschutz, etwa beim Versand oder bei KI"]},
   {id:"P2", art:"text", abschnitt:"Was sie drückt", text:"Was sagt sie wörtlich, wenn sie über ihre Verwaltung oder Dokumentation klagt?", hilfe:"Gern in ihren eigenen Worten, auch ein halber Satz hilft. Genau diese Sätze brauchen wir für die Website."},
-  {id:"P3", art:"urteil", abschnitt:"Was sie drückt", text:"Dass die Dokumentation liegen bleibt, hält sie für eine Frage ihrer eigenen Disziplin, nicht der Software."},
+  {id:"P3", art:"urteil", abschnitt:"Was sie drückt", text:"Dass die Dokumentation liegen bleibt, hält sie für eine Frage ihrer eigenen Disziplin, nicht ihrer Werkzeuge."},
   {id:"P4", art:"text", abschnitt:"Was sie drückt", text:"Was hat sie schon versucht, um es besser zu machen, und woran ist es gescheitert?", hilfe:"Zum Beispiel ein anderes Programm, Diktiergerät, feste Schreibzeiten, eine Hilfe fürs Büro."},
+  {id:"P5", art:"text", abschnitt:"Was sie drückt", text:"Drückt eine Kollegin ohne Praxissoftware etwas anderes als eine, die mit ihrer Software unzufrieden ist? Was?"},
   // C · Gains und Transformation
   {id:"G1", art:"text", abschnitt:"Wohin sie will", text:"Stell dir vor, ein halbes Jahr nach dem Wechsel läuft alles gut. Was ist dann an ihrem Praxistag anders? Was erzählt sie einer Kollegin?"},
   {id:"G2", art:"rang", abschnitt:"Wohin sie will", text:"Was wäre ihr am meisten wert? Das Wichtigste nach oben.", optionen:[
@@ -161,14 +166,15 @@ const FRAGEN = [
     "Sie vergleicht schon konkrete Programme"]},
   {id:"K2", art:"urteil", abschnitt:"Was sie schon weiß", text:"Sie verbindet KI noch gar nicht mit ihrer Patientenakte."},
   {id:"K3", art:"urteil", abschnitt:"Was sie schon weiß", text:"Wenn sie Transkription kennt, zum Beispiel Heidi, hat sie Bedenken, wo die Daten landen."},
-  {id:"K4", art:"urteil", abschnitt:"Was sie schon weiß", text:"Sie beurteilt eine neue Software an dem, was ihre alte kann. Den Nutzen einer anders gebauten Akte kann sie sich schwer vorstellen."},
+  {id:"K4", art:"urteil", abschnitt:"Was sie schon weiß", text:"Sie beurteilt eine neue Software an dem, was sie heute kennt, ihrem Programm oder ihrer Karteikarte. Den Nutzen einer anders gebauten Akte kann sie sich schwer vorstellen."},
   // E · Entscheidung
   {id:"E1", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Den Anstoß, etwas Neues auszuprobieren, gibt vor allem eine Empfehlung aus dem Kollegenkreis."},
   {id:"E2", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Ein Angebot über den Berufsverband, etwa ein Mitgliedercode beim FDH, würde ihr Vertrauen geben."},
   {id:"E3", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Vor dem Kauf will sie lieber ein kostenloses Gespräch mit Vorführung, als allein etwas auszuprobieren."},
   {id:"E4", art:"rang", abschnitt:"Was sie zögern lässt", text:"Was hält sie am ehesten zurück? Den stärksten Einwand nach oben.", optionen:[
-    "„Dann habe ich zwei Programme.“",
-    "Der Umzug der Daten aus dem alten Programm",
+    "„Dann habe ich zwei Programme“ (wenn sie schon eine Software hat)",
+    "Der Umzug der Daten, aus dem alten Programm oder vom Papier",
+    "Sie traut sich den Schritt ins Digitale nicht zu",
     "Datenschutz bei Sprache und KI",
     "Vertrauen in einen kleinen, neuen Anbieter",
     "Einarbeitung und Einrichtung",
@@ -178,9 +184,9 @@ const FRAGEN = [
   // F · Sprache und Szene
   {id:"S1", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Sie möchte auf einer Website mit „Sie“ angesprochen werden, aber im Ton einer Kollegin."},
   {id:"S2", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Ihre Wörter sind Patientin, Karteikarte, Akte, Behandlung, Anamnese. Begriffe wie „Workflow“ oder „KI-Assistent“ schrecken sie eher ab."},
-  {id:"S3", art:"urteil", abschnitt:"Die Szene", text:"So einen Sonntagabend kennt sie.", szene:true, hilfe:"Was fehlt, was stimmt nicht?"},
+  {id:"S3", art:"urteil", abschnitt:"Die Szene", text:"So einen Sonntagabend kennt sie.", szene:true, hilfe:"Was fehlt, was stimmt nicht? Die Szene zeigt eine Kollegin mit Praxissoftware. Wie sähe der Abend bei einer Kollegin ohne Software aus?"},
   // G · Preis
-  {id:"C17", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Was zahlt sie heute im Monat für ihre Praxissoftware, einschließlich Zusatzdiensten wie Unterschrift oder Formularen?"},
+  {id:"C17", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Was zahlt sie heute im Monat für ihre Praxissoftware, einschließlich Zusatzdiensten wie Unterschrift oder Formularen?", hilfe:"Ohne Software: 0 eintragen und dazuschreiben, was sie sonst für Verwaltung ausgibt."},
   {id:"C18", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Bei welchem Monatspreis wäre Kartesa so günstig, dass sie an der Qualität zweifelt?", hilfe:"Gemeint ist das Paket aus Akte, Terminen und Rechnungen."},
   {id:"C19a", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre für sie günstig?"},
   {id:"C19b", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre teuer, aber noch vertretbar?"},
@@ -259,8 +265,8 @@ function zeigeStart(){
   karte.replaceChildren(
     el("div",{class:"abschnitt",text:"Für Christiane"}),
     el("h1",{text:"Wer ist unsere Wunschkundin, und gibt es sie wirklich?"}),
-    el("p",{text:"Für die neue Kartesa-Website beschreiben wir die Kollegin, der Kartesa am meisten hilft: Sie nutzt eine Praxissoftware für Termine und Rechnungen, aber die Dokumentation bleibt liegen oder läuft auf Papier. Wir wollen wissen, was sie drückt, wohin sie will, was sie schon weiß und was sie zögern lässt."}),
-    el("p",{text:"Denk bei allen Fragen an Kolleginnen, die so arbeiten, nicht an alle, die du kennst. Mit „sie“ ist immer diese Kollegin gemeint. Wenn etwas auf keine zutrifft, die du kennst, ist das eine wichtige Antwort."}),
+    el("p",{text:"Für die neue Kartesa-Website beschreiben wir die Kollegin, der Kartesa am meisten hilft: Dokumentation und Verwaltung kosten sie zu viel Zeit und Kraft. Heute arbeitet sie vielleicht auf Papier, vielleicht mit einer Praxissoftware, mit der sie unzufrieden ist, oder mit einem Mix aus beidem. Wir wollen wissen, was sie drückt, wohin sie will, was sie schon weiß und was sie zögern lässt."}),
+    el("p",{text:"Denk bei allen Fragen an diese Kolleginnen, nicht an alle, die du kennst. Mit „sie“ ist immer diese Kollegin gemeint. Wenn etwas auf keine zutrifft, die du kennst, ist das eine wichtige Antwort."}),
     el("p",{text:"Es sind "+FRAGEN.length+" Fragen, das dauert etwa 30 Minuten. Bei Aussagen wählst du Ja, Nein oder Anders, manchmal bringst du Punkte in eine Reihenfolge oder schreibst ein paar Worte. Am Ende kommen Fragen zum Preis."}),
     el("div",{class:"hinweis",text: docRef
       ? "Deine Antworten werden nach jeder Frage gespeichert. Du kannst jederzeit aufhören und später weitermachen. Bitte schreib keine Namen von Patientinnen oder Kolleginnen hinein."
