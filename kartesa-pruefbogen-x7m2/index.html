@@ -1,5 +1,5 @@
 <meta name="robots" content="noindex, nofollow">
-<title>Prüfbogen Persona 1</title>
+<title>Prüfbogen Wunschkundin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&display=swap">
@@ -97,13 +97,24 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--primary)
 .chip.wert{background:var(--sage);color:var(--primary)}
 .hinweis{background:var(--sage);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--ink)}
 .kopie{font:13px/1.5 ui-monospace,Menlo,monospace;min-height:160px}
+.rang{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:r}
+.rang li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:11px;padding:8px 8px 8px 12px;background:var(--surface)}
+.rang li::before{counter-increment:r;content:counter(r);font:600 15px var(--sans);color:var(--primary);font-variant-numeric:tabular-nums}
+.rang .pfeile{display:flex;gap:6px}
+.rang .pfeile button{appearance:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--primary);font:600 18px var(--sans);cursor:pointer}
+.rang .pfeile button:hover{background:var(--sage)}
+.rang .pfeile button:disabled{opacity:.3;cursor:default}
+.optionen{display:flex;flex-direction:column;gap:8px}
+.optionen button{appearance:none;text-align:left;font:500 16px/1.4 var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 14px;cursor:pointer;min-height:48px}
+.optionen button:hover{background:var(--sage)}
+.optionen button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
 .fertig-marke{font-family:var(--serif);font-size:22px;color:var(--ok)}
 @media (prefers-reduced-motion:reduce){.fortschritt .leiste i{transition:none}}
 </style>
 
 <div class="wrap">
   <header class="kopf">
-    <div class="marke">Kartesa<span>Prüfbogen Persona 1</span></div>
+    <div class="marke">Kartesa<span>Prüfbogen Wunschkundin</span></div>
     <div class="status" id="status" role="status">Wird verbunden …</div>
   </header>
   <div class="fortschritt" id="fortschritt" hidden>
@@ -117,35 +128,72 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--primary)
 const SZENE = "Auf dem Tisch liegen drei Karteikarten, der Laptop zeigt den Kalender der Woche. Für jede Rechnung öffnet sie den Termin, wechselt in die Abrechnung, sucht den Patienten noch einmal und klickt sich durch den Katalog, rund zehn Minuten je Rechnung. Bei einer Patientin fällt ihr ein, dass der Laborbericht noch im Postfach liegt. Die Notizen vom Donnerstag hat sie sich vorgenommen und nicht geschrieben. Eine Kollegin hat im Qualitätszirkel erzählt, sie spreche ihre Notizen inzwischen ein. Aber wohin gehen die Aufnahmen?";
 
 const FRAGEN = [
-  {id:"C0", art:"text", abschnitt:"Zum Einstieg", text:"An welche Kolleginnen denkst du beim Beantworten? Wie viele sind es ungefähr, und wie arbeiten sie?", hilfe:"Ein paar Stichworte reichen. Bitte keine Namen."},
-  {id:"C1", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Die meisten Kolleginnen führen ihre Praxis allein, ohne Mitarbeitende, und machen Termine und Rechnungen selbst."},
-  {id:"C2", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Viele nutzen eine Praxissoftware für Termine und Rechnungen, aber kaum deren Dokumentationsteil."},
-  {id:"C3", art:"urteil", abschnitt:"Praxis und Arbeitsweise", text:"Mischformen sind häufig: Software für die Rechnung, die Akte auf Papier, dazu Mails und Sprachnotizen."},
-  {id:"C4", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Der stärkste Grund, etwas Neues zu suchen, ist, dass die heutige Software umständlich ist und Zeit kostet. Das wiegt schwerer als verstreute Unterlagen, schwerer als Sprache und KI und schwerer als der Preis."},
-  {id:"C5", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Viele Kolleginnen verbinden KI noch gar nicht mit ihrer Patientenakte."},
-  {id:"C6", art:"urteil", abschnitt:"Warum sie etwas Neues sucht", text:"Wer Transkription kennt, zum Beispiel Heidi, hat Bedenken, wo die Daten landen."},
-  {id:"C7", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Eine neue Software würden Kolleginnen vor allem auf Empfehlung aus dem Kollegenkreis ausprobieren."},
-  {id:"C8", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Ein Angebot über den Berufsverband, etwa ein Mitgliedercode beim FDH, würde Vertrauen schaffen."},
-  {id:"C9", art:"urteil", abschnitt:"Wie sie davon erfährt", text:"Heilpraktikerschulen sind ein Ort, an dem Kolleginnen über Praxissoftware sprechen."},
-  {id:"C10", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Vor dem Kauf wollen Kolleginnen lieber ein kostenloses Gespräch mit Vorführung, als allein etwas auszuprobieren."},
-  {id:"C11", art:"urteil", abschnitt:"Was sie zögern lässt", text:"Der größte Einwand ist: „Dann habe ich zwei Programme.“ Erst danach kommen Datenumzug, Datenschutz, Vertrauen in den Anbieter, Einarbeitung und Preis."},
-  {id:"C12", art:"urteil", abschnitt:"Was sie zögern lässt", text:"Kolleginnen beurteilen eine neue Software an dem, was ihre alte kann. Den Nutzen einer anders gebauten Akte können sie sich schwer vorstellen."},
-  {id:"C13", art:"urteil", abschnitt:"Was sie zögern lässt", text:"„Ich gebe jeden Versand selbst frei“ und „Absender ist meine Praxisadresse“ sind Bedingungen. Ohne sie kauft niemand."},
-  {id:"C14", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Kolleginnen möchten auf einer Website mit „Sie“ angesprochen werden, aber im Ton einer Kollegin."},
-  {id:"C15", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Die Wörter stimmen: Patientin, Karteikarte, Akte, Behandlung, Anamnese. Begriffe wie „Workflow“ oder „KI-Assistent“ schrecken eher ab."},
-  {id:"C16", art:"urteil", abschnitt:"Die Szene", text:"Diese Szene könnte von vielen Kolleginnen stammen.", szene:true, hilfe:"Was fehlt, was stimmt nicht?"},
-  {id:"C17", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Was zahlen Kolleginnen heute im Monat für ihre Praxissoftware, einschließlich Zusatzdiensten wie Unterschrift oder Formularen?"},
-  {id:"C18", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Bei welchem Monatspreis wäre Kartesa so günstig, dass Kolleginnen an der Qualität zweifeln?", hilfe:"Gemeint ist das Paket aus Akte, Terminen und Rechnungen."},
-  {id:"C19a", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre günstig?"},
+  // A · Gibt es sie?
+  {id:"W1", art:"text", abschnitt:"Gibt es sie?", text:"Kennst du Kolleginnen, die eine Praxissoftware für Termine und Rechnungen nutzen, bei denen die Dokumentation aber liegen bleibt oder auf Papier läuft? Woran erkennst du sie?", hilfe:"Ein paar Stichworte reichen. Wenn du keine kennst, schreib das. Dann stimmt unser Bild nicht."},
+  {id:"W2", art:"auswahl", abschnitt:"Gibt es sie?", text:"Wie viele deiner Kolleginnen gehören ungefähr zu dieser Gruppe?", optionen:["Fast keine","Etwa ein Viertel","Etwa die Hälfte","Die meisten"]},
+  {id:"W3", art:"urteil", abschnitt:"Gibt es sie?", text:"Sie führt ihre Praxis allein, ohne Mitarbeitende, und macht Termine und Rechnungen selbst."},
+  {id:"W4", art:"urteil", abschnitt:"Gibt es sie?", text:"Ihre Akte ist ein Mix: Software für die Rechnung, dazu Karteikarte, Mails, Laborberichte und Notizen."},
+  // B · Pains
+  {id:"P1", art:"rang", abschnitt:"Was sie drückt", text:"Was ärgert sie am meisten? Bring die Punkte in ihre Reihenfolge, das Schlimmste nach oben.", optionen:[
+    "Die Dokumentation bleibt liegen, sie schreibt abends oder am Wochenende nach",
+    "Unterlagen liegen verstreut: Papier, Mail, Laborbericht, Mappe",
+    "Rechnungen schreiben dauert lange, manche werden vergessen",
+    "Die Software ist umständlich: viel bezahlt, wenig genutzt",
+    "Unsicherheit beim Datenschutz, etwa beim Versand oder bei KI"]},
+  {id:"P2", art:"text", abschnitt:"Was sie drückt", text:"Was sagt sie wörtlich, wenn sie über ihre Verwaltung oder Dokumentation klagt?", hilfe:"Gern in ihren eigenen Worten, auch ein halber Satz hilft. Genau diese Sätze brauchen wir für die Website."},
+  {id:"P3", art:"urteil", abschnitt:"Was sie drückt", text:"Dass die Dokumentation liegen bleibt, hält sie für eine Frage ihrer eigenen Disziplin, nicht der Software."},
+  {id:"P4", art:"text", abschnitt:"Was sie drückt", text:"Was hat sie schon versucht, um es besser zu machen, und woran ist es gescheitert?", hilfe:"Zum Beispiel ein anderes Programm, Diktiergerät, feste Schreibzeiten, eine Hilfe fürs Büro."},
+  // C · Gains und Transformation
+  {id:"G1", art:"text", abschnitt:"Wohin sie will", text:"Stell dir vor, ein halbes Jahr nach dem Wechsel läuft alles gut. Was ist dann an ihrem Praxistag anders? Was erzählt sie einer Kollegin?"},
+  {id:"G2", art:"rang", abschnitt:"Wohin sie will", text:"Was wäre ihr am meisten wert? Das Wichtigste nach oben.", optionen:[
+    "Abende und Wochenenden ohne Nachschreiben",
+    "Im Gespräch alles zur Patientin vor Augen haben",
+    "Sprechen statt tippen",
+    "Alles an einem Ort, das Papier darf ins Archiv",
+    "Rechnungen mit einem Klick, keine vergessen",
+    "Ruhe beim Datenschutz"]},
+  {id:"G3", art:"urteil", abschnitt:"Wohin sie will", text:"Es geht ihr nicht nur um gesparte Zeit, sondern um das Gefühl, ihre Praxis im Griff zu haben und nach außen gut organisiert zu wirken."},
+  // D · Wissensstand
+  {id:"K1", art:"auswahl", abschnitt:"Was sie schon weiß", text:"Wo steht sie typischerweise?", optionen:[
+    "Sie hält den Aufwand für normal und sucht nichts",
+    "Sie leidet darunter, weiß aber nicht, dass es anders geht",
+    "Sie weiß, dass es Lösungen gibt (Diktat, KI, andere Software), hat aber keine gewählt",
+    "Sie vergleicht schon konkrete Programme"]},
+  {id:"K2", art:"urteil", abschnitt:"Was sie schon weiß", text:"Sie verbindet KI noch gar nicht mit ihrer Patientenakte."},
+  {id:"K3", art:"urteil", abschnitt:"Was sie schon weiß", text:"Wenn sie Transkription kennt, zum Beispiel Heidi, hat sie Bedenken, wo die Daten landen."},
+  {id:"K4", art:"urteil", abschnitt:"Was sie schon weiß", text:"Sie beurteilt eine neue Software an dem, was ihre alte kann. Den Nutzen einer anders gebauten Akte kann sie sich schwer vorstellen."},
+  // E · Entscheidung
+  {id:"E1", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Den Anstoß, etwas Neues auszuprobieren, gibt vor allem eine Empfehlung aus dem Kollegenkreis."},
+  {id:"E2", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Ein Angebot über den Berufsverband, etwa ein Mitgliedercode beim FDH, würde ihr Vertrauen geben."},
+  {id:"E3", art:"urteil", abschnitt:"Wie sie sich entscheidet", text:"Vor dem Kauf will sie lieber ein kostenloses Gespräch mit Vorführung, als allein etwas auszuprobieren."},
+  {id:"E4", art:"rang", abschnitt:"Was sie zögern lässt", text:"Was hält sie am ehesten zurück? Den stärksten Einwand nach oben.", optionen:[
+    "„Dann habe ich zwei Programme.“",
+    "Der Umzug der Daten aus dem alten Programm",
+    "Datenschutz bei Sprache und KI",
+    "Vertrauen in einen kleinen, neuen Anbieter",
+    "Einarbeitung und Einrichtung",
+    "Der Preis"]},
+  {id:"E5", art:"urteil", abschnitt:"Was sie zögern lässt", text:"„Ich gebe jeden Versand selbst frei“ und „Absender ist meine Praxisadresse“ sind Bedingungen. Ohne sie kauft sie nicht."},
+  {id:"E6", art:"text", abschnitt:"Was sie zögern lässt", text:"Was müsste sie sehen oder hören, damit sie sagt: „Das probiere ich aus“?"},
+  // F · Sprache und Szene
+  {id:"S1", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Sie möchte auf einer Website mit „Sie“ angesprochen werden, aber im Ton einer Kollegin."},
+  {id:"S2", art:"urteil", abschnitt:"Wie wir sie ansprechen", text:"Ihre Wörter sind Patientin, Karteikarte, Akte, Behandlung, Anamnese. Begriffe wie „Workflow“ oder „KI-Assistent“ schrecken sie eher ab."},
+  {id:"S3", art:"urteil", abschnitt:"Die Szene", text:"So einen Sonntagabend kennt sie.", szene:true, hilfe:"Was fehlt, was stimmt nicht?"},
+  // G · Preis
+  {id:"C17", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Was zahlt sie heute im Monat für ihre Praxissoftware, einschließlich Zusatzdiensten wie Unterschrift oder Formularen?"},
+  {id:"C18", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Bei welchem Monatspreis wäre Kartesa so günstig, dass sie an der Qualität zweifelt?", hilfe:"Gemeint ist das Paket aus Akte, Terminen und Rechnungen."},
+  {id:"C19a", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre für sie günstig?"},
   {id:"C19b", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Welcher Monatspreis wäre teuer, aber noch vertretbar?"},
-  {id:"C20", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Ab welchem Monatspreis käme Kartesa gar nicht mehr in Frage?"},
-  {id:"C21", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"Wochen", text:"Wie lang muss eine kostenlose Testphase sein, damit eine Kollegin sich einen echten Eindruck machen kann?"},
+  {id:"C20", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"€ im Monat", text:"Ab welchem Monatspreis käme Kartesa für sie gar nicht mehr in Frage?"},
+  {id:"C21", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"Wochen", text:"Wie lang muss eine kostenlose Testphase sein, damit sie sich einen echten Eindruck machen kann?"},
   {id:"C22", art:"zahl", abschnitt:"Was sie zahlen würde", einheit:"% Rabatt", text:"Wie hoch muss ein Rabatt für Verbandsmitglieder sein, damit er als echtes Angebot wirkt?"},
-  {id:"C23", art:"text", abschnitt:"Zum Schluss", text:"Gibt es eine Gruppe von Kolleginnen, die aus einem ganz anderen Grund kaufen würde als die Heilpraktikerin in der Szene?", hilfe:"Zum Beispiel wegen der Abrechnung, weil sie neu gründen oder weil sie die Akte mit anderen teilen. Wer, und warum?"}
+  // H · Ränder
+  {id:"R1", art:"text", abschnitt:"Zum Schluss", text:"Gibt es eine Gruppe von Kolleginnen, die aus einem ganz anderen Grund kaufen würde?", hilfe:"Zum Beispiel wegen der Abrechnung, weil sie neu gründen oder weil sie die Akte mit anderen teilen. Wer, und warum?"},
+  {id:"R2", art:"text", abschnitt:"Zum Schluss", text:"Welchen Kolleginnen würdest du von Kartesa eher abraten, und warum?"}
 ];
 
 const s = {antworten:{}, schritt:-1, fertig:false};
-let db = null, docRef = null, verbunden = false, speichernAktiv = false, speichernNochmal = false, lokalerSchluessel = "kartesa-pruefbogen-p1";
+let db = null, docRef = null, verbunden = false, speichernAktiv = false, speichernNochmal = false, lokalerSchluessel = "kartesa-pruefbogen-p1-v2";
 const $ = id => document.getElementById(id);
 const karte = $("karte");
 
@@ -160,7 +208,7 @@ async function speichern(){
   if(speichernAktiv){ speichernNochmal = true; return; }
   speichernAktiv = true;
   try{
-    await docRef.set({antworten:s.antworten, fertig:s.fertig, stand:new Date().toISOString(), bogen:"IV-149 Persona 1 v0.9"});
+    await docRef.set({antworten:s.antworten, fertig:s.fertig, stand:new Date().toISOString(), bogen:"IV-149 Wunschkundin v2"});
     setzeStatus("ok","Gespeichert");
   }catch(e){
     setzeStatus("lokal","Antworten bleiben auf diesem Gerät");
@@ -175,6 +223,8 @@ function beantwortet(f){
   if(!a) return false;
   if(f.art==="urteil") return !!a.wahl && (a.wahl!=="Anders" || (a.notiz||"").trim().length>0);
   if(f.art==="zahl") return a.wert!=null && a.wert!=="";
+  if(f.art==="rang") return Array.isArray(a.reihenfolge);
+  if(f.art==="auswahl") return !!a.wahl;
   return (a.notiz||"").trim().length>0;
 }
 
@@ -196,6 +246,7 @@ function fortschritt(){
 function el(tag, attrs, ...kinder){
   const e=document.createElement(tag);
   for(const [k,v] of Object.entries(attrs||{})){
+    if(v==null) continue;
     if(k==="class") e.className=v; else if(k==="text") e.textContent=v;
     else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v);
   }
@@ -207,9 +258,10 @@ function zeigeStart(){
   s.schritt=-1; fortschritt();
   karte.replaceChildren(
     el("div",{class:"abschnitt",text:"Für Christiane"}),
-    el("h1",{text:"Stimmt unser Bild von deinen Kolleginnen?"}),
-    el("p",{text:"Wir haben für die neue Kartesa-Website beschrieben, wie eine typische Heilpraktikerin arbeitet, was sie stört und was sie zögern lässt. Du kennst viele Kolleginnen. Bitte sag uns zu jeder Aussage, ob sie stimmt."}),
-    el("p",{text:"Es gibt 25 kurze Fragen, das dauert etwa 20 Minuten. Bei den Aussagen wählst du Ja, Nein oder Anders und schreibst bei Bedarf einen Satz dazu. Am Ende kommen ein paar Fragen zum Preis."}),
+    el("h1",{text:"Wer ist unsere Wunschkundin, und gibt es sie wirklich?"}),
+    el("p",{text:"Für die neue Kartesa-Website beschreiben wir die Kollegin, der Kartesa am meisten hilft: Sie nutzt eine Praxissoftware für Termine und Rechnungen, aber die Dokumentation bleibt liegen oder läuft auf Papier. Wir wollen wissen, was sie drückt, wohin sie will, was sie schon weiß und was sie zögern lässt."}),
+    el("p",{text:"Denk bei allen Fragen an Kolleginnen, die so arbeiten, nicht an alle, die du kennst. Mit „sie“ ist immer diese Kollegin gemeint. Wenn etwas auf keine zutrifft, die du kennst, ist das eine wichtige Antwort."}),
+    el("p",{text:"Es sind "+FRAGEN.length+" Fragen, das dauert etwa 30 Minuten. Bei Aussagen wählst du Ja, Nein oder Anders, manchmal bringst du Punkte in eine Reihenfolge oder schreibst ein paar Worte. Am Ende kommen Fragen zum Preis."}),
     el("div",{class:"hinweis",text: docRef
       ? "Deine Antworten werden nach jeder Frage gespeichert. Du kannst jederzeit aufhören und später weitermachen. Bitte schreib keine Namen von Patientinnen oder Kolleginnen hinein."
       : "Deine Antworten bleiben auf diesem Gerät und in diesem Browser. Du kannst aufhören und später hier weitermachen. Am Ende kopierst du alle Antworten mit einem Knopf und schickst sie Tilman per Mail oder Nachricht. Bitte schreib keine Namen von Patientinnen oder Kolleginnen hinein."}),
@@ -245,6 +297,33 @@ function zeigeFrage(i){
     }
     teile.push(gruppe);
   }
+  if(f.art==="auswahl"){
+    const box=el("div",{class:"optionen",role:"group","aria-labelledby":"aussage"});
+    for(const o of f.optionen){
+      box.append(el("button",{type:"button","aria-pressed":String(a.wahl===o),text:o,onclick:()=>{
+        a.wahl=o; for(const x of box.children) x.setAttribute("aria-pressed",String(x.textContent===o));
+        pruefe(); speichern();
+      }}));
+    }
+    teile.push(box);
+  }
+  if(f.art==="rang"){
+    const liste=el("ol",{class:"rang","aria-labelledby":"aussage"});
+    const reihe=()=>a.reihenfolge || f.optionen.slice();
+    const zeichne=()=>{
+      const r=reihe();
+      liste.replaceChildren(...r.map((o,k)=>el("li",{},
+        el("span",{text:o}),
+        el("span",{class:"pfeile"},
+          el("button",{type:"button","aria-label":"„"+o+"“ nach oben",text:"↑",disabled:k===0?"":null,onclick:()=>schiebe(k,-1)},),
+          el("button",{type:"button","aria-label":"„"+o+"“ nach unten",text:"↓",disabled:k===r.length-1?"":null,onclick:()=>schiebe(k,1)})))));
+    };
+    const schiebe=(k,d)=>{ const r=reihe().slice(); [r[k],r[k+d]]=[r[k+d],r[k]]; a.reihenfolge=r; zeichne(); pruefe(); speichern(); };
+    zeichne();
+    const passt=el("button",{class:"btn",type:"button",text:"Reihenfolge passt so",onclick:()=>{ a.reihenfolge=reihe(); pruefe(); speichern(); passt.hidden=true; }});
+    passt.hidden=Array.isArray(a.reihenfolge);
+    teile.push(liste, passt);
+  }
   if(f.art==="zahl"){
     const inp=el("input",{type:"number",id:"wert-"+f.id,inputmode:"decimal",min:"0",step:"any"});
     if(a.wert!=null) inp.value=a.wert;
@@ -256,7 +335,7 @@ function zeigeFrage(i){
   notiz.value=a.notiz||"";
   notiz.addEventListener("input",()=>{ a.notiz=notiz.value; pruefe(); });
   notiz.addEventListener("change",speichern);
-  const notizText = f.art==="text" ? "Deine Antwort" : f.art==="zahl" ? "Begründung oder Spanne (freiwillig)" : (f.hilfe || (a.wahl==="Anders" ? "Wie ist es stattdessen?" : "Anmerkung (freiwillig)"));
+  const notizText = f.art==="text" ? "Deine Antwort" : f.art==="zahl" ? "Begründung oder Spanne (freiwillig)" : (f.art==="rang"||f.art==="auswahl") ? "Anmerkung (freiwillig)" : (f.hilfe || (a.wahl==="Anders" ? "Wie ist es stattdessen?" : "Anmerkung (freiwillig)"));
   const notizLabel=el("label",{class:"feld",for:"notiz-"+f.id}, notizText, notiz);
   teile.push(notizLabel, pflichtHinweis);
 
@@ -274,22 +353,24 @@ function zeigeFrage(i){
     fortschritt();
   }
   pruefe();
-  (f.art==="zahl" ? karte.querySelector("input") : f.art==="text" ? notiz : karte.querySelector(".wahl button"))?.focus({preventScroll:true});
+  (f.art==="zahl" ? karte.querySelector("input") : f.art==="text" ? notiz : karte.querySelector(".wahl button, .optionen button, .rang button:not([disabled])"))?.focus({preventScroll:true});
 }
 
 function chipFuer(f){
   const a=s.antworten[f.id]||{};
   if(f.art==="urteil" && a.wahl) return el("span",{class:"chip "+a.wahl.toLowerCase(),text:a.wahl});
   if(f.art==="zahl" && a.wert!=null && a.wert!=="") return el("span",{class:"chip wert",text:a.wert+" "+f.einheit});
+  if(f.art==="rang" && Array.isArray(a.reihenfolge)) return el("span",{class:"chip wert",text:"geordnet"});
+  if(f.art==="auswahl" && a.wahl) return el("span",{class:"chip wert",text:"gewählt"});
   if(f.art==="text" && (a.notiz||"").trim()) return el("span",{class:"chip ja",text:"beantwortet"});
   return el("span",{class:"chip leer",text:"offen"});
 }
 
 function alsText(){
-  const z=["Prüfbogen Persona 1 (IV-149), Stand "+new Date().toLocaleString("de-DE"),""];
+  const z=["Prüfbogen Wunschkundin (IV-149, v2), Stand "+new Date().toLocaleString("de-DE"),""];
   for(const f of FRAGEN){
     const a=s.antworten[f.id]||{};
-    let w = f.art==="urteil" ? (a.wahl||"offen") : f.art==="zahl" ? (a.wert!=null&&a.wert!=="" ? a.wert+" "+f.einheit : "offen") : "";
+    let w = f.art==="rang" ? (Array.isArray(a.reihenfolge) ? "\n"+a.reihenfolge.map((o,k)=>"      "+(k+1)+". "+o).join("\n") : "offen") : f.art==="auswahl" ? (a.wahl||"offen") : f.art==="urteil" ? (a.wahl||"offen") : f.art==="zahl" ? (a.wert!=null&&a.wert!=="" ? a.wert+" "+f.einheit : "offen") : "";
     z.push(f.id+" · "+f.text);
     if(w) z.push("   Antwort: "+w);
     if((a.notiz||"").trim()) z.push("   Notiz: "+a.notiz.trim());
