@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Kartesa Videotest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Ein Bild, zwei Schalter, eine Wahl: Player oben, darunter die Mischpult-Schalter, unten der Favorit. Bewusst nur hell (wie die Videos). */
+:root{
+  color-scheme:light;
+  --grund:#F3F6F4;      /* Grund der Website und der Videos */
+  --flaeche:#FFFFFF;
+  --waldgruen:#0E5E4A;  /* Auswahl, Inhalt */
+  --hellgruen:#DCEBE2;  /* gewählt */
+  --terrakotta:#984B33; /* die eine Handlung */
+  --terrakotta-hell:#F3E9E7;
+  --schrift:#0C1D19;
+  --neben:#3B4A44;
+  --rahmen:#B4C6BD;
+  --linie:#D9E3DE;
+  --titel:'Outfit','Public Sans',system-ui,sans-serif;
+  --text:'Public Sans',system-ui,-apple-system,sans-serif;
+  --r-karte:10px; --r-bed:6px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--grund);color:var(--schrift);font:400 16px/1.55 var(--text)}
+.wrapper{max-width:960px;margin:0 auto;padding:24px 16px 60px}
+.global-footer-note{display:none} /* Seite richtet sich an Test-User, der Standardhinweis „intern“ passt hier nicht */
+.global-header{flex-wrap:wrap;gap:8px}
+.seite{display:grid;gap:28px;padding-block:12px 24px}
+body{margin:0}
+.kopf{display:grid;gap:10px}
+.marke{height:36px;width:auto}
+h1{font:400 clamp(30px,5vw,44px)/1.1 var(--titel);margin:0;text-wrap:balance}
+.einleitung{margin:0;max-width:62ch;color:var(--neben);font-size:17px}
+.buehne{display:grid;gap:14px}
+.player{position:relative;border:1px solid var(--rahmen);border-radius:var(--r-karte);overflow:hidden;background:var(--grund);aspect-ratio:16/9;max-width:100%}
+.player video{display:block;width:100%;height:100%;object-fit:contain;background:var(--grund)}
+.start{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(243,246,244,.55);border:0;cursor:pointer;font:inherit}
+.start span{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:var(--r-bed);background:var(--terrakotta);color:#fff;font:600 17px/1 var(--text);box-shadow:0 6px 18px rgba(152,75,51,.3)}
+.start:focus-visible span{outline:3px solid var(--waldgruen);outline-offset:3px}
+.jetzt{margin:0;font-size:14px;color:var(--neben)}
+.jetzt b{color:var(--schrift);font-weight:600}
+.pult{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.pult{grid-template-columns:1fr}}
+fieldset{border:1px solid var(--rahmen);border-radius:var(--r-karte);background:var(--flaeche);margin:0;padding:16px;display:grid;gap:12px;min-width:0}
+legend{font:500 13px/1 var(--text);letter-spacing:.08em;text-transform:uppercase;color:var(--neben);padding:0 6px}
+.wahl{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rahmen);border-radius:var(--r-bed);overflow:hidden}
+.wahl label{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;cursor:pointer;font:500 15px/1.2 var(--text);text-align:center;min-height:48px}
+.wahl label+label{border-left:1px solid var(--rahmen)}
+.wahl input{position:absolute;opacity:0;width:0;height:0}
+.wahl label:has(input:checked){background:var(--hellgruen);color:var(--waldgruen);box-shadow:inset 0 0 0 1px var(--waldgruen)}
+.wahl label:has(input:focus-visible){outline:2px solid var(--terrakotta);outline-offset:-3px}
+.wahl .h{width:14px;display:inline-block}
+.wahl label:has(input:checked) .h::before{content:"✓"}
+.erkl{margin:0;font-size:14.5px;color:var(--neben);min-height:3.1em}
+.favorit{background:var(--flaeche);border:1px solid var(--rahmen);border-radius:var(--r-karte);padding:20px;display:grid;gap:16px}
+.favorit h2{font:400 26px/1.2 var(--titel);margin:0}
+.auswahl{display:flex;flex-wrap:wrap;gap:8px}
+.etikett{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--r-bed);border:1px solid var(--waldgruen);background:var(--hellgruen);color:var(--waldgruen);font:500 14px/1.3 var(--text)}
+.feld{display:grid;gap:6px}
+.feld label{font:500 13px/1 var(--text);letter-spacing:.06em;text-transform:uppercase;color:var(--neben)}
+.feld input,.feld textarea{width:100%;font:400 16px/1.5 var(--text);color:var(--schrift);background:var(--flaeche);border:1px solid var(--rahmen);border-radius:var(--r-bed);padding:10px 12px}
+.feld textarea{min-height:96px;resize:vertical}
+.feld input:focus-visible,.feld textarea:focus-visible{outline:2px solid var(--terrakotta);outline-offset:1px}
+.zeile{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.zeile{grid-template-columns:1fr}}
+.absenden{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 22px;border-radius:var(--r-bed);border:1px solid var(--terrakotta);background:var(--terrakotta);color:#fff;font:600 16px/1 var(--text);cursor:pointer}
+.absenden:disabled{opacity:.6;cursor:default}
+.absenden:focus-visible{outline:3px solid var(--waldgruen);outline-offset:3px}
+.meldung{margin:0;font-size:15px;color:var(--neben)}
+.meldung.ok{color:var(--waldgruen);font-weight:500}
+.kopie{display:grid;gap:8px;padding:14px;border:1px dashed var(--rahmen);border-radius:var(--r-bed);background:var(--grund)}
+.kopie pre{margin:0;white-space:pre-wrap;font:400 14px/1.5 var(--text);user-select:all}
+.klein{display:inline-flex;justify-self:start;align-items:center;min-height:40px;padding:0 16px;border-radius:var(--r-bed);border:1px solid var(--terrakotta);background:var(--terrakotta-hell);color:var(--terrakotta);font:500 15px/1 var(--text);cursor:pointer}
+.fuss{font-size:13px;color:var(--neben);display:grid;gap:4px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+<script>window.INTEGRI_CHROME = { docname: 'Kartesa · Videotest' };</script>
+<script src="../assets/tool-chrome.js"></script>
+<div class="wrapper">
+<main class="seite">
+  <header class="kopf">
+    <img class="marke" src="videos/kartesa.svg" alt="Kartesa" width="150" height="36">
+    <h1>Welche Fassung gefällt Ihnen besser?</h1>
+    <p class="einleitung">Ein kurzes Video zeigt, wie eine neue Patientin sich anmeldet. Es gibt zwei Arten, das Bild zu erzählen, und zwei Musiken. Schalten Sie unter dem Video hin und her, das Video läuft an derselben Stelle weiter. Stellen Sie sich Ihren Favoriten zusammen und sagen Sie uns kurz, warum.</p>
+  </header>
+
+  <section class="buehne" aria-label="Video">
+    <div class="player">
+      <video id="video" playsinline controls preload="metadata" poster="videos/vorschau.jpg" src="videos/a1-v6.mp4"></video>
+      <button type="button" class="start" id="start" aria-label="Video mit Ton abspielen"><span>▶ Mit Ton abspielen</span></button>
+    </div>
+    <p class="jetzt" id="jetzt">Sie sehen gerade: <b>Bild A · fließend</b> mit <b>Musik 1</b></p>
+  </section>
+
+  <section class="pult" aria-label="Fassung zusammenstellen">
+    <fieldset>
+      <legend>Bild</legend>
+      <div class="wahl" role="radiogroup" aria-label="Bild">
+        <label><input type="radio" name="bild" id="bild-a" value="a" checked><span class="h"></span>A · fließend</label>
+        <label><input type="radio" name="bild" id="bild-b" value="b"><span class="h"></span>B · in Kapiteln</label>
+      </div>
+      <p class="erkl" id="erkl-bild">Die Szenen gehen ineinander über: Aus der Anfrage wird die Karte der Praxis, aus dem Klick das Telefon der Patientin.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Musik</legend>
+      <div class="wahl" role="radiogroup" aria-label="Musik">
+        <label><input type="radio" name="musik" id="musik-1" value="1" checked><span class="h"></span>Musik 1</label>
+        <label><input type="radio" name="musik" id="musik-2" value="2"><span class="h"></span>Musik 2</label>
+      </div>
+      <p class="erkl" id="erkl-musik" hidden></p>
+    </fieldset>
+  </section>
+
+  <section class="favorit" aria-labelledby="fav-titel">
+    <h2 id="fav-titel">Ihr Favorit</h2>
+    <div class="auswahl" aria-live="polite">
+      <span class="etikett" id="fav-bild">✓ Bild A · fließend</span>
+      <span class="etikett" id="fav-musik">✓ Musik 1</span>
+    </div>
+    <form id="form" novalidate>
+      <div style="display:grid;gap:16px">
+        <div class="feld">
+          <label for="warum">Warum gefällt Ihnen diese Kombination?</label>
+          <textarea id="warum" name="warum" placeholder="Zum Beispiel: Die Kapitel lassen mir Zeit zum Lesen, die Musik ist angenehm …"></textarea>
+        </div>
+        <div class="zeile">
+          <div class="feld">
+            <label for="name">Ihr Name</label>
+            <input id="name" name="name" autocomplete="name" placeholder="Vor- und Nachname">
+          </div>
+          <div class="feld" id="feld-mail" hidden>
+            <label for="email">Ihre E-Mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="name@praxis.de">
+          </div>
+        </div>
+        <button type="submit" class="absenden" id="senden">Favorit speichern</button>
+        <p class="meldung" id="meldung" role="status"></p>
+        <div class="kopie" id="kopie" hidden>
+          <p class="meldung">Bitte schicken Sie uns diesen Text, zum Beispiel per Mail an <b>info@integri.de</b>:</p>
+          <pre id="kopie-text"></pre>
+          <button type="button" class="klein" id="kopieren">Text kopieren</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <footer class="fuss">
+    <span>Alle Daten im Video sind erfunden (Anna Beispiel, Praxis Nordlicht).</span>
+    <span>Musik: KI-generiert (Artlist, Lyria 3 Pro).</span>
+  </footer>
+</main>
+</div>
+
+<script>
+(function () {
+  var video = document.getElementById("video");
+  var startBtn = document.getElementById("start");
+  var TEXTE = {
+    bild: { a: ["A · fließend", "Die Szenen gehen ineinander über: Aus der Anfrage wird die Karte der Praxis, aus dem Klick das Telefon der Patientin."],
+            b: ["B · in Kapiteln", "Jede Szene beginnt mit ihrem Satz groß in der Mitte, dann erscheint das Bild. Ruhiger, wie eine kleine Geschichte."] },
+    musik: { "1": ["1", ""],
+             "2": ["2", ""] }
+  };
+  function wert(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : null; }
+  function zeigeTexte() {
+    var b = wert("bild"), m = wert("musik");
+    document.getElementById("erkl-bild").textContent = TEXTE.bild[b][1];
+    document.getElementById("erkl-musik").textContent = TEXTE.musik[m][1];
+    document.getElementById("jetzt").innerHTML = "Sie sehen gerade: <b>Bild " + TEXTE.bild[b][0] + "</b> mit <b>Musik " + TEXTE.musik[m][0] + "</b>";
+    document.getElementById("fav-bild").textContent = "✓ Bild " + TEXTE.bild[b][0];
+    document.getElementById("fav-musik").textContent = "✓ Musik " + TEXTE.musik[m][0];
+  }
+  // Umschalten: gleiche Stelle, gleicher Zustand (läuft weiter oder bleibt stehen)
+  function wechsle() {
+    var t = video.currentTime || 0, lief = !video.paused && !video.ended;
+    video.src = "videos/" + wert("bild") + wert("musik") + "-v6.mp4";
+    video.addEventListener("loadedmetadata", function weiter() {
+      video.removeEventListener("loadedmetadata", weiter);
+      try { video.currentTime = Math.min(t, (video.duration || 24) - 0.05); } catch (e) {}
+      if (lief) video.play().catch(function () {});
+    });
+    video.load();
+    zeigeTexte();
+  }
+  document.querySelectorAll('input[name="bild"], input[name="musik"]').forEach(function (el) { el.addEventListener("change", wechsle); });
+  startBtn.addEventListener("click", function () { startBtn.hidden = true; video.muted = false; video.play().catch(function () {}); });
+  video.addEventListener("play", function () { startBtn.hidden = true; });
+
+  // Speichern: als Artefakt im Speicher der Seite; auf tools.integri.de per Mail; sonst als Text zum Kopieren
+  var form = document.getElementById("form"), meldung = document.getElementById("meldung"), senden = document.getElementById("senden");
+  var MAILVERSAND = false; // erst einschalten, wenn integri-email einen Zweig „kartesa-videotest“ hat
+  var db = null, user = null, aufIntegri = MAILVERSAND && /(^|\.)integri\.de$/.test(location.hostname);
+  if (aufIntegri) document.getElementById("feld-mail").hidden = false;
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(function (d) { db = d; }).catch(function () {});
+    window.claude.use("user").then(function (u) { user = u; }).catch(function () {});
+  }
+  function zusammenfassung() {
+    return "Favorit Kartesa-Video (Anmeldung)\nBild: " + TEXTE.bild[wert("bild")][0] + "\nMusik: " + TEXTE.musik[wert("musik")][0] +
+      "\nWarum: " + (document.getElementById("warum").value.trim() || "–") + "\nName: " + (document.getElementById("name").value.trim() || "–");
+  }
+  function zeigeKopie() {
+    document.getElementById("kopie-text").textContent = zusammenfassung();
+    document.getElementById("kopie").hidden = false;
+  }
+  document.getElementById("kopieren").addEventListener("click", function () {
+    var txt = document.getElementById("kopie-text").textContent, btn = this;
+    navigator.clipboard.writeText(txt).then(function () { btn.textContent = "Kopiert"; }).catch(function () {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById("kopie-text"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Text markiert, bitte kopieren";
+    });
+  });
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    meldung.className = "meldung"; meldung.textContent = "";
+    var eintrag = { bild: wert("bild"), musik: wert("musik"), warum: document.getElementById("warum").value.trim(),
+                    name: document.getElementById("name").value.trim(), zeit: new Date().toISOString() };
+    senden.disabled = true; senden.textContent = "Wird gespeichert …";
+    function fertig(text) { senden.disabled = false; senden.textContent = "Favorit speichern"; meldung.className = "meldung ok"; meldung.textContent = text; }
+    function fehler(text) { senden.disabled = false; senden.textContent = "Favorit speichern"; meldung.textContent = text; zeigeKopie(); }
+    if (db) {
+      Promise.resolve(user && user.id ? user.id() : null).then(function (id) {
+        var key = id || ("gast-" + Date.now());
+        return db.doc("antworten/" + key).set(eintrag);
+      }).then(function () { fertig("Danke! Ihr Favorit ist gespeichert. Sie können ihn jederzeit ändern und erneut speichern."); })
+        .catch(function () { fehler("Speichern hat hier nicht geklappt."); });
+    } else if (aufIntegri) {
+      var mail = document.getElementById("email").value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { senden.disabled = false; senden.textContent = "Favorit speichern"; meldung.textContent = "Bitte geben Sie Ihre E-Mail an, damit wir Ihre Antwort zuordnen können."; return; }
+      fetch("https://integri-email.empty-unit-c43c.workers.dev", { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ email: mail, _tool: "kartesa-videotest", content: zusammenfassung() }) })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); fertig("Danke! Ihr Favorit ist bei uns angekommen."); })
+        .catch(function () { fehler("Senden hat nicht geklappt."); });
+    } else {
+      fehler("");
+      meldung.textContent = "";
+    }
+  });
+  zeigeTexte();
+})();
+</script>
+
+</body>
+</html>
