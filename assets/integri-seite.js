@@ -19,11 +19,17 @@
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-label', 'Seitenansicht');
     box.hidden = true;
+    // Bedienung sitzt am Bild, nicht an den Fensterrändern: bleibt sichtbar, auch wenn das Fenster breiter als der Bildschirm ist
     box.innerHTML =
-      '<button type="button" class="s-gross-zu" aria-label="Schließen">&times;</button>' +
-      '<button type="button" class="s-gross-pfeil s-gross-zurueck" aria-label="Vorherige Seite">&#8249;</button>' +
-      '<figure><img alt=""><figcaption></figcaption></figure>' +
-      '<button type="button" class="s-gross-pfeil s-gross-vor" aria-label="Nächste Seite">&#8250;</button>';
+      '<figure>' +
+        '<div class="s-gross-kopf"><button type="button" class="s-gross-zu" aria-label="Schließen">&times; Schließen</button></div>' +
+        '<img alt="">' +
+        '<div class="s-gross-fuss">' +
+          '<button type="button" class="s-gross-pfeil s-gross-zurueck" aria-label="Vorherige Seite">&#8249;</button>' +
+          '<figcaption></figcaption>' +
+          '<button type="button" class="s-gross-pfeil s-gross-vor" aria-label="Nächste Seite">&#8250;</button>' +
+        '</div>' +
+      '</figure>';
     document.body.appendChild(box);
 
     var bild = box.querySelector('img');
