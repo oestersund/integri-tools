@@ -46,13 +46,15 @@ body { font-family: 'IBM Plex Sans', -apple-system, Arial, sans-serif; font-size
 
 /* Das Produkt als Bild: Fächer aus drei Seiten, ragt aus dem Kopf */
 .s-faecher { position: relative; aspect-ratio: 100 / 41; width: 92%; max-width: 1080px; margin: -120px auto 12px; }
-.s-faecher a { position: absolute; width: 46%; display: block; }
+.s-faecher button { position: absolute; width: 46%; display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.s-faecher button:focus-visible { outline: 3px solid var(--terracotta); outline-offset: 4px; border-radius: var(--radius-control); }
 .s-faecher img { width: 100%; height: auto; display: block; border-radius: var(--radius-control);
+                 -webkit-touch-callout: none;   /* kein „Bild sichern“ beim langen Tippen */
                  border: 3px solid var(--white);   /* Papierkante: trennt den Petrol-Kopf des Blatts vom Petrol-Kopf der Seite */
                  box-shadow: 0 0 0 1px var(--border), 0 4px 14px rgba(3, 49, 50, .18); }
-.s-faecher a:nth-child(1) { left: 0; top: 40px; transform: rotate(-4deg); }
-.s-faecher a:nth-child(2) { left: 27%; top: 10px; z-index: 1; }
-.s-faecher a:nth-child(3) { right: 0; top: 40px; transform: rotate(4deg); z-index: 2; }
+.s-faecher button:nth-child(1) { left: 0; top: 40px; transform: rotate(-4deg); }
+.s-faecher button:nth-child(2) { left: 27%; top: 10px; z-index: 1; }
+.s-faecher button:nth-child(3) { right: 0; top: 40px; transform: rotate(4deg); z-index: 2; }
 .s-unterzeilen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; font-size: 16px; margin-top: 4px; }
 .s-unterzeilen b { display: block; color: var(--petrol); font-weight: 600; }
 
@@ -79,7 +81,8 @@ body { font-family: 'IBM Plex Sans', -apple-system, Arial, sans-serif; font-size
   .s-kopf { padding: 36px 22px; }
   .s-kopf--mit-bild { padding-bottom: 110px; }
   .s-kopf h1 { font-size: 30px; }
-  .s-faecher { margin-top: -80px; }
+  .s-aktion .s-btn { font-size: 18px; padding: 16px 22px; }
+  .s-faecher { margin-top: -80px; margin-bottom: 20px; aspect-ratio: 100 / 56; }
   .s-unterzeilen, .s-schritte, .s-zweispaltig { grid-template-columns: 1fr; gap: 16px; }
   .s-ziffer { font-size: 48px; }
   .s-abschnitt { margin-top: 48px; }
@@ -99,4 +102,26 @@ body { font-family: 'IBM Plex Sans', -apple-system, Arial, sans-serif; font-size
 .s-fuss .s-btn--zweit:focus-visible { outline: 3px solid var(--white); outline-offset: 2px; }
 @media (max-width: 700px) {
   .s-fuss { padding: 32px 22px; grid-template-columns: 1fr; }
+}
+
+/* Vergrößerung der Fächerbilder (Verhalten: integri-seite.js) */
+.s-gross { position: fixed; inset: 0; z-index: 1000; background: rgba(3, 49, 50, .92);
+           display: flex; align-items: center; justify-content: center; padding: 64px 72px 40px; }
+.s-gross[hidden] { display: none; }
+.s-gross figure { margin: 0; max-width: 100%; max-height: 100%; display: flex; flex-direction: column; align-items: center; }
+.s-gross img { max-width: 100%; max-height: calc(100vh - 140px); height: auto; border: 3px solid var(--white);
+               border-radius: var(--radius-control); background: var(--white); }
+.s-gross figcaption { color: rgba(255, 255, 255, .8); font-size: 15px; margin-top: 12px; text-align: center; }
+.s-gross button { position: absolute; background: transparent; border: 0; color: var(--white); cursor: pointer;
+                  font-family: inherit; line-height: 1; border-radius: var(--radius-control); }
+.s-gross button:hover { background: rgba(255, 255, 255, .12); }
+.s-gross button:focus-visible { outline: 3px solid var(--white); outline-offset: 2px; }
+.s-gross-zu { top: 14px; right: 18px; font-size: 44px; width: 52px; height: 52px; }
+.s-gross-pfeil { top: 50%; transform: translateY(-50%); font-size: 56px; width: 52px; height: 80px; }
+.s-gross-zurueck { left: 10px; }
+.s-gross-vor { right: 10px; }
+html.s-gross-offen { overflow: hidden; }
+@media (max-width: 700px) {
+  .s-gross { padding: 64px 12px 80px; }
+  .s-gross-pfeil { top: auto; bottom: 8px; transform: none; font-size: 44px; height: 56px; }
 }
