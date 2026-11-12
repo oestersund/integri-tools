@@ -450,7 +450,7 @@ function zeichnen() {
   const V = VARIANTEN[S.v];
   document.getElementById("beschreibung").innerHTML = `<div><h2>${V.titel}</h2><p>${V.text}</p></div>
     <div><h3>Gut</h3><ul>${V.plus.map(x => `<li>${x}</li>`).join("")}</ul></div>
-    <div><h3>Weniger gut</h3><ul>${V.minus.map(x => `<li>${x}</li>`).join("")}</ul></div>`;
+    <div><h3>Kompromiss</h3><ul>${V.minus.map(x => `<li>${x}</li>`).join("")}</ul></div>`;
   const app = document.getElementById("app");
   app.style.maxWidth = S.breite ? S.breite + "px" : "";
   let titel, inhalt, zustand = "";
