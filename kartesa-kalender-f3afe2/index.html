@@ -148,10 +148,10 @@ p{margin:0 0 10px}
     <label for="breite">Bildschirmbreite nachstellen:</label>
     <select id="breite">
       <option value="0">wie Ihr Fenster</option>
-      <option value="1440">großer Bildschirm (1440 px)</option>
-      <option value="1200">Laptop (1200 px)</option>
-      <option value="1024">iPad quer (1024 px)</option>
-      <option value="834">iPad hoch (834 px)</option>
+      <option value="1440">großer Bildschirm</option>
+      <option value="1200">Laptop</option>
+      <option value="1024">iPad quer</option>
+      <option value="834">iPad hoch</option>
     </select>
     <span id="breiteInfo"></span>
   </div>
@@ -162,7 +162,7 @@ p{margin:0 0 10px}
     <h2>Was uns Ihre Antwort leichter macht</h2>
     <ol>
       <li>Mit welcher Variante sehen Sie am Telefon am schnellsten, wann noch etwas frei ist, und bei wem?</li>
-      <li>Reicht Ihnen das farbige Kürzel auf dem Termin, um zu sehen, wer behandelt? Oder möchten Sie lieber, dass die ganze Kachel die Farbe der Person trägt statt der Farbe der Terminart?</li>
+      <li>Reicht Ihnen das farbige Kürzel auf dem Termin, um zu sehen, wer behandelt? Oder möchten Sie lieber, dass der ganze Termin in der Farbe der Person erscheint statt in der Farbe der Terminart?</li>
       <li>Hilft Ihnen „Tag | Woche | Monat“ oben in der Leiste?</li>
       <li>Fehlt etwas, das Sie aus Ihrem bisherigen Kalender gewohnt sind?</li>
     </ol>
@@ -260,16 +260,16 @@ const HOEHE = (BIS - VON) * PX;
 
 const VARIANTEN = {
   ist: { titel: "Heute in Kartesa", kurz: "Stand Ihrer Testpraxis",
-    text: "So zeigt Kartesa die Woche heute in einer Teampraxis. Liegen an einem Tag zwei Termine gleichzeitig und passen sie nicht nebeneinander, wird die ganze Woche zur Liste: ohne Uhrzeiten, ohne freie Lücken, die Farbe nur als Streifen. Das Raster mit Spalten je Person zeigt nur der Tag, erreichbar über einen Klick auf das Datum.",
+    text: "So zeigt Kartesa die Woche heute in einer Teampraxis. Sobald an einem Tag mehrere Termine zur selben Zeit liegen, zeigt Kartesa die ganze Woche als Liste: ohne Uhrzeiten am Rand, ohne sichtbare freie Zeiten, die Farbe der Terminart nur als schmaler Streifen. Uhrzeiten und eine Spalte je Person gibt es nur in der Tagesansicht. Dorthin kommen Sie mit einem Klick auf das Datum.",
     plus: ["Lange Namen bleiben lesbar"], minus: ["Freie Zeiten sind in der Woche nicht zu sehen", "Gleichzeitige Termine stehen untereinander", "Der Tag mit Spalten ist schwer zu finden"] },
   A: { titel: "A · Immer Raster", kurz: "Uhrzeiten immer sichtbar",
-    text: "Die Woche ist immer ein Raster mit Uhrzeiten, wie in der Einzelpraxis. Gleichzeitige Termine stehen nebeneinander und teilen sich die Breite des Tages. Wird es eng, kürzt Kartesa die Beschriftung bis auf Nachname und Kürzel; ein Klick zeigt immer alles. Wer behandelt, zeigt das farbige Kürzel. Neu oben: Tag | Woche | Monat.",
-    plus: ["Freie Zeit ist weiße Fläche", "Eine Woche für alle Praxen, kein neuer Schalter", "Farbig wie der Tag"], minus: ["An vollen Tagen werden Namen gekürzt", "Ob eine bestimmte Person frei ist, zeigt erst der Tag oder der Filter „Wer“"] },
+    text: "Die Woche zeigt immer die Uhrzeiten am Rand, wie die Tagesansicht und wie der Apple-Kalender. Termine zur selben Zeit stehen nebeneinander. Wird es eng, steht auf dem Termin nur noch der Nachname und das Kürzel der Person. Ein Klick zeigt den ganzen Termin. Wer behandelt, zeigt das farbige Kürzel oben rechts. Neu oben in der Leiste: Tag | Woche | Monat.",
+    plus: ["Freie Zeit ist weiße Fläche", "Eine Woche für alle Praxen, kein neuer Schalter", "Farbig wie der Tag"], minus: ["An vollen Tagen werden Namen gekürzt", "Ob eine bestimmte Person frei ist, sieht man erst in der Tagesansicht oder wenn man im Filter „Wer“ nur diese Person wählt"] },
   B: { titel: "B · Spalte je Person", kurz: "jeder Tag geteilt",
-    text: "Jeder Tag teilt sich in eine Spalte je Person, die an dem Tag arbeitet. Schraffiert heißt: diese Person arbeitet zu der Zeit nicht. So sieht man sofort, wann Jonas oder Lena frei ist.",
+    text: "Jeder Tag teilt sich in eine Spalte je Person, die an dem Tag arbeitet. Schräg gestreift heißt: Diese Person arbeitet zu der Zeit nicht. So sieht man sofort, wann Jonas oder Lena frei ist.",
     plus: ["„Wann ist Lena am Donnerstag frei?“ auf einen Blick", "Arbeitszeiten je Person sichtbar"], minus: ["Spalten werden schmal, ab drei Personen am Laptop zu schmal", "Auf dem iPad hoch kaum lesbar"] },
   C: { titel: "C · A, mit Spalten wenn Platz", kurz: "passt sich an",
-    text: "Grundform ist A. Steht im Filter „Ordnen nach: Behandelnde“ und ist der Bildschirm breit genug (etwa 70 px je Person und Tag), teilt sich jeder Tag in Spalten je Person wie bei B. Sonst bleibt es bei A. Probieren Sie oben die Bildschirmbreite und im Filter „Ordnen nach“.",
+    text: "Wie A, mit einem Zusatz: Ist im Filter „Ordnen nach: Behandelnde“ gewählt und ist der Bildschirm breit genug, bekommt jede Person an jedem Tag eine eigene Spalte, wie bei B. Auf kleineren Bildschirmen bleibt es bei A. Zum Ausprobieren stellen Sie oben die Bildschirmbreite um, zum Beispiel auf „iPad hoch“.",
     plus: ["Personensicht, wo Platz ist", "Kein zusätzlicher Knopf"], minus: ["Die Woche sieht je Gerät anders aus", "Schwerer zu erklären"] },
 };
 
@@ -402,7 +402,7 @@ function wocheListe() {
           ${t.h && t.h !== "✓" ? `<span class="etk">${t.h === "L" ? "Leistung" : "Rechnung"}</span>` : ""}</div>`; }).join("") || `<div class="l-leer">frei</div>`}</div>`;
   };
   return `<div class="liste" style="grid-template-columns:repeat(7,minmax(0,1fr))">${TAGE.map((_, d) => tag(d)).join("")}</div>
-    <div class="l-hinweis">Zu viele gleichzeitige Termine für das Raster: je Tag eine Liste. Freie Zeiten zeigt der Tag (auf das Datum tippen).</div>`;
+    <div class="l-hinweis">Viele Termine gleichzeitig: Die Woche zeigt deshalb je Tag eine Liste. Freie Zeiten sehen Sie in der Tagesansicht: auf das Datum tippen.</div>`;
 }
 function tagAnsicht() {
   const d = S.tag;
@@ -434,7 +434,7 @@ function filterHtml() {
   if (!S.filterOffen) return "";
   const ordnen = S.v === "ist" || S.v === "C";
   return `<div class="filter">
-    ${ordnen ? `<span class="lbl">Ordnen nach</span><div class="chips">${[["beh", "Behandelnde"], ["raum", "Räume"]].map(([k, l]) => `<button class="chip ${S.ordnen === k ? "aktiv" : ""}" data-ordnen="${k}">${l}</button>`).join("")}${S.v === "ist" ? `<span class="klein" style="align-self:center">wirkt heute nur im Tag</span>` : ""}</div>` : ""}
+    ${ordnen ? `<span class="lbl">Ordnen nach</span><div class="chips">${[["beh", "Behandelnde"], ["raum", "Räume"]].map(([k, l]) => `<button class="chip ${S.ordnen === k ? "aktiv" : ""}" data-ordnen="${k}">${l}</button>`).join("")}${S.v === "ist" ? `<span class="klein" style="align-self:center">gilt heute nur in der Tagesansicht</span>` : ""}</div>` : ""}
     <span class="lbl">Wer</span><div class="chips">${Object.keys(PERSONEN).map(pk => `<button class="chip ${S.wer.has(pk) ? "aktiv" : ""}" data-wer="${pk}"><span class="farbq" style="--c:${PERSONEN[pk].farbe}"></span>${esc(PERSONEN[pk].name)}</button>`).join("")}</div>
   </div>`;
 }
@@ -463,12 +463,12 @@ function zeichnen() {
       inhalt = istWocheIstListe() ? wocheListe() : wocheRaster("A");
     } else {
       const f = wochenForm();
-      if (S.v === "C") zustand = f === "B" ? "Platz reicht: <b>Spalte je Person</b> (wie B)" : f === "R" ? "Platz reicht: <b>Spalte je Raum</b>" : `Zu schmal für Spalten je ${S.ordnen === "beh" ? "Person" : "Raum"}: <b>Form A</b>`;
+      if (S.v === "C") zustand = f === "B" ? "Genug Platz: <b>Jede Person hat eine eigene Spalte</b> (wie B)" : f === "R" ? "Genug Platz: <b>Jeder Raum hat eine eigene Spalte</b>" : `Zu wenig Platz für eine Spalte je ${S.ordnen === "beh" ? "Person" : "Raum"}: <b>Darstellung wie A</b>`;
       inhalt = wocheRaster(f);
     }
   }
   app.innerHTML = `<h2 class="kopf">${titel}</h2>${leisteHtml()}${filterHtml()}${zustand ? `<div class="zustand">${zustand}</div>` : ""}${inhalt}${legendeHtml()}`;
-  document.getElementById("breiteInfo").textContent = `Kalenderfläche jetzt ${appBreite()} px breit`;
+  document.getElementById("breiteInfo").textContent = "";
   kachelnAnpassen();
 }
 // Beschriftung nach tatsächlicher Breite: unter 90 px nur Nachname und Kürzel, unter 44 px nur Farbe und Kürzel
@@ -532,7 +532,7 @@ document.addEventListener("click", e => {
       if (S.ansicht === "tag") { S.tag = Math.max(0, Math.min(6, S.tag + (a === "vor" ? 1 : -1))); }
       else { melde("Die Vorschau hat nur diese eine Woche."); return; }
     }
-    if (a === "neu") { melde("„+ Termin“ öffnet in Kartesa den Termin-Dialog."); return; }
+    if (a === "neu") { melde("„+ Termin“ öffnet in Kartesa das Fenster für einen neuen Termin."); return; }
     if (a === "weitere") { melde("Unter „Weitere“ liegen wie heute Legende, Hinweise auf den Terminen und die 3-Monats-Übersicht."); return; }
     if (a === "filter") S.filterOffen = !S.filterOffen;
     zeichnen(); return;
@@ -549,7 +549,7 @@ document.addEventListener("click", e => {
     const d = S.ansicht === "tag" ? S.tag : +(flaeche.dataset.leer ?? 0);
     const sub = ziel.closest(".sub");
     const pk = sub && sub.dataset.person;
-    melde(`Neuer Termin am ${TAG_LANG[d]} um ${hhmm(m)}${pk ? ` bei ${esc(PERSONEN[pk].name)}` : ""}. In Kartesa öffnet sich hier der Termin-Dialog mit dieser Zeit.`);
+    melde(`Neuer Termin am ${TAG_LANG[d]} um ${hhmm(m)}${pk ? ` bei ${esc(PERSONEN[pk].name)}` : ""}. In Kartesa öffnet sich hier das Fenster für einen neuen Termin, mit dieser Uhrzeit schon eingetragen.`);
   }
 });
 document.getElementById("breite").addEventListener("change", e => { S.breite = +e.target.value; zeichnen(); });
