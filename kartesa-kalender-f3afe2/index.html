@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Wochenkalender Vorschau</title>
+<style>
+:root{
+  --bg:#EFF1F0; --surface:#FFFFFF; --primary:#0B6E50; --primary-hover:#08533C; --gewaehlt:#D9F2E4;
+  --ink:#0B1C17; --muted:#3A4B44; --accent:#B5561C; --accent-hover:#934517; --accent-tint:#FEF7F2;
+  --border:#D5E2DB; --rahmen-feld:#7F958B; --hover-neutral:#E2E6E4;
+  --hinweis:#5F4A00; --hinweis-bg:#FFF0A3; --hinweis-border:#E6CB45;
+  --rahmen-kalender:#C9D6CF; --linie-kalender:#E1E8E4; --kopf-kalender:#D3E6DC;
+  --frei-flaeche:repeating-linear-gradient(135deg,#EEF0EF 0 2px,#FFFFFF 2px 9px);
+  --pause-flaeche:repeating-linear-gradient(135deg,#D5E2DB 0 3px,#F6F9F7 3px 10px);
+  --shadow:0 1px 2px rgba(16,35,31,.05),0 6px 18px rgba(16,35,31,.05);
+  --shadow-ebene:0 2px 6px rgba(16,35,31,.08),0 14px 36px rgba(16,35,31,.16);
+  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  --titel:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45}
+.seite{max-width:1500px;margin:0 auto;padding:20px 16px 60px}
+h1{font-family:var(--titel);font-weight:500;font-size:28px;margin:0 0 6px}
+h2{font-family:var(--titel);font-weight:500;font-size:20px;margin:0 0 8px}
+p{margin:0 0 10px}
+.einleitung{max-width:860px;color:var(--muted)}
+.karte{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin:14px 0}
+/* Variantenwahl */
+.varianten{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 0}
+.var-btn{font:inherit;text-align:left;background:var(--surface);border:1px solid var(--rahmen-feld);border-radius:3px;padding:10px 12px;cursor:pointer;color:var(--ink);box-shadow:var(--shadow)}
+.var-btn b{display:block;font-weight:600}
+.var-btn span{display:block;color:var(--muted);font-size:14px}
+.var-btn:hover{background:var(--hover-neutral)}
+.var-btn.aktiv{background:var(--gewaehlt);border-color:var(--primary);color:var(--primary-hover)}
+.var-btn.aktiv b::before{content:"✓ "}
+@media (max-width:760px){.varianten{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.beschreibung{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.beschreibung h3{font-size:15px;font-weight:600;margin:0 0 4px}
+.beschreibung ul{margin:0;padding-left:18px}
+@media (max-width:860px){.beschreibung{grid-template-columns:1fr}}
+/* Simulierte App */
+.geraet{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--muted);font-size:14px;margin:18px 0 6px}
+.geraet select{font:inherit;padding:5px 8px;border:1px solid var(--rahmen-feld);border-radius:3px;background:var(--surface)}
+.app{background:var(--bg);border:1px solid var(--rahmen-kalender);border-radius:10px;padding:16px;margin:0 auto;transition:max-width .2s}
+.app h2.kopf{font-size:26px;margin:0 0 12px}
+.leiste{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.leiste .rechts{margin-left:auto;display:flex;gap:8px}
+.btn,.seg button{font:inherit;font-size:15px;font-weight:600;height:36px;padding:0 14px;border:1px solid var(--rahmen-feld);background:var(--surface);color:var(--ink);border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover,.seg button:hover{background:var(--hover-neutral)}
+.btn.handlung{background:var(--accent-tint);border-color:var(--accent);color:var(--accent-hover)}
+.seg{display:inline-flex}
+.seg button{border-radius:0;margin-left:-1px}
+.seg button:first-child{border-radius:3px 0 0 3px;margin-left:0}
+.seg button:last-child{border-radius:0 3px 3px 0}
+.seg button.aktiv{background:var(--gewaehlt);border-color:var(--primary);color:var(--primary-hover);position:relative;z-index:1}
+.seg button.aktiv::before{content:"✓"}
+.seg button.pfeil{padding:0 11px}
+.neu-markierung{outline:3px solid var(--hinweis-border);outline-offset:2px}
+.filter{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:grid;grid-template-columns:110px 1fr;gap:10px 12px;align-items:center}
+.filter .lbl{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14px;font-weight:600;height:32px;padding:0 12px;border:1px solid var(--rahmen-feld);background:var(--surface);border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip.aktiv{background:var(--gewaehlt);border-color:var(--primary);color:var(--primary-hover)}
+.chip.aktiv::before{content:"✓"}
+.farbq{display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--c);flex:none}
+.zustand{font-size:14px;color:var(--muted);margin:-4px 0 10px}
+.zustand b{color:var(--ink);font-weight:600}
+/* Kalender */
+.kal-scroll{overflow-x:auto;border:1px solid var(--rahmen-kalender);border-radius:10px;background:var(--surface)}
+.kal{display:grid;min-width:max-content;min-width:100%}
+.kopfzeile{display:contents}
+.k-ecke,.k-tag{background:var(--kopf-kalender);border-bottom:1px solid var(--rahmen-kalender);position:sticky;top:0;z-index:3}
+.k-tag{padding:6px 8px 4px;font-weight:600;font-size:14px;border-left:1px solid var(--linie-kalender);cursor:pointer;white-space:nowrap;overflow:hidden}
+.k-tag:hover{background:#c7ddd1}
+.k-tag .zahl{font-weight:400;color:var(--muted)}
+.k-tag.heute .datum{background:var(--primary);color:#fff;border-radius:9px;padding:0 7px}
+.k-tag .sub{display:flex;margin-top:4px}
+.k-tag .sub span{flex:1 1 0;min-width:0;text-align:center;font-size:12.5px;font-weight:600;border-top:3px solid var(--c);padding-top:2px;overflow:hidden;text-overflow:ellipsis}
+.zeiten{position:relative;background:var(--kopf-kalender)}
+.zeiten span{position:absolute;right:6px;font-size:12.5px;color:var(--muted);transform:translateY(-50%)}
+.tag{position:relative;border-left:1px solid var(--linie-kalender);background-image:repeating-linear-gradient(to bottom,var(--linie-kalender) 0 1px,transparent 1px var(--stunde))}
+.tag.frei{background:var(--frei-flaeche)}
+.tag.frei .frei-text{position:absolute;top:10px;left:0;right:0;text-align:center;color:var(--muted);font-size:13px}
+.subs{position:absolute;inset:0;display:flex}
+.sub{position:relative;flex:1 1 0;min-width:0;border-left:1px dashed var(--linie-kalender)}
+.sub:first-child{border-left:none}
+.block{position:absolute;left:0;right:0;background:var(--frei-flaeche);pointer-events:none}
+.block.pause{background:var(--pause-flaeche)}
+.block .bt{position:absolute;left:6px;top:4px;font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.tile{position:absolute;border-radius:3px;padding:2px 5px 2px 7px;overflow:hidden;cursor:pointer;background:color-mix(in srgb,var(--c) 18%,var(--surface));border-left:5px solid var(--c);font-size:12.5px;line-height:1.25;z-index:2}
+.tile:hover{background:color-mix(in srgb,var(--c) 28%,var(--surface));z-index:4}
+.tile .n{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:22px}
+.tile .z,.tile .r{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.tile .k{position:absolute;top:2px;right:3px}
+.tile .h{position:absolute;right:3px;bottom:2px}
+.kurz .r{display:none}
+.w-s .z,.w-s .r,.w-s .h{display:none}
+.w-s .n .vn{display:none}
+.w-s .n{padding-right:0}
+.w-s .k{position:static;display:inline-block;margin-top:2px}
+.w-xs{padding:2px 1px 2px 3px;border-left-width:4px}
+.w-xs .n{display:none}
+.w-xs .k{min-width:0;padding:0 3px}
+.kk{display:inline-block;min-width:20px;padding:0 5px;border-radius:9px;background:var(--p);color:#fff;font-size:12px;font-weight:700;text-align:center;line-height:18px}
+.etk{display:inline-block;border:1px solid var(--hinweis-border);background:var(--hinweis-bg);color:var(--hinweis);border-radius:3px;font-size:12px;font-weight:600;padding:0 4px;line-height:16px}
+/* Liste (heutiger Stand) */
+.liste{display:grid;border:1px solid var(--rahmen-kalender);border-radius:10px;overflow:hidden;background:var(--surface)}
+.l-tag{border-left:1px solid var(--linie-kalender);min-width:0}
+.l-tag:first-child{border-left:none}
+.l-kopf{background:var(--kopf-kalender);padding:6px 8px;font-weight:600;font-size:14px;cursor:pointer;border-bottom:1px solid var(--rahmen-kalender)}
+.l-kopf.heute .datum{background:var(--primary);color:#fff;border-radius:9px;padding:0 7px}
+.l-e{position:relative;padding:6px 8px 6px 10px;border-bottom:1px solid var(--linie-kalender);border-left:4px solid var(--c);cursor:pointer;font-size:14px}
+.l-e:hover{background:var(--hover-neutral)}
+.l-e .zeit{font-weight:700}
+.l-e .name{font-weight:700;display:block}
+.l-e .neben{color:var(--muted);display:block}
+.l-e .kk{position:absolute;right:6px;top:6px}
+.l-leer{padding:8px;color:var(--muted);font-size:14px}
+.l-hinweis{font-size:14px;color:var(--muted);margin-top:8px}
+/* Popover und Meldung */
+.pop{position:fixed;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-ebene);padding:12px 14px;width:270px;font-size:14px}
+.pop .band{margin:-12px -14px 10px;padding:8px 14px;background:var(--primary);color:var(--gewaehlt);border-radius:10px 10px 0 0;font-family:var(--titel);font-size:17px}
+.pop dl{display:grid;grid-template-columns:90px 1fr;gap:3px 8px;margin:0}
+.pop dt{color:var(--muted)}
+.pop dd{margin:0}
+.pop .fuss{margin-top:10px;color:var(--muted);font-size:13px}
+.meldung{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:60;max-width:min(560px,calc(100vw - 32px));box-shadow:var(--shadow-ebene)}
+.legende{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--muted);margin-top:10px}
+.legende span{display:inline-flex;align-items:center;gap:6px}
+.fragen ol{margin:0;padding-left:20px}
+.fragen li{margin-bottom:4px}
+.klein{font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="seite">
+  <h1>Wochenkalender für Teampraxen</h1>
+  <p class="einleitung">Sie sehen dieselbe erfundene Woche mit zwei Behandelnden (Jonas Berger, Lena Hoffmann) in vier Darstellungen: so, wie Kartesa sie heute zeigt, und in drei Vorschlägen. Alles ist anklickbar: Termine öffnen eine Kurzansicht, ein Klick in eine freie Stelle zeigt, wo ein neuer Termin beginnen würde, ein Klick auf das Datum öffnet den Tag. Es wird nichts gespeichert und nichts an Kartesa geschickt. Am besten am Laptop oder iPad ansehen.</p>
+
+  <div class="varianten" id="varianten"></div>
+
+  <div class="karte beschreibung" id="beschreibung"></div>
+
+  <div class="geraet">
+    <label for="breite">Bildschirmbreite nachstellen:</label>
+    <select id="breite">
+      <option value="0">wie Ihr Fenster</option>
+      <option value="1440">großer Bildschirm (1440 px)</option>
+      <option value="1200">Laptop (1200 px)</option>
+      <option value="1024">iPad quer (1024 px)</option>
+      <option value="834">iPad hoch (834 px)</option>
+    </select>
+    <span id="breiteInfo"></span>
+  </div>
+
+  <div class="app" id="app"></div>
+
+  <div class="karte fragen">
+    <h2>Was uns Ihre Antwort leichter macht</h2>
+    <ol>
+      <li>Mit welcher Variante sehen Sie am Telefon am schnellsten, wann noch etwas frei ist, und bei wem?</li>
+      <li>Reicht Ihnen das farbige Kürzel auf dem Termin, um zu sehen, wer behandelt? Oder möchten Sie lieber, dass die ganze Kachel die Farbe der Person trägt statt der Farbe der Terminart?</li>
+      <li>Hilft Ihnen „Tag | Woche | Monat“ oben in der Leiste?</li>
+      <li>Fehlt etwas, das Sie aus Ihrem bisherigen Kalender gewohnt sind?</li>
+    </ol>
+    <p class="klein" style="margin-top:10px">Antworten Sie einfach auf die Mail, mit der Sie diesen Link bekommen haben. Stichworte genügen.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+// ---------- Erfundene Testdaten (Woche 09.–15.11.2026) ----------
+const TAGE = ["Mo 09.11.", "Di 10.11.", "Mi 11.11.", "Do 12.11.", "Fr 13.11.", "Sa 14.11.", "So 15.11."];
+const TAG_LANG = ["Montag, 9. November", "Dienstag, 10. November", "Mittwoch, 11. November", "Donnerstag, 12. November", "Freitag, 13. November", "Samstag, 14. November", "Sonntag, 15. November"];
+const HEUTE = 3;
+const PERSONEN = {
+  T: { k: "JB", name: "Jonas Berger", farbe: "#2A6FB5", az: { 0: ["08:00", "18:30"], 1: ["08:00", "18:30"], 2: ["08:00", "18:30"], 3: ["08:00", "18:30"], 4: ["08:00", "16:00"] } },
+  KE: { k: "LH", name: "Lena Hoffmann", farbe: "#C0336B", az: { 0: ["08:30", "17:00"], 1: ["08:30", "17:00"], 3: ["08:30", "17:00"], 4: ["08:30", "13:00"] } },
+};
+const PRAXIS = { von: "08:00", bis: "18:30", pause: ["12:00", "13:00"], tage: [0, 1, 2, 3, 4] };
+const ARTEN = {
+  rezept: ["Rezepttermin", "#2A6FB5"], infusion: ["Infusion", "#A68A0E"], hp: ["Behandlung HP", "#A8582A"], osteo: ["Osteopathie", "#23874F"],
+  ihht: ["IHHT", "#7B4FC0"], naehr: ["Nährstoffberatung", "#0E8A90"], befund: ["Befundbesprechung", "#C0336B"],
+};
+const RAEUME = {
+  gd: ["GD-Raum", "#6E7781"], gross: ["Grosser Raum", "#2A6FB5"], inf1: ["Infusion 1", "#23874F"], inf2: ["Infusion 2", "#C0336B"],
+  klein: ["Kleiner Raum", "#0E8A90"], training: ["Trainingsraum", "#A68A0E"],
+};
+const ROH = `
+0|08:00|60|Paulsen, Frida|osteo|T|gross|
+0|08:30|45|Weber, Paul|hp|KE|klein|
+0|09:00|45|Nowak, Nina|naehr|T|gd|
+0|09:30|60|Keller, Jonas|ihht|KE|training|
+0|10:00|30|Rezept, Renate|rezept|T|gross|✓
+0|10:45|45|Hansen, Grete|infusion|T|inf1|L
+0|11:00|30|Ausfall, Anton|hp|T|klein|R
+0|11:00|45|Brandt, Ilse|infusion|T|inf2|L
+0|11:00|60|Sommer, Lea|osteo|KE|gd|
+0|13:00|45|Yilmaz, Ahmet|infusion|T|inf1|
+0|14:00|30|Test, Theo|hp|T|klein|R
+0|14:00|60|Roth, Maria|befund|KE|gd|
+0|15:15|60|Krause, Timo|osteo|T|gross|L
+0|15:15|30|Teamarbeit, Tom|hp|KE|training|
+0|16:00|45|Vogt, Emil|ihht|KE|training|
+0|16:30|45|Lang, Petra|infusion|T|inf2|
+1|08:30|45|Bauer, Kim|rezept|T|gross|
+1|08:30|60|Fischer, Anna|osteo|KE|klein|
+1|09:45|45|Befund, Bernd|ihht|T|training|L
+1|10:00|45|Nowak, Nina|infusion|T|inf1|L
+1|10:00|60|Schulz, Ben|hp|KE|klein|
+1|10:30|45|Rezept, Renate|infusion|T|inf2|L
+1|10:45|45|Hansen, Grete|infusion|T|inf1|L
+1|11:15|45|Wolf, Clara|befund|KE|gd|
+1|13:00|60|Meier, Jan|osteo|T|gross|
+1|13:30|45|Kaya, Mia|hp|KE|klein|
+1|14:30|45|Lorenz, Tim|naehr|T|gd|
+1|15:00|60|Peters, Uwe|infusion|T|inf1|
+1|15:00|60|Hahn, Sara|osteo|KE|klein|
+1|16:30|30|Graf, Eva|rezept|T|gross|
+2|08:00|45|Albers, Ole|rezept|T|gross|
+2|09:00|60|Dietz, Rita|infusion|T|inf1|
+2|09:15|45|Engel, Max|osteo|T|gross|
+2|10:30|45|Frank, Ute|ihht|T|training|
+2|14:00|45|Paulsen, Frida|osteo|T|gross|✓
+2|15:00|60|Gross, Lina|infusion|T|inf2|
+2|16:00|30|Haas, Rolf|befund|T|gd|
+3|08:30|45|Ilg, Sven|osteo|T|gross|
+3|08:30|60|Jung, Pia|hp|KE|klein|
+3|09:30|60|Kurz, Ida|infusion|T|inf1|
+3|09:45|45|Lenz, Kai|rezept|T|gross|
+3|10:00|45|Maas, Udo|ihht|KE|training|
+3|11:00|45|Noll, Vera|naehr|T|gd|
+3|15:00|60|Hansen, Grete|infusion|T|inf1|
+3|15:00|60|Weber, Paul|hp|KE|klein|
+3|15:15|45|Otto, Jana|osteo|T|gross|
+3|16:15|45|Pohl, René|befund|KE|klein|
+4|08:00|30|Quast, Lea|rezept|T|gross|
+4|08:30|60|Ries, Tom|osteo|KE|klein|
+4|09:00|60|Sander, Ute|infusion|T|inf2|
+4|10:00|30|Rezept, Renate|rezept|T|gross|
+4|10:00|45|Weber, Paul|hp|KE|klein|
+4|10:15|45|Thiel, Ina|ihht|T|training|
+4|11:00|45|Ulrich, Bea|befund|KE|gd|
+4|14:00|60|Voss, Karl|osteo|T|gross|`;
+const min = s => +s.slice(0, 2) * 60 + +s.slice(3, 5);
+const hhmm = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+const TERMINE = ROH.trim().split("\n").map((z, i) => {
+  const [tag, von, dauer, name, art, p, raum, h] = z.split("|");
+  return { id: i, tag: +tag, s: min(von), e: min(von) + +dauer, name, art, p, raum, h: h || "" };
+});
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+// ---------- Zustand ----------
+const S = { v: "ist", ansicht: "woche", tag: 0, wer: new Set(["T", "KE"]), ordnen: "beh", filterOffen: false, breite: 0 };
+const VON = 8 * 60, BIS = 19 * 60, PX = 1.25;
+const HOEHE = (BIS - VON) * PX;
+
+const VARIANTEN = {
+  ist: { titel: "Heute in Kartesa", kurz: "Stand Ihrer Testpraxis",
+    text: "So zeigt Kartesa die Woche heute in einer Teampraxis. Liegen an einem Tag zwei Termine gleichzeitig und passen sie nicht nebeneinander, wird die ganze Woche zur Liste: ohne Uhrzeiten, ohne freie Lücken, die Farbe nur als Streifen. Das Raster mit Spalten je Person zeigt nur der Tag, erreichbar über einen Klick auf das Datum.",
+    plus: ["Lange Namen bleiben lesbar"], minus: ["Freie Zeiten sind in der Woche nicht zu sehen", "Gleichzeitige Termine stehen untereinander", "Der Tag mit Spalten ist schwer zu finden"] },
+  A: { titel: "A · Immer Raster", kurz: "Empfehlung",
+    text: "Die Woche ist immer ein Raster mit Uhrzeiten, wie in der Einzelpraxis. Gleichzeitige Termine stehen nebeneinander und teilen sich die Breite des Tages. Wird es eng, kürzt Kartesa die Beschriftung bis auf Nachname und Kürzel; ein Klick zeigt immer alles. Wer behandelt, zeigt das farbige Kürzel. Neu oben: Tag | Woche | Monat.",
+    plus: ["Freie Zeit ist weiße Fläche", "Eine Woche für alle Praxen, kein neuer Schalter", "Farbig wie der Tag"], minus: ["An vollen Tagen werden Namen gekürzt", "Ob eine bestimmte Person frei ist, zeigt erst der Tag oder der Filter „Wer“"] },
+  B: { titel: "B · Spalte je Person", kurz: "jeder Tag geteilt",
+    text: "Jeder Tag teilt sich in eine Spalte je Person, die an dem Tag arbeitet. Schraffiert heißt: diese Person arbeitet zu der Zeit nicht. So sieht man sofort, wann Jonas oder Lena frei ist.",
+    plus: ["„Wann ist Lena am Donnerstag frei?“ auf einen Blick", "Arbeitszeiten je Person sichtbar"], minus: ["Spalten werden schmal, ab drei Personen am Laptop zu schmal", "Auf dem iPad hoch kaum lesbar"] },
+  C: { titel: "C · A, mit Spalten wenn Platz", kurz: "passt sich an",
+    text: "Grundform ist A. Steht im Filter „Ordnen nach: Behandelnde“ und ist der Bildschirm breit genug (etwa 70 px je Person und Tag), teilt sich jeder Tag in Spalten je Person wie bei B. Sonst bleibt es bei A. Probieren Sie oben die Bildschirmbreite und im Filter „Ordnen nach“.",
+    plus: ["Personensicht, wo Platz ist", "Kein zusätzlicher Knopf"], minus: ["Die Woche sieht je Gerät anders aus", "Schwerer zu erklären"] },
+};
+
+// ---------- Hilfen ----------
+const sichtbar = t => S.wer.has(t.p);
+const termineAm = d => TERMINE.filter(t => t.tag === d && sichtbar(t));
+const arbeitet = (pk, d) => !!PERSONEN[pk].az[d];
+const anwesend = d => Object.keys(PERSONEN).filter(pk => S.wer.has(pk) && (arbeitet(pk, d) || TERMINE.some(t => t.tag === d && t.p === pk)));
+const raeumeAm = d => Object.keys(RAEUME).filter(r => termineAm(d).some(t => t.raum === r));
+const praxisTag = d => PRAXIS.tage.includes(d);
+const freierTag = d => !praxisTag(d) && !termineAm(d).length;
+
+// Gleichzeitige Termine nebeneinander: Gruppen sich überschneidender Termine, je Termin Bahn i von n
+function bahnen(liste) {
+  const res = new Map();
+  const l = [...liste].sort((a, b) => a.s - b.s || b.e - a.e);
+  let gruppe = [], enden = [], gruppeEnde = -1;
+  // Ist rechts daneben in der Gruppe frei, wird die Kachel breiter (wie im Apple-Kalender)
+  const ab = () => {
+    const n = enden.length;
+    gruppe.forEach(g => {
+      let span = 1;
+      for (let k = g.i + 1; k < n; k++) { if (gruppe.some(o => o.i === k && o.t.s < g.t.e && g.t.s < o.t.e)) break; span++; }
+      res.set(g.t.id, { i: g.i, n, span });
+    });
+    gruppe = []; enden = [];
+  };
+  for (const t of l) {
+    if (gruppe.length && t.s >= gruppeEnde) { ab(); gruppeEnde = -1; }
+    let i = enden.findIndex(e => e <= t.s);
+    if (i < 0) { i = enden.length; enden.push(t.e); } else enden[i] = t.e;
+    gruppe.push({ t, i }); gruppeEnde = Math.max(gruppeEnde, t.e);
+  }
+  ab();
+  return res;
+}
+const y = m => (m - VON) * PX;
+function bloeckeHtml(bloecke) {
+  return bloecke.map(b => `<div class="block ${b.pause ? "pause" : ""}" style="top:${y(b.von)}px;height:${(b.bis - b.von) * PX}px">${b.text ? `<span class="bt">${b.text}</span>` : ""}</div>`).join("");
+}
+function praxisBloecke(d) {
+  if (!praxisTag(d)) return [{ von: VON, bis: BIS }];
+  const v = min(PRAXIS.von), b = min(PRAXIS.bis), p = PRAXIS.pause.map(min);
+  return [{ von: VON, bis: v }, { von: b, bis: BIS }, { von: p[0], bis: p[1], pause: true, text: `Pause ${PRAXIS.pause.join("–")}` }].filter(x => x.bis > x.von);
+}
+function personBloecke(pk, d) {
+  const az = PERSONEN[pk].az[d];
+  const p = PRAXIS.pause.map(min);
+  const pause = praxisTag(d) ? [{ von: p[0], bis: p[1], pause: true, text: "Pause" }] : [];
+  if (!az) return [{ von: VON, bis: BIS, text: "arbeitet nicht" }];
+  return [{ von: VON, bis: min(az[0]) }, { von: min(az[1]), bis: BIS }, ...pause].filter(x => x.bis > x.von);
+}
+function kachel(t, bahn, mitKuerzel) {
+  const a = ARTEN[t.art], p = PERSONEN[t.p], r = RAEUME[t.raum];
+  const [nn, vn] = t.name.split(", ");
+  const left = bahn ? (bahn.i * 100) / bahn.n : 0, w = bahn ? (100 * bahn.span) / bahn.n : 100;
+  const hoehe = (t.e - t.s) * PX;
+  return `<div class="tile ${hoehe < 50 ? "kurz" : ""}" data-id="${t.id}" title="${esc(`${t.name} · ${hhmm(t.s)}–${hhmm(t.e)} · ${a[0]} · ${p.name} · ${r[0]}`)}"
+    style="--c:${a[1]};top:${y(t.s) + 1}px;height:${hoehe - 2}px;left:calc(${left}% + 2px);width:calc(${w}% - 4px)">
+    <div class="n">${esc(nn)}<span class="vn">, ${esc(vn)}</span></div>
+    <div class="z">${hhmm(t.s)}–${hhmm(t.e)}</div>
+    <div class="r"><span class="farbq" style="--c:${r[1]}"></span> ${esc(r[0])}</div>
+    ${mitKuerzel ? `<span class="k kk" style="--p:${p.farbe}">${p.k}</span>` : ""}
+    ${t.h && t.h !== "✓" ? `<span class="h etk">${t.h}</span>` : ""}</div>`;
+}
+function spalteHtml(liste, bloecke, mitKuerzel) {
+  const b = bahnen(liste);
+  return bloeckeHtml(bloecke) + liste.map(t => kachel(t, b.get(t.id), mitKuerzel)).join("");
+}
+
+// ---------- Darstellung der Woche ----------
+function wochenForm() {
+  if (S.v === "ist") return "liste-pruefen";
+  if (S.v === "A") return "A";
+  if (S.v === "B") return "B";
+  // C: Spalten je Person (oder Raum), wenn sie mindestens 70 px breit werden
+  const breite = appBreite() - 34 - 52;
+  const arbeitsTage = TAGE.map((_, d) => d).filter(d => !freierTag(d));
+  const tagBreite = (breite - (7 - arbeitsTage.length) * 64) / arbeitsTage.length;
+  const max = Math.max(1, ...arbeitsTage.map(d => (S.ordnen === "beh" ? anwesend(d) : raeumeAm(d)).length));
+  return tagBreite / max >= 70 ? (S.ordnen === "beh" ? "B" : "R") : "A";
+}
+function appBreite() { return document.getElementById("app").clientWidth; }
+
+function istWocheIstListe() {
+  // heutige Regel in Kartesa: Raster nur, wenn alle gleichzeitigen Termine je 100 px nebeneinander passen
+  const spalte = (appBreite() - 34 - 52) / 7;
+  if (spalte < 120) return true;
+  const passt = Math.max(1, Math.floor(spalte / 100));
+  return TAGE.some((_, d) => { const ts = termineAm(d); return ts.some(t => ts.filter(x => x.s < t.e && t.s < x.e).length > passt); });
+}
+
+function rasterHtml(spalten) {
+  // spalten: [{kopf, sub:[{name,farbe}], frei, inhalt}]
+  const cols = "52px " + spalten.map(s => s.frei ? "64px" : `minmax(${s.minBreite || 90}px,1fr)`).join(" ");
+  const stunden = [];
+  for (let m = VON + 60; m < BIS; m += 60) stunden.push(`<span style="top:${y(m)}px">${hhmm(m)}</span>`);
+  return `<div class="kal-scroll"><div class="kal" style="grid-template-columns:${cols};--stunde:${60 * PX}px">
+    <div class="k-ecke"></div>
+    ${spalten.map(s => `<div class="k-tag ${s.heute ? "heute" : ""}" ${s.d != null ? `data-tag="${s.d}" title="Tag öffnen"` : ""}>${s.kopf}${s.sub ? `<div class="sub">${s.sub.map(x => `<span style="--c:${x.farbe}" title="${esc(x.name)}">${esc(x.kurz)}</span>`).join("")}</div>` : ""}</div>`).join("")}
+    <div class="zeiten" style="height:${HOEHE}px">${stunden.join("")}</div>
+    ${spalten.map(s => `<div class="tag ${s.frei ? "frei" : ""}" style="height:${HOEHE}px" ${s.d != null ? `data-leer="${s.d}"` : ""}>${s.inhalt}</div>`).join("")}
+  </div></div>`;
+}
+function tagKopf(d, lang) {
+  const n = termineAm(d).length;
+  return `<span class="datum">${lang ? TAG_LANG[d] : TAGE[d]}</span>${d === HEUTE ? " · heute" : ""} <span class="zahl">· ${n}</span>`;
+}
+function wocheRaster(form) {
+  const spalten = TAGE.map((_, d) => {
+    const ts = termineAm(d);
+    if (freierTag(d)) return { d, frei: true, kopf: tagKopf(d), inhalt: `<span class="frei-text">frei</span>` };
+    if (form === "B" || form === "R") {
+      const lanes = form === "B" ? anwesend(d).map(pk => ({ id: pk, kurz: PERSONEN[pk].k, name: PERSONEN[pk].name, farbe: PERSONEN[pk].farbe }))
+                                 : raeumeAm(d).map(r => ({ id: r, kurz: RAEUME[r][0], name: RAEUME[r][0], farbe: RAEUME[r][1] }));
+      const inhalt = `<div class="subs">${lanes.map(l => `<div class="sub" data-person="${form === "B" ? l.id : ""}">${spalteHtml(ts.filter(t => (form === "B" ? t.p : t.raum) === l.id), form === "B" ? personBloecke(l.id, d) : praxisBloecke(d), form === "R")}</div>`).join("")}</div>`;
+      return { d, heute: d === HEUTE, kopf: tagKopf(d), sub: lanes, inhalt, minBreite: lanes.length * 60 };
+    }
+    return { d, heute: d === HEUTE, kopf: tagKopf(d), inhalt: spalteHtml(ts, praxisBloecke(d), true) };
+  });
+  return rasterHtml(spalten);
+}
+function wocheListe() {
+  const tag = d => {
+    const ts = termineAm(d).sort((a, b) => a.s - b.s);
+    return `<div class="l-tag"><div class="l-kopf ${d === HEUTE ? "heute" : ""}" data-tag="${d}">${tagKopf(d)}</div>
+      ${ts.map(t => { const a = ARTEN[t.art], p = PERSONEN[t.p], r = RAEUME[t.raum];
+        return `<div class="l-e" data-id="${t.id}" style="--c:${a[1]}"><span class="zeit">${hhmm(t.s)}</span><span class="kk" style="--p:${p.farbe}">${p.k}</span>
+          <span class="name">${esc(t.name)}</span><span class="neben">${esc(a[0])}</span><span class="neben"><span class="farbq" style="--c:${r[1]}"></span> ${esc(r[0])}</span>
+          ${t.h && t.h !== "✓" ? `<span class="etk">${t.h === "L" ? "Leistung" : "Rechnung"}</span>` : ""}</div>`; }).join("") || `<div class="l-leer">frei</div>`}</div>`;
+  };
+  return `<div class="liste" style="grid-template-columns:repeat(7,minmax(0,1fr))">${TAGE.map((_, d) => tag(d)).join("")}</div>
+    <div class="l-hinweis">Zu viele gleichzeitige Termine für das Raster: je Tag eine Liste. Freie Zeiten zeigt der Tag (auf das Datum tippen).</div>`;
+}
+function tagAnsicht() {
+  const d = S.tag;
+  const lanes = (S.v === "C" && S.ordnen === "raum") ? raeumeAm(d).map(r => ({ id: r, name: RAEUME[r][0], kurz: RAEUME[r][0], farbe: RAEUME[r][1], raum: true }))
+              : anwesend(d).map(pk => ({ id: pk, name: PERSONEN[pk].name, kurz: PERSONEN[pk].name, farbe: PERSONEN[pk].farbe }));
+  if (freierTag(d) || !lanes.length) return rasterHtml([{ d, frei: true, kopf: tagKopf(d, true), inhalt: `<span class="frei-text">frei</span>` }]);
+  const ts = termineAm(d);
+  const spalten = lanes.map(l => ({ d, heute: false, kopf: `<span style="border-top:3px solid ${l.farbe};padding-top:2px">${esc(l.name)}</span>`,
+    inhalt: `<div class="subs"><div class="sub" data-person="${l.raum ? "" : l.id}">${spalteHtml(ts.filter(t => (l.raum ? t.raum : t.p) === l.id), l.raum ? praxisBloecke(d) : personBloecke(l.id, d), !!l.raum)}</div></div>`, minBreite: 160 }));
+  return `<div class="zustand"><b>${TAG_LANG[d]}</b>${d === HEUTE ? " · heute" : ""} · Spalte je ${lanes[0].raum ? "Raum" : "Person"}</div>` + rasterHtml(spalten).replace(/data-tag="\d"/g, "");
+}
+
+// ---------- Leiste, Filter, Seite ----------
+function leisteHtml() {
+  const neu = S.v !== "ist";
+  const ansichten = neu ? [["tag", "Tag"], ["woche", "Woche"], ["monat", "Monat"]] : [["woche", "Woche"], ["monat", "Monat"]];
+  return `<div class="leiste">
+    <button class="btn" data-a="heute">Heute</button>
+    <div class="seg ${neu ? "neu-markierung" : ""}" ${neu ? 'title="Neu: Tag als eigene Ansicht"' : ""}>
+      <button class="pfeil" data-a="zurueck" aria-label="zurück">‹</button>
+      ${ansichten.map(([k, l]) => `<button class="${S.ansicht === k ? "aktiv" : ""}" data-ansicht="${k}">${l}</button>`).join("")}
+      <button class="pfeil" data-a="vor" aria-label="vor">›</button>
+    </div>
+    <button class="btn handlung" data-a="neu">+ Termin</button>
+    <div class="rechts"><button class="btn" data-a="filter">Filter ${S.filterOffen ? "▴" : "▾"}</button><button class="btn" data-a="weitere">Weitere ⋯</button></div>
+  </div>`;
+}
+function filterHtml() {
+  if (!S.filterOffen) return "";
+  const ordnen = S.v === "ist" || S.v === "C";
+  return `<div class="filter">
+    ${ordnen ? `<span class="lbl">Ordnen nach</span><div class="chips">${[["beh", "Behandelnde"], ["raum", "Räume"]].map(([k, l]) => `<button class="chip ${S.ordnen === k ? "aktiv" : ""}" data-ordnen="${k}">${l}</button>`).join("")}${S.v === "ist" ? `<span class="klein" style="align-self:center">wirkt heute nur im Tag</span>` : ""}</div>` : ""}
+    <span class="lbl">Wer</span><div class="chips">${Object.keys(PERSONEN).map(pk => `<button class="chip ${S.wer.has(pk) ? "aktiv" : ""}" data-wer="${pk}"><span class="farbq" style="--c:${PERSONEN[pk].farbe}"></span>${esc(PERSONEN[pk].name)}</button>`).join("")}</div>
+  </div>`;
+}
+function legendeHtml() {
+  return `<div class="legende">${Object.values(ARTEN).map(([n, c]) => `<span><span class="farbq" style="--c:${c}"></span>${n}</span>`).join("")}
+    <span>· Kürzel: ${Object.values(PERSONEN).map(p => `<span class="kk" style="--p:${p.farbe}">${p.k}</span> ${esc(p.name)}`).join(" ")}</span>
+    <span>· <span class="etk">L</span> Leistung offen · <span class="etk">R</span> Rechnung offen</span></div>`;
+}
+function zeichnen() {
+  // Variantenwahl und Beschreibung
+  document.getElementById("varianten").innerHTML = Object.entries(VARIANTEN).map(([k, v]) =>
+    `<button class="var-btn ${S.v === k ? "aktiv" : ""}" data-v="${k}"><b>${v.titel}</b><span>${v.kurz}</span></button>`).join("");
+  const V = VARIANTEN[S.v];
+  document.getElementById("beschreibung").innerHTML = `<div><h2>${V.titel}</h2><p>${V.text}</p></div>
+    <div><h3>Gut</h3><ul>${V.plus.map(x => `<li>${x}</li>`).join("")}</ul></div>
+    <div><h3>Weniger gut</h3><ul>${V.minus.map(x => `<li>${x}</li>`).join("")}</ul></div>`;
+  const app = document.getElementById("app");
+  app.style.maxWidth = S.breite ? S.breite + "px" : "";
+  let titel, inhalt, zustand = "";
+  if (S.ansicht === "tag") {
+    titel = TAG_LANG[S.tag];
+    inhalt = tagAnsicht();
+  } else {
+    titel = "Woche 09.11.–15.11.2026 · KW 46";
+    if (S.v === "ist") {
+      inhalt = istWocheIstListe() ? wocheListe() : wocheRaster("A");
+    } else {
+      const f = wochenForm();
+      if (S.v === "C") zustand = f === "B" ? "Platz reicht: <b>Spalte je Person</b> (wie B)" : f === "R" ? "Platz reicht: <b>Spalte je Raum</b>" : `Zu schmal für Spalten je ${S.ordnen === "beh" ? "Person" : "Raum"}: <b>Form A</b>`;
+      inhalt = wocheRaster(f);
+    }
+  }
+  app.innerHTML = `<h2 class="kopf">${titel}</h2>${leisteHtml()}${filterHtml()}${zustand ? `<div class="zustand">${zustand}</div>` : ""}${inhalt}${legendeHtml()}`;
+  document.getElementById("breiteInfo").textContent = `Kalenderfläche jetzt ${appBreite()} px breit`;
+  kachelnAnpassen();
+}
+// Beschriftung nach tatsächlicher Breite: unter 90 px nur Nachname und Kürzel, unter 44 px nur Farbe und Kürzel
+function kachelnAnpassen() {
+  document.querySelectorAll("#app .tile").forEach(el => {
+    const w = el.offsetWidth;
+    el.classList.toggle("w-s", w < 90);
+    el.classList.toggle("w-xs", w < 44);
+  });
+}
+
+// ---------- Bedienung ----------
+let pop = null, meldTimer = null;
+function schliessePop() { if (pop) { pop.remove(); pop = null; } }
+function melde(text) {
+  let m = document.querySelector(".meldung");
+  if (!m) { m = document.createElement("div"); m.className = "meldung"; document.body.appendChild(m); }
+  m.innerHTML = text;
+  clearTimeout(meldTimer); meldTimer = setTimeout(() => m.remove(), 4200);
+}
+function zeigeTermin(id, x, yPos) {
+  schliessePop();
+  const t = TERMINE[id], a = ARTEN[t.art], p = PERSONEN[t.p], r = RAEUME[t.raum];
+  pop = document.createElement("div");
+  pop.className = "pop";
+  pop.innerHTML = `<div class="band">Termin</div><dl>
+    <dt>Patientin</dt><dd><b>${esc(t.name)}</b></dd><dt>Zeit</dt><dd>${TAG_LANG[t.tag]}, ${hhmm(t.s)}–${hhmm(t.e)}</dd>
+    <dt>Terminart</dt><dd><span class="farbq" style="--c:${a[1]}"></span> ${a[0]}</dd><dt>bei</dt><dd><span class="kk" style="--p:${p.farbe}">${p.k}</span> ${esc(p.name)}</dd>
+    <dt>Raum</dt><dd><span class="farbq" style="--c:${r[1]}"></span> ${r[0]}</dd>
+    ${t.h === "L" ? "<dt>Hinweis</dt><dd>Leistung noch nicht erfasst</dd>" : t.h === "R" ? "<dt>Hinweis</dt><dd>Rechnung offen</dd>" : t.h === "✓" ? "<dt>Hinweis</dt><dd>Termin bestätigt</dd>" : ""}
+  </dl><div class="fuss">In Kartesa öffnet sich hier der Termin zum Bearbeiten.</div>`;
+  document.body.appendChild(pop);
+  const w = 270, h = pop.offsetHeight;
+  pop.style.left = Math.max(8, Math.min(x + 12, innerWidth - w - 8)) + "px";
+  pop.style.top = Math.max(8, Math.min(yPos - 20, innerHeight - h - 8)) + "px";
+}
+document.addEventListener("click", e => {
+  const ziel = e.target;
+  const v = ziel.closest("[data-v]");
+  if (v) { S.v = v.dataset.v; if (S.v === "ist" && S.ansicht === "tag") S.ansicht = "woche"; schliessePop(); zeichnen(); return; }
+  if (pop && !ziel.closest(".pop") && !ziel.closest("[data-id]")) schliessePop();
+  const tile = ziel.closest("[data-id]");
+  if (tile) { zeigeTermin(+tile.dataset.id, e.clientX, e.clientY); return; }
+  const tagKopfEl = ziel.closest("[data-tag]");
+  if (tagKopfEl) { S.ansicht = "tag"; S.tag = +tagKopfEl.dataset.tag; zeichnen(); return; }
+  const an = ziel.closest("[data-ansicht]");
+  if (an) {
+    if (an.dataset.ansicht === "monat") { melde("Die Monatsansicht bleibt wie heute und gehört nicht zu dieser Vorschau."); return; }
+    if (an.dataset.ansicht === "tag" && S.ansicht !== "tag") S.tag = HEUTE;
+    S.ansicht = an.dataset.ansicht; zeichnen(); return;
+  }
+  const akt = ziel.closest("[data-a]");
+  if (akt) {
+    const a = akt.dataset.a;
+    if (a === "heute") {
+      // heute in Kartesa: „Heute“ öffnet den Tag. Vorschlag: in der Woche bleibt man in der Woche, im Tag springt es auf heute.
+      if (S.v === "ist" || S.ansicht === "tag") { S.ansicht = "tag"; S.tag = HEUTE; }
+      else melde("Diese Woche enthält heute (Do 12.11.). „Heute“ springt auf die aktuelle Woche und bleibt in der gewählten Ansicht.");
+    }
+    if (a === "zurueck" || a === "vor") {
+      if (S.ansicht === "tag") { S.tag = Math.max(0, Math.min(6, S.tag + (a === "vor" ? 1 : -1))); }
+      else { melde("Die Vorschau hat nur diese eine Woche."); return; }
+    }
+    if (a === "neu") { melde("„+ Termin“ öffnet in Kartesa den Termin-Dialog."); return; }
+    if (a === "weitere") { melde("Unter „Weitere“ liegen wie heute Legende, Hinweise auf den Terminen und die 3-Monats-Übersicht."); return; }
+    if (a === "filter") S.filterOffen = !S.filterOffen;
+    zeichnen(); return;
+  }
+  const wer = ziel.closest("[data-wer]");
+  if (wer) { const pk = wer.dataset.wer; if (S.wer.has(pk) && S.wer.size > 1) S.wer.delete(pk); else S.wer.add(pk); zeichnen(); return; }
+  const ord = ziel.closest("[data-ordnen]");
+  if (ord) { S.ordnen = ord.dataset.ordnen; zeichnen(); return; }
+  // Klick in freie Fläche: wo würde ein neuer Termin beginnen?
+  const flaeche = ziel.closest(".tag");
+  if (flaeche && !flaeche.classList.contains("frei")) {
+    const rect = flaeche.getBoundingClientRect();
+    const m = Math.round((VON + (e.clientY - rect.top) / PX) / 15) * 15;
+    const d = S.ansicht === "tag" ? S.tag : +(flaeche.dataset.leer ?? 0);
+    const sub = ziel.closest(".sub");
+    const pk = sub && sub.dataset.person;
+    melde(`Neuer Termin am ${TAG_LANG[d]} um ${hhmm(m)}${pk ? ` bei ${esc(PERSONEN[pk].name)}` : ""}. In Kartesa öffnet sich hier der Termin-Dialog mit dieser Zeit.`);
+  }
+});
+document.getElementById("breite").addEventListener("change", e => { S.breite = +e.target.value; zeichnen(); });
+let rz;
+addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(zeichnen, 120); });
+zeichnen();
+</script>
+</body>
+</html>
